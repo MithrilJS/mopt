@@ -12,3 +12,13 @@ test("Dynamic classes", function(t) {
     
     t.end();
 });
+
+test("Selector w/ id", function(t) {
+    t.equal(
+        parse(`m("#fooga")`),
+        `({ tag: "div", attrs: { "id": "fooga" }, children: [  ] })`
+    );
+   
+   
+    t.end();
+});

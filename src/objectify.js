@@ -36,7 +36,7 @@ function parseSelector(node, out) {
             parts;
 
         if(lead === "#") {
-            out.attrs.id = match.slice(1);
+            out.attrs.id = `"${match.slice(1)}"`;
 
             return;
         }
