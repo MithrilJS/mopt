@@ -1,7 +1,7 @@
 {
   "name": "mithril-objectify",
   "version": "1.0.0",
-  "description": "Browserify transform (& CLI tool) to convert Mithril m() calls into optimized bare objects",
+  "description": "Optimize Mithril m() calls into simple JS objects via API, CLI, or Browserify",
   "main": "index.js",
   "bin": "./bin/cli.js",
   "scripts": {
