@@ -5,7 +5,7 @@ var path = require("path"),
     through = require("through2"),
     falafel = require("falafel"),
 
-    objectify = require("./lib/objectify");
+    objectify = require("./src/objectify");
 
 function transform(file) {
     var text = "";

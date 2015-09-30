@@ -1,10 +1,9 @@
-/* eslint-env node, es6 */
 "use strict";
 
 var test    = require("tape"),
     falafel = require("falafel"),
 
-    objectify = require("../lib/objectify");
+    objectify = require("../").objectify;
 
 function parse(code) {
     return falafel(code, objectify).toString();
