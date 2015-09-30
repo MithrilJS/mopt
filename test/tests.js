@@ -22,3 +22,27 @@ test("Selector w/ id", function(t) {
    
     t.end();
 });
+
+test("Non-string attr values", function(t) {
+    t.equal(
+        parse(`m("div", { "fooga" : 0 })`),
+        `({ tag: "div", attrs: { "fooga": 0 }, children: [  ] })`
+    );
+    
+    t.equal(
+        parse(`m("div", { "fooga" : false })`),
+        `({ tag: "div", attrs: { "fooga": false }, children: [  ] })`
+    );
+    
+    t.equal(
+        parse(`m("div", { "fooga" : null })`),
+        `({ tag: "div", attrs: { "fooga": null }, children: [  ] })`
+    );
+    
+    t.equal(
+        parse(`m("div", { "fooga" : undefined })`),
+        `({ tag: "div", attrs: { "fooga": undefined }, children: [  ] })`
+    );
+    
+    t.end();
+});
