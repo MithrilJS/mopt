@@ -23,9 +23,11 @@ function stream(file, contents, done) {
 }
 
 test("Dynamic classes", function(t) {
+    /* eslint no-constant-condition:0 */
+
     t.looseEqual(
-        p(`m("input.fooga", { class: true ? "true" : "false" })`),
-        m("input.fooga", { class: true ? "true" : "false" })
+        p(`m("input.fooga", { class : true ? "true" : "false" })`),
+        m("input.fooga", { class : true ? "true" : "false" })
     );
     
     t.end();
@@ -51,23 +53,23 @@ test("Selector w/ attribute w/ no value", function(t) {
 
 test("Non-string attr values", function(t) {
     t.looseEqual(
-        p(`m("div", { "fooga" : 0 })`),
-        m("div", { "fooga" : 0 })
+        p(`m("div", { fooga : 0 })`),
+        m("div", { fooga : 0 })
     );
     
     t.looseEqual(
-        p(`m("div", { "fooga" : false })`),
-        m("div", { "fooga" : false })
+        p(`m("div", { fooga : false })`),
+        m("div", { fooga : false })
     );
     
     t.looseEqual(
-        p(`m("div", { "fooga" : null })`),
-        m("div", { "fooga" : null })
+        p(`m("div", { fooga : null })`),
+        m("div", { fooga : null })
     );
     
     t.looseEqual(
-        p(`m("div", { "fooga" : undefined })`),
-        m("div", { "fooga" : undefined })
+        p(`m("div", { fooga : undefined })`),
+        m("div", { fooga : undefined })
     );
     
     t.end();
