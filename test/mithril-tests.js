@@ -1,13 +1,8 @@
 "use strict";
 
-var test    = require("tape"),
-    falafel = require("falafel"),
+var test  = require("tape"),
 
-    objectify = require("../").objectify;
-
-function parse(code) {
-    return falafel(code, objectify).toString();
-}
+    parse = require("./_parse");
 
 test("Selectors", function(t) {
     t.equal(
