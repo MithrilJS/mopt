@@ -1,4 +1,3 @@
-/* eslint-env node, es6 */
 "use strict";
 
 function getClass(node) {
@@ -84,7 +83,7 @@ function parseAttrs(node, out) {
                 return;
             }
 
-            out.attrs[className] = `"${css} " + ${property.value.source()}`;
+            out.attrs[className] = `"${css} " + (${property.value.source()})`;
     
             return;
         }
