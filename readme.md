@@ -1,9 +1,17 @@
 mithril-objectify
 =================
 
-Turn [mithril](http://mithril.js.org) `m(".fooga")` functions into static JS objects like `{ tag: "div", attrs: { "className" : "fooga" }, children: [ ] }` for speeeeeed. Use via CLI, API, or as a [Browserify](http://browserify.org/) transform. 
+Turn [mithril](http://mithril.js.org) html functions like `m(".fooga")` into static JS objects like:
 
-**NOTE**: This requires iojs/nodejs@0.12.x/nodejs@4.x.x to run, it uses ECMAScript 2015 template strings. Sorry!
+```js
+{ tag: "div", attrs: { "className" : "fooga" }, children: [ ] }
+```
+
+for speeeeeed.
+
+Use via CLI, API, or as a [Browserify](http://browserify.org/) transform!
+
+**NOTE**: This requires `iojs`/`nodejs@0.12.x`/`nodejs@4.x.x` to run, it uses ECMAScript 2015 template strings. Sorry!
 
 ## Installation
 
@@ -39,8 +47,10 @@ console.log(objectify(`m(".fooga.wooga.booga")`);
 
 Use as a browserify transform, either via the CLI or via code.
 
+#### CLI
 `browserify -t mithril-objectify <file>`
 
+#### Code
 ```js
 var build = require("browserify")();
 
