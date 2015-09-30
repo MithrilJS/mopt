@@ -30,4 +30,6 @@ function transform(file) {
 
 module.exports = transform;
 
-module.exports.objectify = objectify;
+module.exports.objectify = function(src) {
+    return falafel(src, objectify).tostring();
+};
