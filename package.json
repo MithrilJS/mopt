@@ -1,5 +1,5 @@
 {
-  "name": "mithril-objectify",
+  "name": "@tivac/mithril-objectify",
   "version": "1.0.0",
   "description": "Optimize Mithril m() calls into simple JS objects via API, CLI, or Browserify",
   "main": "index.js",
