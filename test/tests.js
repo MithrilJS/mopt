@@ -3,6 +3,23 @@
 var test  = require("tape"),
 
     parse = require("./_parse");
+    
+function stream(file, contents, done) {
+    var Readable  = require("stream").Readable,
+        concat    = require("concat-stream"),
+        objectify = require("../"),
+        readable  = new Readable(),
+        through;
+    
+    through = objectify(file);
+    
+    readable.pipe(through);
+    
+    readable.push(contents);
+    readable.push(null);
+    
+    through.pipe(concat(done));
+}
 
 test("Dynamic classes", function(t) {
     t.equal(
@@ -45,4 +62,22 @@ test("Non-string attr values", function(t) {
     );
     
     t.end();
+});
+
+test("transform", function(t) {
+    t.plan(2);
+    
+    stream("./test.js", `m("div")`, function(code) {
+        t.equal(
+            code.toString("utf8"),
+            `({ tag: "div", attrs: {  }, children: [  ] })`
+        );
+    });
+    
+    stream("./test.css", ".fooga { color: red; }", function(code) {
+        t.equal(
+            code.toString("utf8"),
+            ".fooga { color: red; }"
+        );
+    });
 });
