@@ -116,9 +116,9 @@ function transform(node) {
 
         children = 2;
     }
-
+    
     // Suck up all the children and stick 'em into their places
-    if(node.arguments.length >= children) {
+    if(node.arguments.length > children) {
         out.children = node.arguments.slice(children);
 
         if(out.children.length === 1 && out.children[0].type === "ArrayExpression") {
