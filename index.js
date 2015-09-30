@@ -31,5 +31,5 @@ function transform(file) {
 module.exports = transform;
 
 module.exports.objectify = function(src) {
-    return falafel(src, objectify).tostring();
+    return falafel(src, objectify);
 };
