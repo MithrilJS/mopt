@@ -31,6 +31,11 @@ function valid(node) {
 function parseSelector(node, out) {
     var classes = [];
     
+    // No need to parse the empty selector
+    if(!node.arguments[0].value) {
+        return;
+    }
+    
     node.arguments[0].value.match(/(?:(^|#|\.)([^#\.\[\]]+))|(\[.+?\])/g).forEach(function(match) {
         var lead = match.charAt(0),
             parts;

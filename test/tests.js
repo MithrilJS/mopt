@@ -33,6 +33,15 @@ test("Dynamic classes", function(t) {
     t.end();
 });
 
+test("Empty selector", function(t) {
+    t.looseEqual(
+        p(`m("")`),
+        m("")
+    );
+   
+    t.end();
+});
+
 test("Selector w/ id", function(t) {
     t.looseEqual(
         p(`m("#fooga")`),
