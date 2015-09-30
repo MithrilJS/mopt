@@ -2,8 +2,6 @@
 
 var fs = require("fs"),
     
-    falafel = require("falafel"),
-    
     objectify = require("../index.js").objectify;
 
 fs.readFile(process.argv[2], function(errin, file) {
@@ -13,7 +11,7 @@ fs.readFile(process.argv[2], function(errin, file) {
         throw new Error(errin);
     }
 
-    result = falafel(file, objectify);
+    result = objectify(file);
 
     if(process.argv[3]) {
         return fs.writeFile(process.argv[3], result, function(errout) {
