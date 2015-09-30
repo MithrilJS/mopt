@@ -1,5 +1,8 @@
 "use strict";
 
+// These tests are replicating the core mithril tests around the behavior of m(...),
+// which I grabbed from https://github.com/lhorie/mithril.js/blob/next/tests/mithril-tests.js#L6-L44
+
 var test  = require("tape"),
 
     parse = require("./_parse");
