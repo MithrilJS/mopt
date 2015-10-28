@@ -1,7 +1,7 @@
 "use strict";
 
 var test  = require("tape"),
-    m = require("mithril"),
+    m     = require("mithril"),
 
     p = require("./_parse");
     
@@ -79,6 +79,27 @@ test("Non-string attr values", function(t) {
     t.looseEqual(
         p(`m("div", { fooga : undefined })`),
         m("div", { fooga : undefined })
+    );
+    
+    t.end();
+});
+
+test("Filtering doesn't transform unsafe invocations", function(t) {
+    // Ensure that the selector must be literal
+    t.equal(
+        p.objectify(`m(".fooga" + dynamic)`),
+        `m(".fooga" + dynamic)`
+    );
+    
+    t.equal(
+        p.objectify(`m("input" + ".pure-u")`),
+        `m("input" + ".pure-u")`
+    );
+    
+    // Identifiers can't be resolved at compiel time, so ignore
+    t.equal(
+        p.objectify(`m(".fooga", identifier)`),
+        `m(".fooga", identifier)`
     );
     
     t.end();

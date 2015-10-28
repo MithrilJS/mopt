@@ -22,10 +22,34 @@ function isString(node) {
     return node.type === "Literal" && typeof node.value === "string";
 }
 
-function valid(node) {
+function invocation(node) {
     return node.type === "CallExpression" &&
            node.callee.type === "Identifier" &&
            node.callee.name === "m";
+}
+
+function valid(node) {
+    // Table stakes: m()
+    if(!invocation(node)) {
+        return false;
+    }
+    
+    // We can only safely optimize static string selectors: m(".fooga.wooga")
+    if(node.arguments[0].type !== "Literal") {
+        return false;
+    }
+    
+    // What should be allowed?
+    // m(".fooga")
+    // m(".fooga", [ .. ])
+    // m(".fooga", { ... }, ...)
+    // m(".fooga", m(".booga"), ...)
+    return node.arguments.length === 1 ||
+        (node.arguments.length >= 2 &&
+           (node.arguments[1].type === "ObjectExpression" ||
+            node.arguments[1].type === "ArrayExpression" ||
+            node.arguments[1].type === "Literal" ||
+            invocation(node.arguments[1])));
 }
 
 function parseSelector(node, out) {
@@ -115,7 +139,7 @@ function transform(node) {
 
     parseSelector(node, out);
 
-    // TODO: This check seems like it isn't good enough!
+    // Is the second argument an object? Then it's attrs and we should parse 'em!
     if(node.arguments[1] && node.arguments[1].type === "ObjectExpression") {
         parseAttrs(node, out);
 

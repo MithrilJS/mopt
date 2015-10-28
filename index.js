@@ -7,7 +7,7 @@ var path = require("path"),
 
     objectify = require("./src/objectify");
 
-function transform(file) {
+module.exports = function(file) {
     var text = "";
 
     if(path.extname(file) !== ".js") {
@@ -26,9 +26,7 @@ function transform(file) {
             done();
         }
     );
-}
-
-module.exports = transform;
+};
 
 module.exports.objectify = function(src) {
     return falafel(src, objectify);
