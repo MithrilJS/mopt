@@ -13,6 +13,7 @@
   "author": "Pat Cavit <pcavit@arena.net>",
   "repository": "tivac/mithril-objectify",
   "license": "MIT",
+  "keywords": [ "mithril", "optimization", "ast" ],
   "dependencies": {
     "falafel": "^1.2.0",
     "through2": "^2.0.0"
