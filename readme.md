@@ -1,11 +1,3 @@
-# WARNING: DO NOT USE
-
-Despite my best efforts I don't think there's a safe way to statically determine if arguments to `m()` are attributes or children, making this a **VERY** dangerous thing to have as part of your build pipeline.
-
-I'm abandoning this effort for a bit until I can think a bit more and see if I can salvage it. Caveat Emptor.
-
-* * *
-
 mithril-objectify
 =================
 
