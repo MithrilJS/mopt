@@ -31,7 +31,7 @@ test("Selectors", function(t) {
 
     t.looseEqual(
         p(`m('[title="bar"]')`),
-        m('[title="bar"]')
+        m(`[title="bar"]`)
     );
     
     t.end();
@@ -49,48 +49,48 @@ test("Children", function(t) {
     );
     
     t.looseEqual(
-        p(`m("div", ["test"])`),
-        m("div", ["test"])
+        p(`m("div", [ "test" ])`),
+        m("div", [ "test" ])
     );
 
     t.looseEqual(
-        p(`m("div", {title: "bar"}, "test")`),
-        m("div", {title: "bar"}, "test")
+        p(`m("div", { title : "bar" }, "test")`),
+        m("div", { title : "bar" }, "test")
     );
     
     t.looseEqual(
-        p(`m("div", {title: "bar"}, ["test"])`),
-        m("div", {title: "bar"}, ["test"])
+        p(`m("div", { title : "bar" }, [ "test" ])`),
+        m("div", { title : "bar" }, [ "test" ])
     );
     
     t.looseEqual(
-        p(`m("div", {title: "bar"}, m("div"))`),
-        m("div", {title: "bar"}, m("div"))
+        p(`m("div", { title : "bar" }, m("div"))`),
+        m("div", { title : "bar" }, m("div"))
     );
     
     t.looseEqual(
-        p(`m("div", {title: "bar"}, [m("div")])`),
-        m("div", {title: "bar"}, [m("div")])
+        p(`m("div", { title : "bar" }, [ m("div") ])`),
+        m("div", { title : "bar" }, [ m("div") ])
     );
     
     t.looseEqual(
-        p(`m("div", {title: "bar"}, "test0", "test1", "test2", "test3")`),
-        m("div", {title: "bar"}, "test0", "test1", "test2", "test3")
+        p(`m("div", { title : "bar" }, "test0", "test1", "test2", "test3")`),
+        m("div", { title : "bar" }, "test0", "test1", "test2", "test3")
     );
     
     t.looseEqual(
-        p(`m("div", {title: "bar"}, m("div"), m("i"), m("span"))`),
-        m("div", {title: "bar"}, m("div"), m("i"), m("span"))
+        p(`m("div", { title : "bar" }, m("div"), m("i"), m("span"))`),
+        m("div", { title : "bar" }, m("div"), m("i"), m("span"))
     );
     
     t.looseEqual(
-        p(`m("div", ["a", "b"])`),
-        m("div", ["a", "b"])
+        p(`m("div", [ "a", "b" ])`),
+        m("div", [ "a", "b" ])
     );
     
     t.looseEqual(
-        p(`m("div", [m("div")])`),
-        m("div", [m("div")])
+        p(`m("div", [ m("div") ])`),
+        m("div", [ m("div") ])
     );
     
     t.looseEqual(
@@ -99,43 +99,43 @@ test("Children", function(t) {
     );
     
     t.looseEqual(
-        p(`m("div", [undefined])`),
-        m("div", [undefined])
+        p(`m("div", [ undefined ])`),
+        m("div", [ undefined ])
     );
 
     t.looseEqual(
-        p(`m("div", [{foo: "bar"}])`),
-        m("div", [{foo: "bar"}])
+        p(`m("div", [ { foo : "bar" } ])`),
+        m("div", [ { foo : "bar" } ])
     );
 
     t.looseEqual(
-        p(`m("svg", [m("g")])`),
-        m("svg", [m("g")])
+        p(`m("svg", [ m("g") ])`),
+        m("svg", [ m("g") ])
     );
     
     t.looseEqual(
-        p(`m("svg", [m("a[href='http://google.com']")])`),
-        m("svg", [m("a[href='http://google.com']")])
+        p(`m("svg", [ m("a[href='http://google.com']") ])`),
+        m("svg", [ m("a[href='http://google.com']") ])
     );
 
     t.looseEqual(
-        p(`m("div", [1, 2, 3], 4)`),
-        m("div", [1, 2, 3], 4)
+        p(`m("div", [ 1, 2, 3 ], 4)`),
+        m("div", [ 1, 2, 3 ], 4)
     );
     
     t.looseEqual(
-        p(`m("div", [1, 2, 3])`),
-        m("div", [1, 2, 3])
+        p(`m("div", [ 1, 2, 3 ])`),
+        m("div", [ 1, 2, 3 ])
     );
     
     t.looseEqual(
-        p(`m("div", [1, 2, 3], [4, 5, 6, 7])`),
-        m("div", [1, 2, 3], [4, 5, 6, 7])
+        p(`m("div", [ 1, 2, 3 ], [ 4, 5, 6, 7 ])`),
+        m("div", [ 1, 2, 3 ], [ 4, 5, 6, 7 ])
     );
     
     t.looseEqual(
-        p(`m("div", [1], [2], [3])`),
-        m("div", [1], [2], [3])
+        p(`m("div", [ 1 ], [ 2 ], [ 3 ])`),
+        m("div", [ 1 ], [ 2 ], [ 3 ])
     );
 
     t.end();
@@ -143,28 +143,28 @@ test("Children", function(t) {
 
 test("class vs className", function(t) {
     t.looseEqual(
-        p(`m(".foo", {"class": "bar"})`),
-        m(".foo", {"class": "bar"})
+        p(`m(".foo", { class : "bar" })`),
+        m(".foo", { class : "bar" })
     );
     
     t.looseEqual(
-        p(`m(".foo", {className: "bar"})`),
-        m(".foo", {className: "bar"})
+        p(`m(".foo", { className : "bar" })`),
+        m(".foo", { className : "bar" })
     );
     
     t.looseEqual(
-        p(`m(".foo", {className: ""})`),
-        m(".foo", {className: ""})
+        p(`m(".foo", { className : "" })`),
+        m(".foo", { className : "" })
     );
     
     t.looseEqual(
-        p(`m("div", {className: ""})`),
-        m("div", {className: ""})
+        p(`m("div", { className : "" })`),
+        m("div", { className : "" })
     );
     
     t.looseEqual(
-        p(`m("div", {"class": ""})`),
-        m("div", {"class": ""})
+        p(`m("div", { class : "" })`),
+        m("div", { class : "" })
     );
     
     t.end();
