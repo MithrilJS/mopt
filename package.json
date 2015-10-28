@@ -207,7 +207,10 @@
         2,
         "never"
       ],
-      "space-after-keywords": 0,
+      "space-after-keywords": [
+        2,
+        "never"
+      ],
       "space-before-blocks": [
         2,
         "always"
