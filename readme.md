@@ -18,8 +18,6 @@ for speeeeeed.
 
 Use via CLI, API, or as a [Browserify](http://browserify.org/) transform!
 
-**NOTE**: This requires `iojs`/`nodejs@0.12.x`/`nodejs@4.x.x` to run, it uses ECMAScript 2015 template strings. Sorry!
-
 ## Installation
 
 Install with npm

@@ -65,7 +65,7 @@ function parseSelector(node, out) {
             parts;
 
         if(lead === "#") {
-            out.attrs.id = `"${match.slice(1)}"`;
+            out.attrs.id = "\"" + match.slice(1) + "\"";
 
             return;
         }
@@ -78,7 +78,7 @@ function parseSelector(node, out) {
 
         if(lead === "[") {
             parts = match.match(/\[(.+?)(?:=("|'|)(.*?)\2)?\]/);
-            out.attrs[parts[1]] = parts[3] ? `"${parts[3]}"` : true;
+            out.attrs[parts[1]] = parts[3] ? "\"" + parts[3] + "\"" : true;
 
             return;
         }
@@ -106,20 +106,20 @@ function parseAttrs(node, out) {
             if(isString(property.value)) {
                 // But only if it's worth adding a new value
                 if(property.value.value.length) {
-                    out.attrs[className] = `"${css} ${property.value.value}"`;
+                    out.attrs[className] = "\"" + css + " " + property.value.value + "\"";
                 }
                 
                 return;
             }
 
-            out.attrs[className] = `"${css} " + (${property.value.source()})`;
-    
+            out.attrs[className] = "\"" + css + " \" + (" + property.value.source() + ")";
+
             return;
         }
 
         // Strings need to be quoted
         if(isString(property.value)) {
-            out.attrs[key] = `"${property.value.value}"`;
+            out.attrs[key] = "\"" + property.value.value + "\"";
 
             return;
         }
@@ -162,15 +162,15 @@ function transform(node) {
     // parseSelector leaves this an array for ease of use in parseAttrs,
     // but if parseAttrs never ran we need to convert it to a string
     if(Array.isArray(out.attrs[className])) {
-        out.attrs[className] = `"${out.attrs[className].join(" ")}"`;
+        out.attrs[className] = "\"" + out.attrs[className].join(" ") + "\"";
     }
 
     // Map attrs to an array for exporting (can't use JSON.stringify because it eats functions)
     out.attrs = Object.keys(out.attrs).map(function(key) {
-        return `"${key}": ${out.attrs[key]}`;
+        return "\"" + key + "\": " + out.attrs[key];
     });
 
-    node.update(`({ tag: "${out.tag}", attrs: { ${out.attrs.join(", ")} }, children: [ ${out.children.join(", ")} ] })`);
+    node.update("({ tag: \"" + out.tag + "\", attrs: { " + out.attrs.join(", ") + " }, children: [ " + out.children.join(", ") + " ] })");
 }
 
 module.exports = function(node) {
