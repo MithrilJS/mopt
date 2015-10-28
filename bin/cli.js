@@ -1,3 +1,4 @@
+/* eslint no-console:0 */
 "use strict";
 
 var fs = require("fs"),
@@ -19,9 +20,9 @@ fs.readFile(process.argv[2], function(errin, file) {
                 throw new Error(errout);
             }
 
-            console.log("Wrote " + process.argv[3]); // TODO: REMOVE DEBUGGING
+            console.log("Wrote " + process.argv[3]);
         });
     }
 
-    console.log(result); // TODO: REMOVE DEBUGGING
+    console.log(result);
 });

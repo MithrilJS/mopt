@@ -1,11 +1,14 @@
 {
-  "name": "@tivac/mithril-objectify",
-  "version": "1.0.0-beta.5",
+  "name": "mithril-objectify",
+  "version": "1.0.0",
   "description": "Optimize Mithril m() calls into simple JS objects via API, CLI, or Browserify",
   "main": "index.js",
   "bin": "./bin/cli.js",
   "scripts": {
-    "test": "istanbul test --print both ./node_modules/tape/bin/tape -- tape test/*.js"
+    "test": "npm run lint && npm run tape",
+    "lint": "eslint .",
+    "coverage": "istanbul test --print both ./node_modules/tape/bin/tape -- tape test/*.js",
+    "tape": "tape test/*.js"
   },
   "author": "Pat Cavit <pcavit@arena.net>",
   "repository": "tivac/mithril-objectify",
@@ -16,6 +19,7 @@
   },
   "devDependencies": {
     "concat-stream": "^1.5.0",
+    "eslint": "^1.7.3",
     "istanbul": "^0.3.21",
     "mithril": "^0.2.0",
     "tape": "^4.2.0"
