@@ -40,7 +40,7 @@ Accepts an input file and optional output file. No output file will echo the res
 Accepts a string or buffer, returns a buffer.
 
 ```js
-var objectify = require("mithril-objectify");
+var objectify = require("mithril-objectify").objectify;
 
 console.log(objectify(`m(".fooga.wooga.booga")`);
 
