@@ -1,5 +1,16 @@
 "use strict";
 
+// safe Array.prototype methods that we can optimize (because they return an array)
+var safe = [
+        "concat",
+        "filter",
+        "map",
+        "reverse",
+        "slice",
+        "sort",
+        "splice"
+    ];
+
 function getClass(node) {
     var type = "className";
 
@@ -22,6 +33,16 @@ function isString(node) {
     return node.type === "Literal" && typeof node.value === "string";
 }
 
+// Check if this is an invocation of an Array.prototype method on an array
+function arrayExpression(node) {
+    return node.type === "CallExpression" &&
+           node.callee.type === "MemberExpression" &&
+           node.callee.object.type === "ArrayExpression" &&
+           node.callee.property.type === "Identifier" &&
+           safe.indexOf(node.callee.property.name) !== -1;
+}
+
+// Check if this is an invocation of m()
 function invocation(node) {
     return node.type === "CallExpression" &&
            node.callee.type === "Identifier" &&
@@ -44,12 +65,15 @@ function valid(node) {
     // m(".fooga", [ .. ])
     // m(".fooga", { ... }, ...)
     // m(".fooga", m(".booga"), ...)
+    // m(".fooga", [ ... ].map)
     return node.arguments.length === 1 ||
         (node.arguments.length >= 2 &&
            (node.arguments[1].type === "ObjectExpression" ||
             node.arguments[1].type === "ArrayExpression" ||
             node.arguments[1].type === "Literal" ||
-            invocation(node.arguments[1])));
+            invocation(node.arguments[1]) ||
+            arrayExpression(node.arguments[1]))
+       );
 }
 
 function parseSelector(node, out) {
@@ -153,10 +177,6 @@ function transform(node) {
         if(out.children.length === 1 && out.children[0].type === "ArrayExpression") {
             out.children = out.children[0].elements;
         }
-
-        out.children = out.children.map(function(child) {
-            return child.source();
-        });
     }
 
     // parseSelector leaves this an array for ease of use in parseAttrs,
@@ -170,7 +190,17 @@ function transform(node) {
         return "\"" + key + "\": " + out.attrs[key];
     });
 
-    node.update("({ tag: \"" + out.tag + "\", attrs: { " + out.attrs.join(", ") + " }, children: [ " + out.children.join(", ") + " ] })");
+    if(out.children.length === 1 && arrayExpression(out.children[0])) {
+        out.children = out.children[0].source();
+    } else {
+        out.children = out.children.map(function(child) {
+            return child.source();
+        });
+
+        out.children = "[ " + out.children.join(",") + " ]";
+    }
+
+    node.update("({ tag: \"" + out.tag + "\", attrs: { " + out.attrs.join(", ") + " }, children: " + out.children + " })");
 }
 
 module.exports = function(node) {
