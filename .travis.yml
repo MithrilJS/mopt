@@ -2,3 +2,10 @@ sudo: false
 language: node_js
 node_js:
   - "node"
+  - "4.2"
+  # Can't test in earlier node versions because tests use ES6
+  # will fix that later if we need to
+
+cache:
+  directories:
+    - node_modules
