@@ -5,7 +5,7 @@ function getClass(node) {
 
     if(node.arguments[1] && node.arguments[1].type === "ObjectExpression") {
         node.arguments[1].properties.some(function(property) {
-            var key = property.key.name || property.key.value;
+            var key = property.key.name;
 
             if(key === "class") {
                 type = "class";
@@ -95,7 +95,7 @@ function parseAttrs(node, out) {
     var className = getClass(node);
 
     node.arguments[1].properties.forEach(function(property) {
-        var key = property.key.name || property.key.value,
+        var key = property.key.name,
             css;
 
         // Class combinations get weird, so handling specially
