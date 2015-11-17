@@ -1,9 +1,7 @@
-mithril-objectify
+mithril-objectify [![NPM Version](https://img.shields.io/npm/v/mithril-objectify.svg)](https://www.npmjs.com/package/mithril-objectify) [![NPM License](https://img.shields.io/npm/l/mithril-objectify.svg)](https://www.npmjs.com/package/mithril-objectify)
 =================
-[![NPM Version](https://img.shields.io/npm/v/mithril-objectify.svg)](https://www.npmjs.com/package/mithril-objectify)
-[![NPM License](https://img.shields.io/npm/l/mithril-objectify.svg)](https://www.npmjs.com/package/mithril-objectify)
 [![NPM Downloads](https://img.shields.io/npm/dm/mithril-objectify.svg)](https://www.npmjs.com/package/mithril-objectify)
-[![Build Status](https://img.shields.io/travis/tivac/mithril-objectify.svg)](https://travis-ci.org/tivac/mithril-objectify)
+[![Build Status](https://img.shields.io/travis/tivac/mithril-objectify/master.svg)](https://travis-ci.org/tivac/mithril-objectify)
 [![Dependency Status](https://img.shields.io/david/tivac/mithril-objectify.svg)](https://david-dm.org/tivac/mithril-objectify)
 [![devDependency Status](https://img.shields.io/david/dev/tivac/mithril-objectify.svg)](https://david-dm.org/tivac/mithril-objectify#info=devDependencies)
 
