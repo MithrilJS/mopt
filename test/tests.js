@@ -84,6 +84,16 @@ test("Non-string attr values", function(t) {
     t.end();
 });
 
+test("Quoted properties (issue #6)", function(t) {
+    /* eslint quote-props:0 */
+    t.looseEqual(
+        p(`m("div", { "fooga" : 0 })`),
+        m("div", { "fooga" : 0 })
+    );
+
+    t.end();
+});
+
 test("Array.prototype methods", function(t) {
     /* eslint brace-style:0, no-unused-expressions:0 */
     t.looseEqual(
