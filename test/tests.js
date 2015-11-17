@@ -84,6 +84,36 @@ test("Non-string attr values", function(t) {
     t.end();
 });
 
+test("Array.prototype methods", function(t) {
+    /* eslint brace-style:0, no-unused-expressions:0 */
+    t.looseEqual(
+        p(`m("div", [ 1, 2 ].map((val) => { val; }))`),
+        m("div", [ 1, 2 ].map((val) => { val; }))
+    );
+
+    t.looseEqual(
+        p(`m("div", [ 1, 2 ].filter((val) => { val === 1; }))`),
+        m("div", [ 1, 2 ].filter((val) => { val === 1; }))
+    );
+
+    t.looseEqual(
+        p(`m("div", [ 1, 2 ].sort())`),
+        m("div", [ 1, 2 ].sort())
+    );
+
+    t.equal(
+        p.objectify(`m("div", [ 1, 2 ].forEach((val) => { val === 1 }))`),
+        `m("div", [ 1, 2 ].forEach((val) => { val === 1 }))`
+    );
+
+    t.equal(
+        p.objectify(`m("div", [ 1, 2 ].some((val) => { val === 1 }))`),
+        `m("div", [ 1, 2 ].some((val) => { val === 1 }))`
+    );
+
+    t.end();
+});
+
 test("Filtering doesn't transform unsafe invocations", function(t) {
     // Ensure that the selector must be literal
     t.equal(
@@ -96,7 +126,7 @@ test("Filtering doesn't transform unsafe invocations", function(t) {
         `m("input" + ".pure-u")`
     );
     
-    // Identifiers can't be resolved at compiel time, so ignore
+    // Identifiers can't be resolved at compile time, so ignore
     t.equal(
         p.objectify(`m(".fooga", identifier)`),
         `m(".fooga", identifier)`

@@ -7,8 +7,15 @@ var path = require("path"),
 
     objectify = require("./src/objectify");
 
+function transform(source) {
+    return falafel({
+        source      : source,
+        ecmaVersion : 6
+    }, objectify);
+}
+
 module.exports = function(file) {
-    var text = "";
+    var source = "";
 
     if(path.extname(file) !== ".js") {
         return through();
@@ -16,18 +23,16 @@ module.exports = function(file) {
 
     return through(
         function(buf, encoding, done) {
-            text += buf;
+            source += buf;
 
             done();
         },
         function(done) {
-            this.push(falafel(text, objectify).toString());
+            this.push(transform(source).toString());
 
             done();
         }
     );
 };
 
-module.exports.objectify = function(src) {
-    return falafel(src, objectify);
-};
+module.exports.objectify = transform;
