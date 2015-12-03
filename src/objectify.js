@@ -44,9 +44,14 @@ function arrayExpression(node) {
 
 // Check if this is an invocation of m()
 function invocation(node) {
-    return node.type === "CallExpression" &&
-           node.callee.type === "Identifier" &&
-           node.callee.name === "m";
+    return node.type === "CallExpression" && (
+        (node.callee.type === "Identifier" && node.callee.name === "m") ||
+        (node.callee.type === "SequenceExpression" &&
+         node.callee.expressions.length === 2 &&
+         node.callee.expressions[1].type === "MemberExpression" &&
+         node.callee.expressions[1].object.name.startsWith("_mithril")
+        )
+    );
 }
 
 function valid(node) {

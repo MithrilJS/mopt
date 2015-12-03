@@ -1,6 +1,7 @@
+
 {
   "name": "mithril-objectify",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Optimize Mithril m() calls into simple JS objects via API, CLI, or Browserify",
   "main": "index.js",
   "bin": "./bin/cli.js",
