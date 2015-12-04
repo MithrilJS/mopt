@@ -9,7 +9,8 @@ var safe = [
         "slice",
         "sort",
         "splice"
-    ];
+    ],
+    babelNames = /^_mithril\d*$/;
 
 function getClass(node) {
     var type = "className";
@@ -49,7 +50,7 @@ function invocation(node) {
         (node.callee.type === "SequenceExpression" &&
          node.callee.expressions.length === 2 &&
          node.callee.expressions[1].type === "MemberExpression" &&
-         node.callee.expressions[1].object.name.startsWith("_mithril")
+         node.callee.expressions[1].object.name.search(babelNames) > -1
         )
     );
 }
@@ -195,7 +196,9 @@ function transform(node) {
         return "\"" + key + "\": " + out.attrs[key];
     });
 
-    if(out.children.length === 1 && arrayExpression(out.children[0])) {
+    if(!out.children.length) {
+        out.children = "[]";
+    } else if(out.children.length === 1 && arrayExpression(out.children[0])) {
         out.children = out.children[0].source();
     } else {
         out.children = out.children.map(function(child) {
