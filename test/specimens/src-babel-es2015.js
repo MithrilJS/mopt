@@ -1,4 +1,3 @@
-/* eslint-disable */
 import m from "mithril";
 import { m2 } from "mithril";
 import mq from "mithril-query";

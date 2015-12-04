@@ -36,8 +36,10 @@
   "eslintConfig": {
     "extends": "arenanet",
     "ecmaFeatures": {
-      "templateStrings": true,
-      "arrowFunctions": true
+      "arrowFunctions": true,
+      "blockBindings": true,
+      "modules": true,
+      "templateStrings": true
     },
     "env": {
       "node": true,
