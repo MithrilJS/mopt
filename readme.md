@@ -1,10 +1,19 @@
 mithril-objectify [![NPM Version](https://img.shields.io/npm/v/mithril-objectify.svg)](https://www.npmjs.com/package/mithril-objectify) [![NPM License](https://img.shields.io/npm/l/mithril-objectify.svg)](https://www.npmjs.com/package/mithril-objectify)
 =================
+
 <p align="center">
-<a href="https://www.npmjs.com/package/mithril-objectify" alt="NPM Downloads"><img src="https://img.shields.io/npm/dm/mithril-objectify.svg" /></a>
-<a href="https://travis-ci.org/tivac/mithril-objectify" alt="Build Status"><img src="https://img.shields.io/travis/tivac/mithril-objectify/master.svg" /></a>
-<a href="https://david-dm.org/tivac/mithril-objectify" alt="Dependency Status"><img src="https://img.shields.io/david/tivac/mithril-objectify.svg" /></a>
-<a href="https://david-dm.org/tivac/mithril-objectify#info=devDependencies" alt="devDependency Status"><img src="https://img.shields.io/david/dev/tivac/mithril-objectify.svg" /></a>
+    <a href="https://www.npmjs.com/package/mithril-objectify" alt="NPM Downloads">
+        <img src="https://img.shields.io/npm/dm/mithril-objectify.svg" />
+    </a>
+    <a href="https://travis-ci.org/tivac/mithril-objectify" alt="Build Status">
+        <img src="https://img.shields.io/travis/tivac/mithril-objectify/master.svg" />
+    </a>
+    <a href="https://david-dm.org/tivac/mithril-objectify" alt="Dependency Status">
+        <img src="https://img.shields.io/david/tivac/mithril-objectify.svg" />
+    </a>
+    <a href="https://david-dm.org/tivac/mithril-objectify#info=devDependencies" alt="devDependency Status">
+        <img src="https://img.shields.io/david/dev/tivac/mithril-objectify.svg" />
+    </a>
 </p>
 
 
@@ -17,6 +26,8 @@ Turn [mithril](http://mithril.js.org) html functions like `m(".fooga")` into sta
 for speeeeeed.
 
 Use via CLI, API, or as a [Browserify](http://browserify.org/) transform!
+
+Please file an issue if you come across any cases that this doesn't handle, I'd love to improve the number of structures I can rewrite!
 
 ## Installation
 
@@ -55,7 +66,7 @@ Use as a browserify transform, either via the CLI or via code.
 #### CLI
 `browserify -t mithril-objectify <file>`
 
-#### Code
+#### API
 ```js
 var build = require("browserify")();
 
@@ -65,7 +76,3 @@ b.add("./client.js");
 
 b.bundle().pipe(process.stdout);
 ```
-
-## Warning
-
-There may be edge cases this doesn't handle well. I'd love to see issues filed w/ repro code for any of them and would be happy to fix them!
