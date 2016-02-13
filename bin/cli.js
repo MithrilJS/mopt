@@ -24,5 +24,5 @@ fs.readFile(process.argv[2], function(errin, file) {
         });
     }
 
-    console.log(result);
+    return console.log(result);
 });

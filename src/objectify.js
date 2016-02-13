@@ -24,6 +24,8 @@ function getClass(node) {
 
                 return true;
             }
+            
+            return false;
         });
     }
 

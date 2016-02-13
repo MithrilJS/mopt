@@ -11,7 +11,7 @@ test("Dynamic classes", function(t) {
     /* eslint no-constant-condition:0 */
 
     t.looseEqual(
-        p(`m("input.fooga", { class : true ? "true" : "false" })`),
+        p('m("input.fooga", { class : true ? "true" : "false" })'),
         m("input.fooga", { class : true ? "true" : "false" })
     );
     
@@ -20,7 +20,7 @@ test("Dynamic classes", function(t) {
 
 test("Empty selector", function(t) {
     t.looseEqual(
-        p(`m("")`),
+        p('m("")'),
         m("")
     );
    
@@ -29,7 +29,7 @@ test("Empty selector", function(t) {
 
 test("Selector w/ id", function(t) {
     t.looseEqual(
-        p(`m("#fooga")`),
+        p('m("#fooga")'),
         m("#fooga")
     );
    
@@ -38,7 +38,7 @@ test("Selector w/ id", function(t) {
 
 test("Selector w/ attribute w/ no value", function(t) {
     t.looseEqual(
-        p(`m("div[fooga]")`),
+        p('m("div[fooga]")'),
         m("div[fooga]")
     );
 
@@ -47,22 +47,22 @@ test("Selector w/ attribute w/ no value", function(t) {
 
 test("Non-string attr values", function(t) {
     t.looseEqual(
-        p(`m("div", { fooga : 0 })`),
+        p('m("div", { fooga : 0 })'),
         m("div", { fooga : 0 })
     );
     
     t.looseEqual(
-        p(`m("div", { fooga : false })`),
+        p('m("div", { fooga : false })'),
         m("div", { fooga : false })
     );
     
     t.looseEqual(
-        p(`m("div", { fooga : null })`),
+        p('m("div", { fooga : null })'),
         m("div", { fooga : null })
     );
     
     t.looseEqual(
-        p(`m("div", { fooga : undefined })`),
+        p('m("div", { fooga : undefined })'),
         m("div", { fooga : undefined })
     );
     
@@ -72,7 +72,7 @@ test("Non-string attr values", function(t) {
 test("Quoted properties (issue #6)", function(t) {
     /* eslint quote-props:0 */
     t.looseEqual(
-        p(`m("div", { "fooga" : 0 })`),
+        p('m("div", { "fooga" : 0 })'),
         m("div", { "fooga" : 0 })
     );
 
@@ -82,28 +82,28 @@ test("Quoted properties (issue #6)", function(t) {
 test("Array.prototype methods", function(t) {
     /* eslint brace-style:0, no-unused-expressions:0 */
     t.looseEqual(
-        p(`m("div", [ 1, 2 ].map((val) => { val; }))`),
-        m("div", [ 1, 2 ].map((val) => { val; }))
+        p('m("div", [ 1, 2 ].map(function(val) { return val; }))'),
+        m("div", [ 1, 2 ].map(function(val) { return val; }))
     );
 
     t.looseEqual(
-        p(`m("div", [ 1, 2 ].filter((val) => { val === 1; }))`),
-        m("div", [ 1, 2 ].filter((val) => { val === 1; }))
+        p('m("div", [ 1, 2 ].filter(function(val) { return val === 1; }))'),
+        m("div", [ 1, 2 ].filter(function(val) { return val === 1; }))
     );
 
     t.looseEqual(
-        p(`m("div", [ 1, 2 ].sort())`),
+        p('m("div", [ 1, 2 ].sort())'),
         m("div", [ 1, 2 ].sort())
     );
 
     t.equal(
-        p.objectify(`m("div", [ 1, 2 ].forEach((val) => { val === 1 }))`),
-        `m("div", [ 1, 2 ].forEach((val) => { val === 1 }))`
+        p.objectify('m("div", [ 1, 2 ].forEach(function(val) { return val === 1 }))'),
+        'm("div", [ 1, 2 ].forEach(function(val) { return val === 1 }))'
     );
 
     t.equal(
-        p.objectify(`m("div", [ 1, 2 ].some((val) => { val === 1 }))`),
-        `m("div", [ 1, 2 ].some((val) => { val === 1 }))`
+        p.objectify('m("div", [ 1, 2 ].some(function(val) { return val === 1 }))'),
+        'm("div", [ 1, 2 ].some(function(val) { return val === 1 }))'
     );
 
     t.end();
@@ -112,19 +112,19 @@ test("Array.prototype methods", function(t) {
 test("Filtering doesn't transform unsafe invocations", function(t) {
     // Ensure that the selector must be literal
     t.equal(
-        p.objectify(`m(".fooga" + dynamic)`),
-        `m(".fooga" + dynamic)`
+        p.objectify('m(".fooga" + dynamic)'),
+        'm(".fooga" + dynamic)'
     );
     
     t.equal(
-        p.objectify(`m("input" + ".pure-u")`),
-        `m("input" + ".pure-u")`
+        p.objectify('m("input" + ".pure-u")'),
+        'm("input" + ".pure-u")'
     );
     
     // Identifiers can't be resolved at compile time, so ignore
     t.equal(
-        p.objectify(`m(".fooga", identifier)`),
-        `m(".fooga", identifier)`
+        p.objectify('m(".fooga", identifier)'),
+        'm(".fooga", identifier)'
     );
     
     t.end();
@@ -142,10 +142,10 @@ test("Babelified code", function(t) {
 test("transform", function(t) {
     t.plan(2);
     
-    s("./test.js", `m("div")`, function(code) {
+    s("./test.js", 'm("div")', function(code) {
         t.equal(
             code.toString("utf8"),
-            `({ tag: "div", attrs: {  }, children: [] })`
+            '({ tag: "div", attrs: {  }, children: [] })'
         );
     });
     
