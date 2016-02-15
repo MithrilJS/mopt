@@ -26,7 +26,7 @@
   "devDependencies": {
     "concat-stream": "^1.5.0",
     "eslint": "^2.0.0",
-    "eslint-config-arenanet": "^2.0.0",
+    "eslint-config-arenanet": "^2.0.1",
     "istanbul": "^0.4.0",
     "mithril": "^0.2.0",
     "tap-difflet": "^0.4.0",
