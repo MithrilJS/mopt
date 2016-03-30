@@ -4,7 +4,7 @@
 
 var fs = require("fs"),
     
-    objectify = require("../index.js").objectify;
+    transform = require("../");
 
 fs.readFile(process.argv[2], function(errin, file) {
     var result;
@@ -13,7 +13,7 @@ fs.readFile(process.argv[2], function(errin, file) {
         throw new Error(errin);
     }
 
-    result = objectify(file);
+    result = transform(file);
 
     if(process.argv[3]) {
         return fs.writeFile(process.argv[3], result, function(errout) {

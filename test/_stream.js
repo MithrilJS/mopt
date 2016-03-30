@@ -3,7 +3,7 @@
 module.exports = function(file, contents, done) {
     var Readable  = require("stream").Readable,
         concat    = require("concat-stream"),
-        objectify = require("../"),
+        objectify = require("../browserify"),
         readable  = new Readable(),
         through;
     

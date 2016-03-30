@@ -156,3 +156,23 @@ test("transform", function(t) {
         );
     });
 });
+
+test("Rollup plugin", function(t) {
+    var r = require("../rollup"),
+        obj;
+
+    t.plan(5);
+
+    t.equal(typeof r, "function");
+
+    obj = r();
+
+    t.equal(typeof obj, "object");
+    t.ok("transformBundle" in obj);
+
+    t.equal(typeof obj.transformBundle, "function");
+    t.deepEqual(
+        obj.transformBundle('m("#fooga")'),
+        { code : '({ tag: "div", attrs: { "id": "fooga" }, children: [] })' }
+    );
+});
