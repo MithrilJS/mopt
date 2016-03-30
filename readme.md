@@ -25,7 +25,7 @@ Turn [mithril](http://mithril.js.org) html functions like `m(".fooga")` into sta
 
 for speeeeeed.
 
-Use via CLI, API, or as a [Browserify](http://browserify.org/) transform!
+Use via CLI, API, [Browserify](http://browserify.org/), or [Rollup](http://rollupjs.org)!
 
 Please file an issue if you come across any cases that this doesn't handle, I'd love to improve the number of structures I can rewrite!
 
@@ -51,7 +51,7 @@ Accepts an input file and optional output file. No output file will echo the res
 Accepts a string or buffer, returns a buffer.
 
 ```js
-var objectify = require("mithril-objectify").objectify;
+var objectify = require("mithril-objectify");
 
 console.log(objectify(`m(".fooga.wooga.booga")`);
 
@@ -70,9 +70,27 @@ Use as a browserify transform, either via the CLI or via code.
 ```js
 var build = require("browserify")();
 
-build.transform("mithril-objectify");
+build.transform("mithril-objectify/browserify");
 
 b.add("./client.js");
 
 b.bundle().pipe(process.stdout);
+```
+
+### Rollup
+
+Use as a rollup plugin.
+
+```js
+rollup.rollup({
+    entry   : "./entry.js",
+    plugins : [
+        require("mithril-objectify/rollup")()
+    ]
+})
+.then(function(bundle) {
+    return bundle.write({
+        dest : "./out/source.js"
+    });
+})
 ```

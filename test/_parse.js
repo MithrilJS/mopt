@@ -2,7 +2,7 @@
 
 var vm = require("vm"),
     
-    objectify = require("../").objectify;
+    objectify = require("../");
     
 function process(code) {
     return objectify(code).toString("utf8");
