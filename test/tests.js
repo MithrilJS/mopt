@@ -10,7 +10,7 @@ var fs   = require("fs"),
 test("Dynamic classes", function(t) {
     /* eslint no-constant-condition:0 */
 
-    t.looseEqual(
+    t.deepEqual(
         p('m("input.fooga", { class : true ? "true" : "false" })'),
         m("input.fooga", { class : true ? "true" : "false" })
     );
@@ -19,25 +19,25 @@ test("Dynamic classes", function(t) {
 });
 
 test("Empty selector", function(t) {
-    t.looseEqual(
+    t.deepEqual(
         p('m("")'),
         m("")
     );
-   
+    
     t.end();
 });
 
 test("Selector w/ id", function(t) {
-    t.looseEqual(
+    t.deepEqual(
         p('m("#fooga")'),
         m("#fooga")
     );
-   
+    
     t.end();
 });
 
 test("Selector w/ attribute w/ no value", function(t) {
-    t.looseEqual(
+    t.deepEqual(
         p('m("div[fooga]")'),
         m("div[fooga]")
     );
@@ -46,22 +46,22 @@ test("Selector w/ attribute w/ no value", function(t) {
 });
 
 test("Non-string attr values", function(t) {
-    t.looseEqual(
+    t.deepEqual(
         p('m("div", { fooga : 0 })'),
         m("div", { fooga : 0 })
     );
     
-    t.looseEqual(
+    t.deepEqual(
         p('m("div", { fooga : false })'),
         m("div", { fooga : false })
     );
     
-    t.looseEqual(
+    t.deepEqual(
         p('m("div", { fooga : null })'),
         m("div", { fooga : null })
     );
     
-    t.looseEqual(
+    t.deepEqual(
         p('m("div", { fooga : undefined })'),
         m("div", { fooga : undefined })
     );
@@ -71,7 +71,7 @@ test("Non-string attr values", function(t) {
 
 test("Quoted properties (issue #6)", function(t) {
     /* eslint quote-props:0 */
-    t.looseEqual(
+    t.deepEqual(
         p('m("div", { "fooga" : 0 })'),
         m("div", { "fooga" : 0 })
     );
@@ -81,17 +81,17 @@ test("Quoted properties (issue #6)", function(t) {
 
 test("Array.prototype methods", function(t) {
     /* eslint brace-style:0, no-unused-expressions:0 */
-    t.looseEqual(
+    t.deepEqual(
         p('m("div", [ 1, 2 ].map(function(val) { return val; }))'),
         m("div", [ 1, 2 ].map(function(val) { return val; }))
     );
 
-    t.looseEqual(
+    t.deepEqual(
         p('m("div", [ 1, 2 ].filter(function(val) { return val === 1; }))'),
         m("div", [ 1, 2 ].filter(function(val) { return val === 1; }))
     );
 
-    t.looseEqual(
+    t.deepEqual(
         p('m("div", [ 1, 2 ].sort())'),
         m("div", [ 1, 2 ].sort())
     );
