@@ -110,8 +110,8 @@ function parseSelector(node, out) {
 
         if(lead === "[") {
             parts = match.match(/\[(.+?)(?:=("|'|)(.*?)\2)?\]/);
-            out.attrs[parts[1]] = parts[3] ? "\"" + parts[3] + "\"" : true;
-
+            out.attrs[parts[1]] = parts[3] ? "\"" + parts[3] + "\"" : "\"\"";
+            
             return;
         }
 
