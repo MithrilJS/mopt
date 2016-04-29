@@ -1,6 +1,6 @@
 "use strict";
 
-var isString = require("./is-string"),
+var isString = require("./string"),
     
     safe = [
         "fromCharCode",

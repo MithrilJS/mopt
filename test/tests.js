@@ -149,13 +149,19 @@ test("Conditional expressions", function(t) {
         'm("div", foo ? bar : "baz")'
     );
     
+    // Shouldn't convert this
+    t.equal(
+        p.objectify('m("div", foo ? { class : options.class } : null)'),
+        ""
+    );
+    
     t.end();
 });
 
-test.only("m.trust children", function(t) {
+test("m.trust children", function(t) {
     t.looseEqual(
         p.objectify('m("div", m.trust("<div>"))'),
-        "" // m("div", m.trust("<div>"))
+        '({ tag: "div", attrs: {  }, children: [ m.trust("<div>") ] })'
     );
     
     t.end();
@@ -165,6 +171,20 @@ test("Nested m()", function(t) {
     t.looseEqual(
         p('m("div", m("div"))'),
         m("div", m("div"))
+    );
+    
+    t.end();
+});
+
+test("JSON.stringify", function(t) {
+    t.equal(
+        p.objectify('m("div", JSON.stringify({}))'),
+        '({ tag: "div", attrs: {  }, children: [ JSON.stringify({}) ] })'
+    );
+    
+    t.equal(
+        p.objectify('m("div", JSON.parse({}))'),
+        'm("div", JSON.parse({}))'
     );
     
     t.end();

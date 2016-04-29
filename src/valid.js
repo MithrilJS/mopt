@@ -1,12 +1,14 @@
 "use strict";
 
-var isMithril = require("./is-mithril"),
-    arrayExpression = require("./array-expression"),
-    stringExpression = require("./string-expression"),
+var mithril = require("./mithril"),
+    
+    json = require("./json"),
+    
+    arrayExpression       = require("./array-expression"),
+    stringExpression      = require("./string-expression"),
     conditionalExpression = require("./conditional-expression"),
     
     safeTypes = [
-        "ObjectExpression",
         "ArrayExpression",
         "Literal",
         "BinaryExpression"
@@ -15,7 +17,6 @@ var isMithril = require("./is-mithril"),
 // Test arguments
 exports.arg = function(node) {
     // m(".fooga", [ .. ])
-    // m(".fooga", { ... }, ...)
     // m(".fooga", "wooga")
     // m(".fooga", "wooga" + "booga")
     if(safeTypes.indexOf(node.type) > -1) {
@@ -37,8 +38,18 @@ exports.arg = function(node) {
         return true;
     }
     
-    // TODO: m(".fooga", foo ? "bar" : "baz")
+    // m(".fooga", foo ? "bar" : "baz")
     if(conditionalExpression(node)) {
+        return true;
+    }
+    
+    // m(".fooga", m.trust("<div>"))
+    if(mithril.trust(node)) {
+        return true;
+    }
+    
+    // m(".fooga", JSON.stringify({}))
+    if(json.stringify(node)) {
         return true;
     }
     
@@ -48,7 +59,7 @@ exports.arg = function(node) {
 // Test to see if a node is a passable mithril invocation
 exports.mithril = function(node) {
     // Table stakes: m()
-    if(!isMithril(node)) {
+    if(!mithril.m(node)) {
         return false;
     }
     

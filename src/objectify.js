@@ -3,8 +3,8 @@
 // safe Array.prototype methods that we can optimize (because they return an array)
 var arrayExpression  = require("./array-expression"),
     
-    isString = require("./is-string"),
-    isValid  = require("./is-valid");
+    isString = require("./string"),
+    isValid  = require("./valid");
 
 function getClass(node) {
     var type = "className";

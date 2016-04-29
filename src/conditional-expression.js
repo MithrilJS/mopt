@@ -1,6 +1,6 @@
 "use strict";
 
-var isValid = require("./is-valid");
+var isValid = require("./valid");
 
 // Check if this is an invocation of an ConditionalExpression
 module.exports = function(node) {
