@@ -23,7 +23,7 @@ exports.children = function(node) {
     }
     
     // m(".fooga", m(".booga"), ...)
-    if(exports.mithril(node)) {
+    if(mithril.m(node)) {
         return true;
     }
     

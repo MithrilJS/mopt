@@ -173,6 +173,11 @@ test("Nested m()", function(t) {
         m("div", m("div"))
     );
     
+    t.deepEqual(
+        p('m("div", m("div", m("div")), m("div"))'),
+        m("div", m("div", m("div")), m("div"))
+    );
+    
     t.end();
 });
 
