@@ -8,7 +8,8 @@
     "test": "npm run lint && npm run tape",
     "lint": "eslint .",
     "cover": "istanbul test --print both ./node_modules/tape/bin/tape -- tape test/*.js",
-    "tape": "tape test/*.js | tap-difflet"
+    "tape": "tape test/*.js | tap-difflet",
+    "preversion": "npm test"
   },
   "author": "Pat Cavit <pcavit@arena.net>",
   "repository": "tivac/mithril-objectify",
