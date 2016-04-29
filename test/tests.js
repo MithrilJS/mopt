@@ -80,17 +80,17 @@ test("Quoted properties (issue #6)", function(t) {
 });
 
 test("Strings", function(t) {
-    t.looseEqual(
+    t.deepEqual(
         p('m("div", "fooga")'),
         m("div", "fooga")
     );
     
-    t.looseEqual(
+    t.equal(
         p.objectify('m("div", "fooga" + "wooga")'),
         '({ tag: "div", attrs: {  }, children: [ "fooga" + "wooga" ] })'
     );
     
-    t.looseEqual(
+    t.equal(
         p.objectify('m("div", "fooga".replace("f", "g"))'),
         '({ tag: "div", attrs: {  }, children: [ "fooga".replace("f", "g") ] })'
     );
@@ -159,7 +159,7 @@ test("Conditional expressions", function(t) {
 });
 
 test("m.trust children", function(t) {
-    t.looseEqual(
+    t.equal(
         p.objectify('m("div", m.trust("<div>"))'),
         '({ tag: "div", attrs: {  }, children: [ m.trust("<div>") ] })'
     );
@@ -168,7 +168,7 @@ test("m.trust children", function(t) {
 });
 
 test("Nested m()", function(t) {
-    t.looseEqual(
+    t.deepEqual(
         p('m("div", m("div"))'),
         m("div", m("div"))
     );
