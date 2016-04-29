@@ -149,10 +149,10 @@ test("Conditional expressions", function(t) {
         'm("div", foo ? bar : "baz")'
     );
     
-    // Shouldn't convert this
+    // Can't convert this, unable to merge args w/ conditional results
     t.equal(
         p.objectify('m("div", foo ? { class : options.class } : null)'),
-        ""
+        'm("div", foo ? { class : options.class } : null)'
     );
     
     t.end();

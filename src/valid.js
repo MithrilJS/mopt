@@ -8,18 +8,17 @@ var mithril = require("./mithril"),
     stringExpression      = require("./string-expression"),
     conditionalExpression = require("./conditional-expression"),
     
-    safeTypes = [
+    childrenTypes = [
         "ArrayExpression",
-        "Literal",
-        "BinaryExpression"
+        "BinaryExpression",
+        "Literal"
     ];
 
-// Test arguments
-exports.arg = function(node) {
-    // m(".fooga", [ .. ])
+exports.children = function(node) {
+    // m(".fooga", [ ... ])
     // m(".fooga", "wooga")
     // m(".fooga", "wooga" + "booga")
-    if(safeTypes.indexOf(node.type) > -1) {
+    if(childrenTypes.indexOf(node.type) > -1) {
         return true;
     }
     
@@ -54,6 +53,16 @@ exports.arg = function(node) {
     }
     
     return false;
+};
+
+// Test arguments
+exports.arg = function(node) {
+    // m(".fooga", { ... })
+    if(node.type === "ObjectExpression") {
+        return true;
+    }
+    
+    return exports.children(node);
 };
 
 // Test to see if a node is a passable mithril invocation
