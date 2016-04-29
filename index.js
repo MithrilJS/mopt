@@ -2,7 +2,7 @@
 
 var falafel = require("falafel"),
 
-    objectify = require("./src/objectify");
+    objectify = require("./src");
 
 module.exports = function transform(source) {
     return falafel({
