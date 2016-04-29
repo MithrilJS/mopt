@@ -1,16 +1,10 @@
 "use strict";
 
 // safe Array.prototype methods that we can optimize (because they return an array)
-var safe = [
-        "concat",
-        "filter",
-        "map",
-        "reverse",
-        "slice",
-        "sort",
-        "splice"
-    ],
-    babelNames = /^_mithril\d*$/;
+var arrayExpression  = require("./array-expression"),
+    
+    isString = require("./string"),
+    isValid  = require("./valid");
 
 function getClass(node) {
     var type = "className";
@@ -30,58 +24,6 @@ function getClass(node) {
     }
 
     return type;
-}
-
-function isString(node) {
-    return node.type === "Literal" && typeof node.value === "string";
-}
-
-// Check if this is an invocation of an Array.prototype method on an array
-function arrayExpression(node) {
-    return node.type === "CallExpression" &&
-           node.callee.type === "MemberExpression" &&
-           node.callee.object.type === "ArrayExpression" &&
-           node.callee.property.type === "Identifier" &&
-           safe.indexOf(node.callee.property.name) !== -1;
-}
-
-// Check if this is an invocation of m()
-function invocation(node) {
-    return node.type === "CallExpression" && (
-        (node.callee.type === "Identifier" && node.callee.name === "m") ||
-        (node.callee.type === "SequenceExpression" &&
-         node.callee.expressions.length === 2 &&
-         node.callee.expressions[1].type === "MemberExpression" &&
-         node.callee.expressions[1].object.name.search(babelNames) > -1
-        )
-    );
-}
-
-function valid(node) {
-    // Table stakes: m()
-    if(!invocation(node)) {
-        return false;
-    }
-    
-    // We can only safely optimize static string selectors: m(".fooga.wooga")
-    if(node.arguments[0].type !== "Literal") {
-        return false;
-    }
-    
-    // What should be allowed?
-    // m(".fooga")
-    // m(".fooga", [ .. ])
-    // m(".fooga", { ... }, ...)
-    // m(".fooga", m(".booga"), ...)
-    // m(".fooga", [ ... ].map)
-    return node.arguments.length === 1 ||
-        (node.arguments.length >= 2 &&
-           (node.arguments[1].type === "ObjectExpression" ||
-            node.arguments[1].type === "ArrayExpression" ||
-            node.arguments[1].type === "Literal" ||
-            invocation(node.arguments[1]) ||
-            arrayExpression(node.arguments[1]))
-       );
 }
 
 function parseSelector(node, out) {
@@ -197,7 +139,7 @@ function transform(node) {
     out.attrs = Object.keys(out.attrs).map(function(key) {
         return "\"" + key + "\": " + out.attrs[key];
     });
-
+    
     if(!out.children.length) {
         out.children = "[]";
     } else if(out.children.length === 1 && arrayExpression(out.children[0])) {
@@ -209,12 +151,12 @@ function transform(node) {
 
         out.children = "[ " + out.children.join(",") + " ]";
     }
-
+    
     node.update("({ tag: \"" + out.tag + "\", attrs: { " + out.attrs.join(", ") + " }, children: " + out.children + " })");
 }
 
 module.exports = function(node) {
-    if(!valid(node)) {
+    if(!isValid.mithril(node)) {
         return;
     }
     

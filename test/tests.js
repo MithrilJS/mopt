@@ -79,6 +79,25 @@ test("Quoted properties (issue #6)", function(t) {
     t.end();
 });
 
+test("Strings", function(t) {
+    t.looseEqual(
+        p('m("div", "fooga")'),
+        m("div", "fooga")
+    );
+    
+    t.looseEqual(
+        p.objectify('m("div", "fooga" + "wooga")'),
+        '({ tag: "div", attrs: {  }, children: [ "fooga" + "wooga" ] })'
+    );
+    
+    t.looseEqual(
+        p.objectify('m("div", "fooga".replace("f", "g"))'),
+        '({ tag: "div", attrs: {  }, children: [ "fooga".replace("f", "g") ] })'
+    );
+    
+    t.end();
+});
+
 test("Array.prototype methods", function(t) {
     /* eslint brace-style:0, no-unused-expressions:0 */
     t.deepEqual(
@@ -95,17 +114,79 @@ test("Array.prototype methods", function(t) {
         p('m("div", [ 1, 2 ].sort())'),
         m("div", [ 1, 2 ].sort())
     );
-
+    
+    // Mithril & falafel don't agree on the ouput of running this, but
+    // they're both valid
+    t.equal(
+        p.objectify('m("div", [ 1, 2 ].join(""))'),
+        '({ tag: "div", attrs: {  }, children: [ 1, 2 ].join("") })'
+    );
+    
+    // Untransformable methods since they don't return an array :(
     t.equal(
         p.objectify('m("div", [ 1, 2 ].forEach(function(val) { return val === 1 }))'),
         'm("div", [ 1, 2 ].forEach(function(val) { return val === 1 }))'
     );
-
+    
     t.equal(
         p.objectify('m("div", [ 1, 2 ].some(function(val) { return val === 1 }))'),
         'm("div", [ 1, 2 ].some(function(val) { return val === 1 }))'
     );
+    
+    t.end();
+});
 
+test("Conditional expressions", function(t) {
+    // Can convert literals!
+    t.equal(
+        p.objectify('m("div", foo ? "bar" : "baz")'),
+        '({ tag: "div", attrs: {  }, children: [ foo ? "bar" : "baz" ] })'
+    );
+    
+    // Can't convert this, dunno what `bar` is
+    t.equal(
+        p.objectify('m("div", foo ? bar : "baz")'),
+        'm("div", foo ? bar : "baz")'
+    );
+    
+    // Can't convert this, unable to merge args w/ conditional results
+    t.equal(
+        p.objectify('m("div", foo ? { class : options.class } : null)'),
+        'm("div", foo ? { class : options.class } : null)'
+    );
+    
+    t.end();
+});
+
+test("m.trust children", function(t) {
+    t.looseEqual(
+        p.objectify('m("div", m.trust("<div>"))'),
+        '({ tag: "div", attrs: {  }, children: [ m.trust("<div>") ] })'
+    );
+    
+    t.end();
+});
+
+test("Nested m()", function(t) {
+    t.looseEqual(
+        p('m("div", m("div"))'),
+        m("div", m("div"))
+    );
+    
+    t.end();
+});
+
+test("JSON.stringify", function(t) {
+    t.equal(
+        p.objectify('m("div", JSON.stringify({}))'),
+        '({ tag: "div", attrs: {  }, children: [ JSON.stringify({}) ] })'
+    );
+    
+    t.equal(
+        p.objectify('m("div", JSON.parse({}))'),
+        'm("div", JSON.parse({}))'
+    );
+    
     t.end();
 });
 
