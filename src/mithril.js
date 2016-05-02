@@ -24,3 +24,6 @@ exports.m = function(node) {
 
 // Is this an invocation of m.trust(...)?
 exports.trust = callExpression.bind(null, "m", "trust");
+
+// Is this an invocation of m.component(...)?
+exports.component = callExpression.bind(null, "m", "component");

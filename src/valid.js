@@ -47,6 +47,11 @@ exports.children = function(node) {
         return true;
     }
     
+    // m(".fooga", m.component(thing))
+    if(mithril.component(node)) {
+        return true;
+    }
+    
     // m(".fooga", JSON.stringify({}))
     if(json.stringify(node)) {
         return true;

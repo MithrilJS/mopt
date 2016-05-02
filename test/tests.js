@@ -167,6 +167,15 @@ test("m.trust children", function(t) {
     t.end();
 });
 
+test("m.component children", function(t) {
+    t.equal(
+        p.objectify('m("div", m.component(fooga))'),
+        '({ tag: "div", attrs: {  }, children: [ m.component(fooga) ] })'
+    );
+    
+    t.end();
+});
+
 test("Nested m()", function(t) {
     t.deepEqual(
         p('m("div", m("div"))'),
