@@ -2,3 +2,5 @@ coverage/
 test/
 .*
 !index.js
+!browserify.js
+!rollup.js
