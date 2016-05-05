@@ -1,6 +1,7 @@
-coverage/
-test/
-.*
-!index.js
-!browserify.js
-!rollup.js
+.vscode
+coverage
+test
+.eslintignore
+.travis.yml
+.gitattributes
+.gitignore
