@@ -4,14 +4,14 @@ var vm = require("vm"),
     
     objectify = require("../");
     
-function process(code) {
-    return objectify(code).toString("utf8");
-}
-
-module.exports = function(code) {
+module.exports = function(source) {
+    var result = objectify(source);
+    
+    console.log(result.code);
+    
     // wrap w/ vm so it returns an object
-    return vm.runInThisContext(process(code));
+    return vm.runInThisContext(result.code);
 };
 
 // Expose for ease of referencing
-module.exports.objectify = process;
+module.exports.objectify = objectify;

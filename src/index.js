@@ -1,15 +1,22 @@
 "use strict";
 
 // safe Array.prototype methods that we can optimize (because they return an array)
-var arrayExpression  = require("./array-expression"),
+var recast = require("recast"),
+    n = recast.types.namedTypes,
+    b = recast.types.builders,
+    t = recast.types.builtInTypes,
+    
+    arrayExpression  = require("./array-expression"),
     
     isString = require("./string"),
     isValid  = require("./valid");
 
-function getClass(node) {
-    var type = "className";
-
-    if(node.arguments[1] && node.arguments[1].type === "ObjectExpression") {
+function getClass(path) {
+    var node = path.node,
+        type = "className";
+    
+    if(node.arguments[1] && n.ObjectExpression.check(node.arguments[1])) {
+        // TODO: REWRITE
         node.arguments[1].properties.some(function(property) {
             var key = property.key.name || property.key.value;
 
@@ -26,8 +33,9 @@ function getClass(node) {
     return type;
 }
 
-function parseSelector(node, out) {
-    var classes = [];
+function parseSelector(path, out, className) {
+    var node = path.node,
+        classes = [];
     
     // No need to parse the empty selector
     if(!node.arguments[0].value) {
@@ -39,7 +47,7 @@ function parseSelector(node, out) {
             parts;
 
         if(lead === "#") {
-            out.attrs.id = "\"" + match.slice(1) + "\"";
+            out.attrs.id = b.literal(match.slice(1));
 
             return;
         }
@@ -52,21 +60,21 @@ function parseSelector(node, out) {
 
         if(lead === "[") {
             parts = match.match(/\[(.+?)(?:=("|'|)(.*?)\2)?\]/);
-            out.attrs[parts[1]] = parts[3] ? "\"" + parts[3] + "\"" : "\"\"";
+            out.attrs[parts[1]] = b.literal(parts[3] || "");
             
             return;
         }
 
         out.tag = match;
     });
-
+    
     if(classes.length > 0) {
-        out.attrs[getClass(node)] = classes;
+        out.attrs[className] = b.literal(classes.join(" "));
     }
 }
 
-function parseAttrs(node, out) {
-    var className = getClass(node);
+function parseAttrs(path, out, className) {
+    var node = path.node;
 
     node.arguments[1].properties.forEach(function(property) {
         var key = property.key.name || property.key.value,
@@ -80,42 +88,43 @@ function parseAttrs(node, out) {
             if(isString(property.value)) {
                 // But only if it's worth adding a new value
                 if(property.value.value.length) {
-                    out.attrs[className] = "\"" + css + " " + property.value.value + "\"";
+                    out.attrs[className] = b.literal(css + " " + property.value.value);
                 }
                 
                 return;
             }
 
-            out.attrs[className] = "\"" + css + " \" + (" + property.value.source() + ")";
+            out.attrs[className] = b.literal(css + " (" + property.value.source() + ")");
 
             return;
         }
 
         // Strings need to be quoted
-        if(isString(property.value)) {
-            out.attrs[key] = "\"" + property.value.value + "\"";
+        if(t.string.check(property.value)) {
+            out.attrs[key] = property.value.value;
 
             return;
         }
 
-        out.attrs[key] = property.value.source();
+        out.attrs[key] = property.value;
     });
 }
 
-function transform(node) {
-    var out = {
+function transform(path) {
+    var node = path.node,
+        out = {
             tag      : "div",
             attrs    : {},
             children : []
         },
         children  = 1,
-        className = getClass(node);
+        className = getClass(path);
 
-    parseSelector(node, out);
+    parseSelector(path, out, className);
 
     // Is the second argument an object? Then it's attrs and we should parse 'em!
-    if(node.arguments[1] && node.arguments[1].type === "ObjectExpression") {
-        parseAttrs(node, out);
+    if(n.ObjectExpression.check(node.arguments[1])) {
+        parseAttrs(path, out, className);
 
         children = 2;
     }
@@ -124,7 +133,7 @@ function transform(node) {
     if(node.arguments.length > children) {
         out.children = node.arguments.slice(children);
 
-        if(out.children.length === 1 && out.children[0].type === "ArrayExpression") {
+        if(out.children.length === 1 && n.ArrayExpression.check(out.children[0])) {
             out.children = out.children[0].elements;
         }
     }
@@ -136,29 +145,48 @@ function transform(node) {
     }
 
     // Map attrs to an array for exporting (can't use JSON.stringify because it eats functions)
-    out.attrs = Object.keys(out.attrs).map(function(key) {
-        return "\"" + key + "\": " + out.attrs[key];
-    });
+    // out.attrs = Object.keys(out.attrs).map(function(key) {
+    //     return "\"" + key + "\": " + out.attrs[key];
+    // });
     
-    if(!out.children.length) {
-        out.children = "[]";
-    } else if(out.children.length === 1 && arrayExpression(out.children[0])) {
-        out.children = out.children[0].source();
-    } else {
-        out.children = out.children.map(function(child) {
-            return child.source();
-        });
+    // if(!out.children.length) {
+    //     out.children = "[]";
+    // } else if(out.children.length === 1 && arrayExpression(out.children[0])) {
+    //     out.children = out.children[0].source();
+    // } else {
+    //     out.children = out.children.map(function(child) {
+    //         return child.source();
+    //     });
 
-        out.children = "[ " + out.children.join(",") + " ]";
-    }
+    //     out.children = "[ " + out.children.join(",") + " ]";
+    // }
     
-    node.update("({ tag: \"" + out.tag + "\", attrs: { " + out.attrs.join(", ") + " }, children: " + out.children + " })");
+    console.log(out);
+    
+    return b.expressionStatement(b.objectExpression([
+        b.property("init", b.identifier("tag"), b.literal(out.tag)),
+        b.property("init", b.identifier("attrs"), b.objectExpression(Object.keys(out.attrs).map(function(key) {
+            return b.property("init", b.identifier(key), out.attrs[key]);
+        }))),
+        b.property("init", b.identifier("children"), b.arrayExpression(out.children))
+    ]));
+    // node.update("({ tag: \"" + out.tag + "\", attrs: { " + out.attrs.join(", ") + " }, children: " + out.children + " })");
 }
 
-module.exports = function(node) {
-    if(!isValid.mithril(node)) {
-        return;
-    }
+module.exports = function(source) {
+    var ast = recast.parse(source);
     
-    transform(node);
+    recast.types.visit(ast, {
+        visitCallExpression : function(path) {
+            if(isValid.mithril(path.node)) {
+                path.replace(transform(path));
+            }
+            
+            this.traverse(path);
+        }
+    });
+    
+    console.log(JSON.stringify(ast, null, 4));
+    
+    return recast.print(ast);
 };

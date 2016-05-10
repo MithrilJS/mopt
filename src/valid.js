@@ -1,6 +1,8 @@
 "use strict";
 
-var mithril = require("./mithril"),
+var named = require("recast").types.namedTypes,
+    
+    mithril = require("./mithril"),
     
     json = require("./json"),
     
@@ -63,7 +65,7 @@ exports.children = function(node) {
 // Test arguments
 exports.arg = function(node) {
     // m(".fooga", { ... })
-    if(node.type === "ObjectExpression") {
+    if(named.ObjectExpression.check(node)) {
         return true;
     }
     
@@ -78,7 +80,7 @@ exports.mithril = function(node) {
     }
     
     // We can only safely optimize static string selectors: m(".fooga.wooga")
-    if(node.arguments[0].type !== "Literal") {
+    if(!named.Literal.check(node.arguments[0])) {
         return false;
     }
     

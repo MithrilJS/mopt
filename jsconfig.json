@@ -1,0 +1,12 @@
+{
+	// See https://go.microsoft.com/fwlink/?LinkId=759670
+	// for the documentation about the jsconfig.json format
+	"compilerOptions": {
+		"module": "commonjs",
+        "target": "ES5"
+	},
+	"exclude": [
+		"node_modules",
+		"coverage"
+	]
+}
