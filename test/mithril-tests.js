@@ -46,13 +46,27 @@ describe("Selectors", function() {
     });
 });
 
-// describe.only("Children", function() {
-describe("Children", function() {
+describe.only("Children", function() {
+// describe("Children", function() {
     describe("literal children", function() {
-        it("should support single literal children", function() {
+        it("should support single literal children (string)", function() {
             assert.deepEqual(
                 p('m("div", "test")'),
                 m("div", "test")
+            );
+        });
+        
+        it("should support single literal children (undefined)", function() {
+            assert.deepEqual(
+                p('m("div", [ undefined ])'),
+                m("div", [ undefined ])
+            );
+        });
+        
+        it("should support single literal children (object)", function() {
+            assert.deepEqual(
+                p('m("div", [ { foo : "bar" } ])'),
+                m("div", [ { foo : "bar" } ])
             );
         });
         
@@ -84,6 +98,11 @@ describe("Children", function() {
                 p('m("div", [ "test" ])'),
                 m("div", [ "test" ])
             );
+            
+            assert.deepEqual(
+                p('m("div", [ 1, 2, 3 ])'),
+                m("div", [ 1, 2, 3 ])
+            );
         });
         
         it("should support attrs + array children", function() {
@@ -96,82 +115,81 @@ describe("Children", function() {
     
     
     describe("nested m()", function() {
-        it.only("should support nested m() invocations", function() {
+        it("should support nested m() invocations", function() {
+            assert.deepEqual(
+                p('m("div", m("div"))'),
+                m("div", m("div"))
+            );
+        });
+        
+        it("should support arrays of nested m() invocations", function() {
+            assert.deepEqual(
+                p('m("div", [ m("div") ])'),
+                m("div", [ m("div") ])
+            );
+            
+            assert.deepEqual(
+                p('m("svg", [ m("g") ])'),
+                m("svg", [ m("g") ])
+            );
+            
+            assert.deepEqual(
+                p('m("svg", [ m("a[href=\'http://google.com\']") ])'),
+                m("svg", [ m("a[href='http://google.com']") ])
+            );
+        });
+        
+        it("should support multiple nested m() invocations", function() {
+            assert.deepEqual(
+                p('m("div", m("div"), m("i"), m("span"))'),
+                m("div", m("div"), m("i"), m("span"))
+            );
+        });
+        
+        it("should support attrs + nested m() invocations", function() {
             assert.deepEqual(
                 p('m("div", { title : "bar" }, m("div"))'),
                 m("div", { title : "bar" }, m("div"))
             );
         });
         
-        it("should supported arrays of nested m()", function() {
+        it("should supported attrs + arrays of nested m() invocations", function() {
             assert.deepEqual(
                 p('m("div", { title : "bar" }, [ m("div") ])'),
                 m("div", { title : "bar" }, [ m("div") ])
             );
         });
         
-        it("should support multiple nested m() invocations", function() {
+        it("should support attrs + multiple nested m() invocations", function() {
             assert.deepEqual(
                 p('m("div", { title : "bar" }, m("div"), m("i"), m("span"))'),
                 m("div", { title : "bar" }, m("div"), m("i"), m("span"))
             );
         });
+        
     });
     
-    // assert.deepEqual(
-    //     p('m("div", [ "a", "b" ])'),
-    //     m("div", [ "a", "b" ])
-    // );
     
-    // assert.deepEqual(
-    //     p('m("div", [ m("div") ])'),
-    //     m("div", [ m("div") ])
-    // );
-    
-    // assert.deepEqual(
-    //     p('m("div", m("div"))'),
-    //     m("div", m("div"))
-    // );
-    
-    // assert.deepEqual(
-    //     p('m("div", [ undefined ])'),
-    //     m("div", [ undefined ])
-    // );
-
-    // assert.deepEqual(
-    //     p('m("div", [ { foo : "bar" } ])'),
-    //     m("div", [ { foo : "bar" } ])
-    // );
-
-    // assert.deepEqual(
-    //     p('m("svg", [ m("g") ])'),
-    //     m("svg", [ m("g") ])
-    // );
-    
-    // assert.deepEqual(
-    //     p('m("svg", [ m("a[href=\'http://google.com\']") ])'),
-    //     m("svg", [ m("a[href='http://google.com']") ])
-    // );
-
-    // assert.deepEqual(
-    //     p('m("div", [ 1, 2, 3 ], 4)'),
-    //     m("div", [ 1, 2, 3 ], 4)
-    // );
-    
-    // assert.deepEqual(
-    //     p('m("div", [ 1, 2, 3 ])'),
-    //     m("div", [ 1, 2, 3 ])
-    // );
-    
-    // assert.deepEqual(
-    //     p('m("div", [ 1, 2, 3 ], [ 4, 5, 6, 7 ])'),
-    //     m("div", [ 1, 2, 3 ], [ 4, 5, 6, 7 ])
-    // );
-    
-    // assert.deepEqual(
-    //     p('m("div", [ 1 ], [ 2 ], [ 3 ])'),
-    //     m("div", [ 1 ], [ 2 ], [ 3 ])
-    // );
+    describe("mixed children", function() {
+        it("should support mixed array and literal children", function() {
+            assert.deepEqual(
+                p('m("div", [ 1, 2, 3 ], 4)'),
+                m("div", [ 1, 2, 3 ], 4)
+            );
+        });
+        
+        it("should support multiple arrays of children", function() {
+            assert.deepEqual(
+                p('m("div", [ 1, 2, 3 ], [ 4, 5, 6, 7 ])'),
+                m("div", [ 1, 2, 3 ], [ 4, 5, 6, 7 ])
+            );
+            
+            assert.deepEqual(
+                p('m("div", [ 1 ], [ 2 ], [ 3 ])'),
+                m("div", [ 1 ], [ 2 ], [ 3 ])
+            );
+        });
+    });
 });
 
 it("class vs className", function() {

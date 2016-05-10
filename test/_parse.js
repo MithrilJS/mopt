@@ -7,6 +7,7 @@ var vm = require("vm"),
 module.exports = function(source) {
     var result = objectify(source);
     
+    console.log(source);
     console.log(result.code);
     
     // wrap w/ vm so it returns an object

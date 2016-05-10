@@ -75,15 +75,15 @@ function parseSelector(path, out, className) {
 
 function parseAttrs(path, out, className) {
     var node = path.node;
-
+    
     node.arguments[1].properties.forEach(function(property) {
         var key = property.key.name || property.key.value,
             css;
-
+        
         // Class combinations get weird, so handling specially
         if(out.attrs[className] && key === className) {
-            css = out.attrs[className].join(" ");
-
+            css = out.attrs[className];
+            
             // Strings get concatted
             if(isString(property.value)) {
                 // But only if it's worth adding a new value
@@ -95,13 +95,6 @@ function parseAttrs(path, out, className) {
             }
 
             out.attrs[className] = b.literal(css + " (" + property.value.source() + ")");
-
-            return;
-        }
-
-        // Strings need to be quoted
-        if(t.string.check(property.value)) {
-            out.attrs[key] = property.value.value;
 
             return;
         }
@@ -121,8 +114,8 @@ function transform(path) {
         className = getClass(path);
 
     parseSelector(path, out, className);
-
-    // Is the second argument an object? Then it's attrs and we should parse 'em!
+    
+    // Is the second argument an object? Then it's attrs and they need to be parsed
     if(n.ObjectExpression.check(node.arguments[1])) {
         parseAttrs(path, out, className);
 
@@ -132,23 +125,13 @@ function transform(path) {
     // Suck up all the children and stick 'em into their places
     if(node.arguments.length > children) {
         out.children = node.arguments.slice(children);
-
+        
+        // Make sure we don't end up w/ [ [ ... ] ]
         if(out.children.length === 1 && n.ArrayExpression.check(out.children[0])) {
             out.children = out.children[0].elements;
         }
     }
 
-    // parseSelector leaves this an array for ease of use in parseAttrs,
-    // but if parseAttrs never ran we need to convert it to a string
-    if(Array.isArray(out.attrs[className])) {
-        out.attrs[className] = "\"" + out.attrs[className].join(" ") + "\"";
-    }
-
-    // Map attrs to an array for exporting (can't use JSON.stringify because it eats functions)
-    // out.attrs = Object.keys(out.attrs).map(function(key) {
-    //     return "\"" + key + "\": " + out.attrs[key];
-    // });
-    
     // if(!out.children.length) {
     //     out.children = "[]";
     // } else if(out.children.length === 1 && arrayExpression(out.children[0])) {
@@ -161,16 +144,13 @@ function transform(path) {
     //     out.children = "[ " + out.children.join(",") + " ]";
     // }
     
-    console.log(out);
-    
-    return b.expressionStatement(b.objectExpression([
+    return b.objectExpression([
         b.property("init", b.identifier("tag"), b.literal(out.tag)),
         b.property("init", b.identifier("attrs"), b.objectExpression(Object.keys(out.attrs).map(function(key) {
             return b.property("init", b.identifier(key), out.attrs[key]);
         }))),
         b.property("init", b.identifier("children"), b.arrayExpression(out.children))
-    ]));
-    // node.update("({ tag: \"" + out.tag + "\", attrs: { " + out.attrs.join(", ") + " }, children: " + out.children + " })");
+    ]);
 }
 
 module.exports = function(source) {
@@ -185,8 +165,6 @@ module.exports = function(source) {
             this.traverse(path);
         }
     });
-    
-    console.log(JSON.stringify(ast, null, 4));
     
     return recast.print(ast);
 };
