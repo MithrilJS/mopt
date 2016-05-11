@@ -1,6 +1,6 @@
 "use strict";
 
-var n   = require("recast").types.namedTypes,
+var t   = require("babel-core").types,
     fns = [
         "concat",
         "filter",
@@ -14,9 +14,11 @@ var n   = require("recast").types.namedTypes,
 
 // Check if this is an invocation of an Array.prototype method on an array
 module.exports = function(node) {
-    return n.CallExpression.check(node) &&
-           n.MemberExpression.check(node.callee) &&
-           n.ArrayExpression.check(node.callee.object) &&
-           n.Identifier.check(node.callee.property) &&
+    debugger;
+    
+    return t.isCallExpression(node) &&
+           t.isMemberExpression(node.callee) &&
+           t.isArrayExpression(node.callee.object) &&
+           t.isIdentifier(node.callee.property) &&
            fns.indexOf(node.callee.property.name) !== -1;
 };

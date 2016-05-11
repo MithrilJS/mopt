@@ -19,15 +19,9 @@
     "optimization",
     "ast"
   ],
-  "dependencies": {
-    "ast-types": "^0.8.16",
-    "lodash.assign": "^4.0.8",
-    "recast": "^0.11.5",
-    "rollup-pluginutils": "^1.3.1",
-    "sink-transform": "^2.0.0",
-    "through2": "^2.0.0"
-  },
+  "dependencies": {},
   "devDependencies": {
+    "babel-core": "^6.8.0",
     "concat-stream": "^1.5.0",
     "eslint": "^2.5.3",
     "eslint-config-arenanet": "^2.0.3",

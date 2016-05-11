@@ -1,13 +1,11 @@
 "use strict";
 
-var fs     = require("fs"),
-    assert = require("assert"),
+var assert = require("assert"),
 
     m    = require("mithril"),
 
     run    = require("./lib/run"),
-    code   = require("./lib/code"),
-    stream = require("./lib/stream");
+    code   = require("./lib/code");
 
 describe("mithril-objectify", function() {
     it("Dynamic classes", function() {
@@ -68,90 +66,97 @@ describe("mithril-objectify", function() {
         );
     });
 
-    it("Strings", function() {
-        assert.deepEqual(
-            run('m("div", "fooga")'),
-            m("div", "fooga")
-        );
+    describe("String children", function() {
+        it("should support one", function() {
+            assert.deepEqual(
+                run('m("div", "fooga")'),
+                m("div", "fooga")
+            );
+        });
         
-        assert.equal(
-            code('m("div", "fooga" + "wooga")'),
-            '({  tag: "div",  attrs: {},  children: ["fooga" + "wooga"]})'
-        );
+        it("should support expressions", function() {
+            assert.equal(
+                code('m("div", "fooga" + "wooga")'),
+                '({tag:"div",attrs:{},children:["fooga"+"wooga"]});'
+            );
+        });
         
-        assert.equal(
-            code('m("div", "fooga".replace("f", "g"))'),
-            '({  tag: "div",  attrs: {},  children: ["fooga".replace("f", "g")]})'
-        );
+        it("should support String.prototype methods", function() {
+            assert.equal(
+                code('m("div", "fooga".replace("f", "g"))'),
+                '({tag:"div",attrs:{},children:["fooga".replace("f","g")]});'
+            );
+        });
     });
 
-    it("Array.prototype methods", function() {
-        /* eslint brace-style:0, no-unused-expressions:0 */
-        assert.deepEqual(
-            code('m("div", [ 1, 2 ].map(function(val) { return val; }))'),
-            '({  tag: "div",  attrs: {},  children: [ 1, 2 ].map(function(val) { return val; })})'
-        );
+    describe("Array.prototype comprehension", function() {
+        it("should transform single valid Array.prototype children", function() {
+            /* eslint brace-style:0, no-unused-expressions:0 */
+            assert.deepEqual(
+                code('m("div", [ 1, 2 ].map(function(val) { return val; }))'),
+                '({tag:"div",attrs:{},children:[1,2].map(function(val){return val;})});'
+            );
 
-        assert.deepEqual(
-            code('m("div", [ 1, 2 ].filter(function(val) { return val === 1; }))'),
-            '({  tag: "div",  attrs: {},  children: [ 1, 2 ].filter(function(val) { return val === 1; })})'
-        );
+            assert.deepEqual(
+                code('m("div", [ 1, 2 ].filter(function(val) { return val === 1; }))'),
+                '({tag:"div",attrs:{},children:[1,2].filter(function(val){return val===1;})});'
+            );
 
-        assert.deepEqual(
-            code('m("div", [ 1, 2 ].sort())'),
-            '({  tag: "div",  attrs: {},  children: [ 1, 2 ].sort()})'
-        );
+            assert.deepEqual(
+                code('m("div", [ 1, 2 ].sort())'),
+                '({tag:"div",attrs:{},children:[1,2].sort()});'
+            );
+            
+            assert.equal(
+                code('m("div", [ 1, 2 ].join(""))'),
+                '({tag:"div",attrs:{},children:[1,2].join("")});'
+            );
+        });
         
-        // Mithril & falafel don't agree on the ouput of running this, but
-        // they're both valid
-        assert.equal(
-            code('m("div", [ 1, 2 ].join(""))'),
-            '({  tag: "div",  attrs: {},  children: [ 1, 2 ].join("")})'
-        );
-        
-        // Untransformable methods since they don't return an array :(
-        assert.equal(
-            code('m("div", [ 1, 2 ].forEach(function(val) { return val === 1 }))'),
-            'm("div", [ 1, 2 ].forEach(function(val) { return val === 1 }))'
-        );
-        
-        assert.equal(
-            code('m("div", [ 1, 2 ].some(function(val) { return val === 1 }))'),
-            'm("div", [ 1, 2 ].some(function(val) { return val === 1 }))'
-        );
+        it.only("shouldn't transform Array.prototype children when they don't return an array", function() {
+            assert.equal(
+                code('m("div", [ 1, 2 ].forEach(function(val) { return val === 1 }))'),
+                'm("div", [ 1, 2 ].forEach(function(val) { return val === 1 }));'
+            );
+            
+            assert.equal(
+                code('m("div", [ 1, 2 ].some(function(val) { return val === 1 }))'),
+                'm("div", [ 1, 2 ].some(function(val) { return val === 1 }));'
+            );
+        });
     });
 
     it("Conditional expressions", function() {
         // Can convert literals!
         assert.equal(
             code('m("div", foo ? "bar" : "baz")'),
-            '({  tag: "div",  attrs: {},  children: [foo ? "bar" : "baz"]})'
+            '({tag:"div",attrs:{},children:[foo ? "bar" : "baz"]})'
         );
         
         // Can't convert this, dunno what `bar` is
         assert.equal(
             code('m("div", foo ? bar : "baz")'),
-            'm("div", foo ? bar : "baz")'
+            'm("div", foo ? bar : "baz");'
         );
         
         // Can't convert this, unable to merge args w/ conditional results
         assert.equal(
             code('m("div", foo ? { class : options.class } : null)'),
-            'm("div", foo ? { class : options.class } : null)'
+            'm("div", foo ? { class : options.class } : null);'
         );
     });
 
     it("m.trust children", function() {
         assert.equal(
             code('m("div", m.trust("<div>"))'),
-            '({  tag: "div",  attrs: {},  children: [m.trust("<div>")]})'
+            '({tag:"div",attrs:{},children:[m.trust("<div>")]})'
         );
     });
 
     it("m.component children", function() {
         assert.equal(
             code('m("div", m.component(fooga))'),
-            '({  tag: "div",  attrs: {},  children: [m.component(fooga)]})'
+            '({tag:"div",attrs:{},children:[m.component(fooga)]})'
         );
     });
 
@@ -170,12 +175,12 @@ describe("mithril-objectify", function() {
     it("JSON.stringify", function() {
         assert.equal(
             code('m("div", JSON.stringify({}))'),
-            '({  tag: "div",  attrs: {},  children: [JSON.stringify({})]})'
+            '({tag:"div",attrs:{},children:[JSON.stringify({})]})'
         );
         
         assert.equal(
             code('m("div", JSON.parse({}))'),
-            'm("div", JSON.parse({}))'
+            'm("div", JSON.parse({}));'
         );
     });
 
@@ -195,39 +200,6 @@ describe("mithril-objectify", function() {
         assert.equal(
             code('m(".fooga", identifier)'),
             'm(".fooga", identifier)'
-        );
-    });
-
-    it("Babelified code", function() {
-        assert.equal(
-            code(fs.readFileSync("./test/specimens/in-babel-es5.js"), {}),
-            fs.readFileSync("./test/specimens/out-babel-es5.js", "utf8")
-        );
-    });
-
-    it("Rollup plugin", function() {
-        var r = require("../rollup"),
-            obj;
-
-        assert.equal(typeof r, "function");
-
-        obj = r({
-            lineTerminator : ""
-        });
-
-        assert.equal(typeof obj, "object");
-        assert("transform" in obj);
-
-        assert.equal(typeof obj.transform, "function");
-        assert.deepEqual(
-            obj.transform('m("#fooga")', "./fooga.js"),
-            {
-                code : '({  tag: "div",  attrs: {    id: "fooga"  },  children: []})',
-                map  : {
-                    file     : "./fooga.map.json",
-                    version  : 3
-                }
-            }
         );
     });
 });

@@ -1,20 +1,15 @@
 "use strict";
 
-// safe Array.prototype methods that we can optimize (because they return an array)
-var recast = require("recast"),
-    n = recast.types.namedTypes,
-    b = recast.types.builders,
+var t = require("babel-core").types,
     
-    arrayExpression  = require("./array-expression"),
-    
-    isString = require("./string"),
-    isValid  = require("./valid");
+    arrayExpression = require("./array-expression"),
+    mithril = require("./mithril");
 
 function getClass(path) {
     var node = path.node,
         type = "className";
     
-    if(node.arguments[1] && n.ObjectExpression.check(node.arguments[1])) {
+    if(node.arguments[1] && t.isObjectExpression(node.arguments[1])) {
         // TODO: REWRITE
         node.arguments[1].properties.some(function(property) {
             var key = property.key.name || property.key.value;
@@ -32,9 +27,9 @@ function getClass(path) {
     return type;
 }
 
-function parseSelector(path, out, className) {
-    var node = path.node,
-        classes = [];
+function parseSelector(state) {
+    var node = state.path.node,
+        css  = [];
     
     // No need to parse the empty selector
     if(!node.arguments[0].value) {
@@ -46,132 +41,128 @@ function parseSelector(path, out, className) {
             parts;
 
         if(lead === "#") {
-            out.attrs.id = b.literal(match.slice(1));
-            out.attrs.id.loc = node.arguments[0].loc;
+            state.attrs.id = t.stringLiteral(match.slice(1));
 
             return;
         }
 
         if(lead === ".") {
-            classes.push(match.slice(1));
+            css.push(match.slice(1));
 
             return;
         }
 
         if(lead === "[") {
             parts = match.match(/\[(.+?)(?:=("|'|)(.*?)\2)?\]/);
-            out.attrs[parts[1]] = b.literal(parts[3] || "");
-            out.attrs[parts[1]].loc = node.arguments[0].loc;
+            state.attrs[parts[1]] = t.stringLiteral(parts[3] || "");
             
             return;
         }
 
-        out.tag = match;
+        state.tag = match;
     });
     
-    if(classes.length > 0) {
-        out.attrs[className] = b.literal(classes.join(" "));
-        out.attrs[className].loc = node.arguments[0].loc;
+    if(css.length > 0) {
+        state.attrs[state.key] = t.stringLiteral(css.join(" "));
     }
 }
 
-function parseAttrs(path, out, className) {
-    var existing = out.attrs[className];
+function parseAttrs(state) {
+    var existing = state.attrs[state.key];
     
-    path.get("arguments", 1, "properties").value.forEach(function(property) {
+    state.path.node.arguments[1].properties.forEach(function(property) {
         var key = property.key.name || property.key.value;
         
         // Combining class strings is a little trickier
-        if(key === className && existing && existing.value.length) {
+        if(key === state.key && existing && existing.value.length) {
             // Ignore empty strings
-            if(n.Literal.check(property.value) && property.value.value === "") {
+            if(t.isStringLiteral(property.value) && property.value.value === "") {
                 return;
             }
             
             // Literals get merged as a string
-            if(n.Literal.check(property.value)) {
-                out.attrs[className] = b.literal(existing.value + " " + property.value.value);
-                out.attrs[className].loc = existing.loc;
+            if(t.isStringLiteral(property.value) ||
+               t.isNumericLiteral(property.value) ||
+               t.isBooleanLiteral(property.value)
+               ) {
+                state.attrs[state.key] = t.stringLiteral(existing.value + " " + property.value.value);
                 
                 return;
             }
             
             // Non-literals get combined w/ a "+"
-            out.attrs[className] = b.binaryExpression("+", b.literal(existing.value + " "), property);
-            out.attrs[className].loc = existing.loc;
+            state.attrs[state.key] = t.binaryExpression("+", t.stringLiteral(existing.value + " "), property.value);
 
             return;
         }
 
-        out.attrs[key] = property.value;
+        state.attrs[key] = property.value;
     });
 }
 
 function transform(path) {
-    var node = path.node,
-        out = {
-            tag      : "div",
-            attrs    : {},
-            children : []
-        },
-        children  = 1,
-        className = getClass(path);
+    var state = {
+            path  : path,
+            tag   : "div",
+            attrs : {},
+            nodes : [],
+            start : 1,
+            key   : getClass(path)
+        };
 
-    parseSelector(path, out, className);
+    parseSelector(state);
     
     // Is the second argument an object? Then it's attrs and they need to be parsed
-    if(n.ObjectExpression.check(node.arguments[1])) {
-        parseAttrs(path, out, className);
+    if(t.isObjectExpression(path.node.arguments[1])) {
+        parseAttrs(state);
 
-        children = 2;
+        state.start = 2;
     }
     
     // Make sure children is accurately sized
-    if(node.arguments.length > children) {
-        out.children = node.arguments.slice(children);
+    if(path.node.arguments.length > state.start) {
+        state.nodes = path.node.arguments.slice(state.start);
     }
     
     // Modify children based on contents
-    if(out.children.length === 1) {
-        if(n.ArrayExpression.check(out.children[0])) {
+    if(state.nodes.length === 1) {
+        if(t.isArrayExpression(state.nodes[0])) {
             // Make sure we don't end up w/ [ [ ... ] ]
-            out.children = b.arrayExpression(out.children[0].elements);
-        } else if(arrayExpression(out.children[0])) {
+            state.nodes = t.arrayExpression(state.nodes[0].elements);
+        } else if(arrayExpression(state.nodes[0])) {
             // Array expressions that return arrays get unwrapped
-            out.children = out.children[0];
+            state.nodes = state.nodes[0];
         } else {
             // Otherwise wrap it in an array
-            out.children = b.arrayExpression(out.children);
+            state.nodes = t.arrayExpression(state.nodes);
         }
     } else {
-        out.children = b.arrayExpression(out.children);
+        state.nodes = t.arrayExpression(state.nodes);
     }
     
-    return b.objectExpression([
-        b.property("init", b.identifier("tag"), b.literal(out.tag)),
-        b.property("init", b.identifier("attrs"), b.objectExpression(Object.keys(out.attrs).map(function(key) {
-            return b.property("init", b.identifier(key), out.attrs[key]);
-        }))),
-        b.property("init", b.identifier("children"), out.children)
-    ]);
+    return state;
 }
 
-module.exports = function(source, options) {
-    var ast = recast.parse(source, options);
-    
-    recast.visit(ast, {
-        visitCallExpression : function(path) {
-            var node = path.node;
-            if(isValid.mithril(path.node)) {
-                path.replace(transform(path));
-                path.node.loc = node.loc;
+module.exports = function() {
+    return {
+        visitor : {
+            CallExpression : function(path) {
+                var state;
                 
-                console.log(path.node);
+                if(!mithril.m(path.node)) {
+                    return;
+                }
+
+                state = transform(path);
+                    
+                path.replaceWith(t.objectExpression([
+                    t.objectProperty(t.identifier("tag"), t.stringLiteral(state.tag)),
+                    t.objectProperty(t.identifier("attrs"), t.objectExpression(Object.keys(state.attrs).map(function(key) {
+                        return t.objectProperty(t.identifier(key), state.attrs[key]);
+                    }))),
+                    t.objectProperty(t.identifier("children"), state.nodes)
+                ]));
             }
-            
-            this.traverse(path);
         }
-    });
-    
-    return recast.print(ast, options);
+    };
 };

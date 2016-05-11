@@ -1,13 +1,16 @@
 "use strict";
 
-var objectify = require("../../");
-
-module.exports = function(source, options) {
-    if(!options) {
-        options = {
-            lineTerminator : ""
-        };
-    }
+var babel = require("babel-core"),
     
-    return objectify(source, options).code;
+    plugin = require("../../");
+
+module.exports = function(source) {
+    var result = babel.transform(source, {
+            compact : true,
+            plugins : [
+                plugin
+            ]
+        });
+    
+    return result.code;
 };

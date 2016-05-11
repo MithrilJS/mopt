@@ -1,31 +1,21 @@
 "use strict";
 
-var named = require("ast-types").namedTypes,
+var t = require("babel-core").types,
     
-    callExpression = require("./call-expression"),
-    
-    babelNames = /^_mithril\d*$/;
+    callExpression = require("./call-expression");
 
 // Check if this is an invocation of m()
 exports.m = function(node) {
     var callee;
     
-    if(!named.CallExpression.check(node)) {
+    if(!t.isCallExpression(node)) {
         return false;
     }
     
     callee = node.callee;
     
     // m( ... )
-    if(named.Identifier.check(callee) && callee.name === "m") {
-        return true;
-    }
-    
-    // babel-style (0, _mithril2["default"])( ... )
-    return named.SequenceExpression.check(callee) &&
-         callee.expressions.length === 2 &&
-         named.MemberExpression.check(callee.expressions[1]) &&
-         callee.expressions[1].object.name.search(babelNames) > -1;
+    return t.isIdentifier(callee, { name : "m" });
 };
 
 // Is this an invocation of m.trust(...)?
