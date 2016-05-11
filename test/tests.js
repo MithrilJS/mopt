@@ -90,8 +90,7 @@ describe("mithril-objectify", function() {
     });
 
     describe("Array.prototype comprehension", function() {
-        it("should transform single valid Array.prototype children", function() {
-            /* eslint brace-style:0, no-unused-expressions:0 */
+        it("should unwrap Array.prototype children that retrun an array", function() {
             assert.deepEqual(
                 code('m("div", [ 1, 2 ].map(function(val) { return val; }))'),
                 '({tag:"div",attrs:{},children:[1,2].map(function(val){return val;})});'
@@ -111,52 +110,61 @@ describe("mithril-objectify", function() {
                 code('m("div", [ 1, 2 ].join(""))'),
                 '({tag:"div",attrs:{},children:[1,2].join("")});'
             );
+            
+            // Yes this looks insane, but it's still valid
+            assert.equal(
+                code('m("div", [ 1, 2 ]["join"](""))'),
+                '({tag:"div",attrs:{},children:[1,2]["join"]("")});'
+            );
         });
         
-        it.only("shouldn't transform Array.prototype children when they don't return an array", function() {
+        it("shouldn't unwrap Array.prototype children when they don't return an array", function() {
             assert.equal(
                 code('m("div", [ 1, 2 ].forEach(function(val) { return val === 1 }))'),
-                'm("div", [ 1, 2 ].forEach(function(val) { return val === 1 }));'
+                'm("div",[1,2].forEach(function(val){return val===1;}));'
             );
             
             assert.equal(
                 code('m("div", [ 1, 2 ].some(function(val) { return val === 1 }))'),
-                'm("div", [ 1, 2 ].some(function(val) { return val === 1 }));'
+                'm("div",[1,2].some(function(val){return val===1;}));'
             );
         });
     });
 
-    it("Conditional expressions", function() {
-        // Can convert literals!
-        assert.equal(
-            code('m("div", foo ? "bar" : "baz")'),
-            '({tag:"div",attrs:{},children:[foo ? "bar" : "baz"]})'
-        );
+    describe("Conditional expression children", function() {
+        it("should convert when all entries are literals", function() {
+            assert.equal(
+                code('m("div", foo ? "bar" : "baz")'),
+                '({tag:"div",attrs:{},children:[foo?"bar":"baz"]});'
+            );
+        });
         
-        // Can't convert this, dunno what `bar` is
-        assert.equal(
-            code('m("div", foo ? bar : "baz")'),
-            'm("div", foo ? bar : "baz");'
-        );
-        
-        // Can't convert this, unable to merge args w/ conditional results
-        assert.equal(
-            code('m("div", foo ? { class : options.class } : null)'),
-            'm("div", foo ? { class : options.class } : null);'
-        );
+        it("should not convert when entries are not literals", function() {
+            // Can't convert this, dunno what `bar` is
+            assert.equal(
+                code('m("div", foo ? bar : "baz")'),
+                'm("div",foo?bar:"baz");'
+            );
+            
+            // Can't convert this, unable to merge args w/ conditional results
+            assert.equal(
+                code('m("div", foo ? { class : options.class } : null)'),
+                'm("div",foo?{class:options.class}:null);'
+            );
+        });
     });
 
     it("m.trust children", function() {
         assert.equal(
             code('m("div", m.trust("<div>"))'),
-            '({tag:"div",attrs:{},children:[m.trust("<div>")]})'
+            '({tag:"div",attrs:{},children:[m.trust("<div>")]});'
         );
     });
 
     it("m.component children", function() {
         assert.equal(
             code('m("div", m.component(fooga))'),
-            '({tag:"div",attrs:{},children:[m.component(fooga)]})'
+            '({tag:"div",attrs:{},children:[m.component(fooga)]});'
         );
     });
 
@@ -172,34 +180,38 @@ describe("mithril-objectify", function() {
         );
     });
 
-    it("JSON.stringify", function() {
-        assert.equal(
-            code('m("div", JSON.stringify({}))'),
-            '({tag:"div",attrs:{},children:[JSON.stringify({})]})'
-        );
+    describe("JSON function children", function() {
+        it("should know that JSON.stringify is safe", function() {
+            assert.equal(
+                code('m("div", JSON.stringify({}))'),
+                '({tag:"div",attrs:{},children:[JSON.stringify({})]});'
+            );
+        });
         
-        assert.equal(
-            code('m("div", JSON.parse({}))'),
-            'm("div", JSON.parse({}));'
-        );
+        it("shouldn't transform JSON.parse since it may not be safe", function() {
+            assert.equal(
+                code('m("div", JSON.parse({}))'),
+                'm("div",JSON.parse({}));'
+            );
+        });
     });
 
     it("Filtering doesn't transform unsafe invocations", function() {
         // Ensure that the selector must be literal
         assert.equal(
             code('m(".fooga" + dynamic)'),
-            'm(".fooga" + dynamic)'
+            'm(".fooga"+dynamic);'
         );
         
         assert.equal(
             code('m("input" + ".pure-u")'),
-            'm("input" + ".pure-u")'
+            'm("input"+".pure-u");'
         );
         
         // Identifiers can't be resolved at compile time, so ignore
         assert.equal(
             code('m(".fooga", identifier)'),
-            'm(".fooga", identifier)'
+            'm(".fooga",identifier);'
         );
     });
 });

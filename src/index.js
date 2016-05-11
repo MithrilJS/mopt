@@ -2,8 +2,7 @@
 
 var t = require("babel-core").types,
     
-    arrayExpression = require("./array-expression"),
-    mithril = require("./mithril");
+    valid = require("./valid");
 
 function getClass(path) {
     var node = path.node,
@@ -129,7 +128,7 @@ function transform(path) {
         if(t.isArrayExpression(state.nodes[0])) {
             // Make sure we don't end up w/ [ [ ... ] ]
             state.nodes = t.arrayExpression(state.nodes[0].elements);
-        } else if(arrayExpression(state.nodes[0])) {
+        } else if(valid.arrayExpression(state.nodes[0])) {
             // Array expressions that return arrays get unwrapped
             state.nodes = state.nodes[0];
         } else {
@@ -149,7 +148,7 @@ module.exports = function() {
             CallExpression : function(path) {
                 var state;
                 
-                if(!mithril.m(path.node)) {
+                if(!valid.mithril(path.node)) {
                     return;
                 }
 
