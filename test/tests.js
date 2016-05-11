@@ -196,7 +196,7 @@ describe("mithril-objectify", function() {
         });
     });
 
-    it("Filtering doesn't transform unsafe invocations", function() {
+    it("should not transform unsafe invocations", function() {
         // Ensure that the selector must be literal
         assert.equal(
             code('m(".fooga" + dynamic)'),
@@ -212,6 +212,14 @@ describe("mithril-objectify", function() {
         assert.equal(
             code('m(".fooga", identifier)'),
             'm(".fooga",identifier);'
+        );
+    });
+    
+    it("should output correct source maps", function() {
+        assert.equal(
+            code('m(".fooga")', { sourceMaps : "inline" }),
+            '({tag:"div",attrs:{className:"fooga"},children:[]});\n' +
+            "//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInVua25vd24iXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEiLCJmaWxlIjoidW5rbm93biIsInNvdXJjZXNDb250ZW50IjpbIm0oXCIuZm9vZ2FcIikiXX0="
         );
     });
 });

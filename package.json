@@ -26,6 +26,7 @@
     "eslint": "^2.5.3",
     "eslint-config-arenanet": "^2.0.3",
     "istanbul": "^0.4.0",
+    "lodash.assign": "^4.0.8",
     "mithril": "^0.2.4",
     "mocha": "^2.4.5"
   },
