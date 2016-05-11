@@ -4,7 +4,6 @@
 var recast = require("recast"),
     n = recast.types.namedTypes,
     b = recast.types.builders,
-    t = recast.types.builtInTypes,
     
     arrayExpression  = require("./array-expression"),
     
@@ -122,41 +121,40 @@ function transform(path) {
         children = 2;
     }
     
-    // Suck up all the children and stick 'em into their places
+    // Make sure children is accurately sized
     if(node.arguments.length > children) {
         out.children = node.arguments.slice(children);
-        
-        // Make sure we don't end up w/ [ [ ... ] ]
-        if(out.children.length === 1 && n.ArrayExpression.check(out.children[0])) {
-            out.children = out.children[0].elements;
-        }
     }
-
-    // if(!out.children.length) {
-    //     out.children = "[]";
-    // } else if(out.children.length === 1 && arrayExpression(out.children[0])) {
-    //     out.children = out.children[0].source();
-    // } else {
-    //     out.children = out.children.map(function(child) {
-    //         return child.source();
-    //     });
-
-    //     out.children = "[ " + out.children.join(",") + " ]";
-    // }
+    
+    // Modify children based on contents
+    if(out.children.length === 1) {
+        if(n.ArrayExpression.check(out.children[0])) {
+            // Make sure we don't end up w/ [ [ ... ] ]
+            out.children = b.arrayExpression(out.children[0].elements);
+        } else if(arrayExpression(out.children[0])) {
+            // Array expressions that return arrays get unwrapped
+            out.children = out.children[0];
+        } else {
+            // Otherwise wrap it in an array
+            out.children = b.arrayExpression(out.children);
+        }
+    } else {
+        out.children = b.arrayExpression(out.children);
+    }
     
     return b.objectExpression([
         b.property("init", b.identifier("tag"), b.literal(out.tag)),
         b.property("init", b.identifier("attrs"), b.objectExpression(Object.keys(out.attrs).map(function(key) {
             return b.property("init", b.identifier(key), out.attrs[key]);
         }))),
-        b.property("init", b.identifier("children"), b.arrayExpression(out.children))
+        b.property("init", b.identifier("children"), out.children)
     ]);
 }
 
-module.exports = function(source) {
-    var ast = recast.parse(source);
+module.exports = function(source, options) {
+    var ast = recast.parse(source, options);
     
-    recast.types.visit(ast, {
+    recast.visit(ast, {
         visitCallExpression : function(path) {
             if(isValid.mithril(path.node)) {
                 path.replace(transform(path));
@@ -166,5 +164,5 @@ module.exports = function(source) {
         }
     });
     
-    return recast.print(ast);
+    return recast.print(ast, options);
 };
