@@ -74,27 +74,16 @@ function parseSelector(path, out, className) {
 }
 
 function parseAttrs(path, out, className) {
-    var node = path.node;
+    var existing = out.attrs[className];
     
-    node.arguments[1].properties.forEach(function(property) {
-        var key = property.key.name || property.key.value,
-            css;
+    path.get("arguments", 1, "properties").value.forEach(function(property) {
+        var key = property.key.name || property.key.value;
         
-        // Class combinations get weird, so handling specially
-        if(out.attrs[className] && key === className) {
-            css = out.attrs[className];
-            
-            // Strings get concatted
-            if(isString(property.value)) {
-                // But only if it's worth adding a new value
-                if(property.value.value.length) {
-                    out.attrs[className] = b.literal(css + " " + property.value.value);
-                }
-                
-                return;
+        // Combining class strings is a little trickier
+        if(key === className && existing && existing.value.length) {
+            if(property.value.value.length) {
+                out.attrs[className] = b.literal(existing.value + " " + property.value.value);
             }
-
-            out.attrs[className] = b.literal(css + " (" + property.value.source() + ")");
 
             return;
         }
