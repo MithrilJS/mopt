@@ -5,10 +5,10 @@
   "main": "index.js",
   "bin": "./bin/cli.js",
   "scripts": {
-    "test": "npm run lint && npm run tape",
+    "test": "npm run lint && npm run mocha",
     "lint": "eslint .",
-    "cover": "istanbul test --print both ./node_modules/tape/bin/tape -- tape test/*.js",
-    "tape": "tape test/*.js | tap-difflet",
+    "cover": "istanbul test --print both ./node_modules/mocha/bin/_mocha",
+    "mocha": "mocha",
     "preversion": "npm test"
   },
   "author": "Pat Cavit <pcavit@arena.net>",
@@ -20,7 +20,8 @@
     "ast"
   ],
   "dependencies": {
-    "falafel": "^1.2.0",
+    "ast-types": "^0.8.16",
+    "recast": "^0.11.5",
     "sink-transform": "^2.0.0",
     "through2": "^2.0.0"
   },
@@ -30,8 +31,7 @@
     "eslint-config-arenanet": "^2.0.3",
     "istanbul": "^0.4.0",
     "mithril": "^0.2.4",
-    "tap-difflet": "^0.4.0",
-    "tape": "^4.2.0"
+    "mocha": "^2.4.5"
   },
   "eslintConfig": {
     "extends": "arenanet",

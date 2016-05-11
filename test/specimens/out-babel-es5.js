@@ -11,6 +11,18 @@ var _mithrilQuery = require("mithril-query");
 
 var _mithrilQuery2 = _interopRequireDefault(_mithrilQuery);
 
-var a = ({ tag: "div", attrs: {  }, children: [] }),
-    b = ({ tag: "div", attrs: {  }, children: [] }),
-    c = (0, _mithrilQuery2["default"])(({ tag: "div", attrs: {  }, children: [] }));
+var a = {
+    tag: "div",
+    attrs: {},
+    children: []
+},
+    b = {
+        tag: "div",
+        attrs: {},
+        children: []
+    },
+    c = (0, _mithrilQuery2["default"])({
+        tag: "div",
+        attrs: {},
+        children: []
+    });
