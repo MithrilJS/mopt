@@ -81,9 +81,20 @@ function parseAttrs(path, out, className) {
         
         // Combining class strings is a little trickier
         if(key === className && existing && existing.value.length) {
-            if(property.value.value.length) {
-                out.attrs[className] = b.literal(existing.value + " " + property.value.value);
+            // Ignore empty strings
+            if(n.Literal.check(property.value) && property.value.value === "") {
+                return;
             }
+            
+            // Literals get merged as a string
+            if(n.Literal.check(property.value)) {
+                out.attrs[className] = b.literal(existing.value + " " + property.value.value);
+                
+                return;
+            }
+            
+            // Non-literals get combined w/ a "+"
+            out.attrs[className] = b.binaryExpression("+", b.literal(existing.value + " "), property.value);
 
             return;
         }
