@@ -47,6 +47,7 @@ function parseSelector(path, out, className) {
 
         if(lead === "#") {
             out.attrs.id = b.literal(match.slice(1));
+            out.attrs.id.loc = node.arguments[0].loc;
 
             return;
         }
@@ -60,6 +61,7 @@ function parseSelector(path, out, className) {
         if(lead === "[") {
             parts = match.match(/\[(.+?)(?:=("|'|)(.*?)\2)?\]/);
             out.attrs[parts[1]] = b.literal(parts[3] || "");
+            out.attrs[parts[1]].loc = node.arguments[0].loc;
             
             return;
         }
@@ -69,6 +71,7 @@ function parseSelector(path, out, className) {
     
     if(classes.length > 0) {
         out.attrs[className] = b.literal(classes.join(" "));
+        out.attrs[className].loc = node.arguments[0].loc;
     }
 }
 
@@ -88,12 +91,14 @@ function parseAttrs(path, out, className) {
             // Literals get merged as a string
             if(n.Literal.check(property.value)) {
                 out.attrs[className] = b.literal(existing.value + " " + property.value.value);
+                out.attrs[className].loc = existing.loc;
                 
                 return;
             }
             
             // Non-literals get combined w/ a "+"
-            out.attrs[className] = b.binaryExpression("+", b.literal(existing.value + " "), property.value);
+            out.attrs[className] = b.binaryExpression("+", b.literal(existing.value + " "), property);
+            out.attrs[className].loc = existing.loc;
 
             return;
         }
@@ -156,8 +161,12 @@ module.exports = function(source, options) {
     
     recast.visit(ast, {
         visitCallExpression : function(path) {
+            var node = path.node;
             if(isValid.mithril(path.node)) {
                 path.replace(transform(path));
+                path.node.loc = node.loc;
+                
+                console.log(path.node);
             }
             
             this.traverse(path);

@@ -205,37 +205,29 @@ describe("mithril-objectify", function() {
         );
     });
 
-    it.skip("transform", function() {
-        stream("./test.js", 'm("div")', function(code) {
-            assert.equal(
-                code.toString("utf8"),
-                '({  tag: "div",  attrs: {},  children: [] })'
-            );
-        });
-        
-        stream("./test.css", ".fooga { color: red; }", function(code) {
-            assert.equal(
-                code.toString("utf8"),
-                ".fooga { color: red; }"
-            );
-        });
-    });
-
-    it.skip("Rollup plugin", function() {
+    it("Rollup plugin", function() {
         var r = require("../rollup"),
             obj;
 
         assert.equal(typeof r, "function");
 
-        obj = r();
+        obj = r({
+            lineTerminator : ""
+        });
 
         assert.equal(typeof obj, "object");
-        assert("transformBundle" in obj);
+        assert("transform" in obj);
 
-        assert.equal(typeof obj.transformBundle, "function");
+        assert.equal(typeof obj.transform, "function");
         assert.deepEqual(
-            obj.transformBundle('m("#fooga")'),
-            { code : '({  tag: "div",  attrs: { "id": "fooga" },  children: [] })' }
+            obj.transform('m("#fooga")', "./fooga.js"),
+            {
+                code : '({  tag: "div",  attrs: {    id: "fooga"  },  children: []})',
+                map  : {
+                    file     : "./fooga.map.json",
+                    version  : 3
+                }
+            }
         );
     });
 });
