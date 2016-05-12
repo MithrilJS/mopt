@@ -190,7 +190,7 @@ exports.mithril = function(node) {
     }
     
     // m(".fooga" + ".wooga")
-    if(t.isBinaryExpression(first) &&
+    if(t.isBinaryExpression(first, { operator : "+" }) &&
        literals.indexOf(first.left.type) > -1 &&
        literals.indexOf(first.right.type) > -1
     ) {

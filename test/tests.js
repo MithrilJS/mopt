@@ -29,7 +29,7 @@ describe("mithril-objectify", function() {
         );
     });
     
-    it("Selector w/ BinaryExpression", function() {
+    describe("Selector w/ BinaryExpression", function() {
         it("should convert simple literal addition", function() {
             assert.equal(
                 code('m("input" + ".pure-u")'),
@@ -69,7 +69,7 @@ describe("mithril-objectify", function() {
         it("should not convert non-literal values", function() {
             assert.equal(
                 code('m("input" + identifier)'),
-                'm("input"+identifer);'
+                'm("input"+identifier);'
             );
         });
     });
