@@ -1,9 +1,8 @@
 {
   "name": "mithril-objectify",
   "version": "2.2.5",
-  "description": "Optimize Mithril m() calls into simple JS objects via API, CLI, or Browserify",
+  "description": "Babel plugin to optimize Mithril m() calls into simple JS objects",
   "main": "./src/index.js",
-  "bin": "./bin/cli.js",
   "scripts": {
     "test": "npm run lint && npm run mocha",
     "lint": "eslint .",
@@ -17,12 +16,11 @@
   "keywords": [
     "mithril",
     "optimization",
-    "ast"
+    "ast",
+    "babel-plugin"
   ],
-  "dependencies": {},
   "devDependencies": {
     "babel-core": "^6.8.0",
-    "concat-stream": "^1.5.0",
     "eslint": "^2.5.3",
     "eslint-config-arenanet": "^2.0.3",
     "istanbul": "^0.4.0",
