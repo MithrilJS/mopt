@@ -1,69 +1,179 @@
 "use strict";
 
-var mithril = require("./mithril"),
+var t = require("babel-core").types,
     
-    json = require("./json"),
-    
-    arrayExpression       = require("./array-expression"),
-    stringExpression      = require("./string-expression"),
-    conditionalExpression = require("./conditional-expression"),
+    literals = [
+        "StringLiteral",
+        "NumericLiteral",
+        "BooleanLiteral"
+    ],
     
     childrenTypes = [
         "ArrayExpression",
         "BinaryExpression",
-        "Literal"
+        "StringLiteral",
+        "NumericLiteral",
+        "BooleanLiteral"
+    ],
+    
+    safeStrings = [
+        "fromCharCode",
+        "fromCodePoint",
+        "charAt",
+        "charCodeAt",
+        "codePointAt",
+        "concat",
+        "normalize",
+        "repeat",
+        "replace",
+        "slice",
+        "substr",
+        "substring",
+        "toLocaleLowerCase",
+        "toLocaleUpperCase",
+        "toLowerCase",
+        "toString",
+        "toUpperCase",
+        "trim",
+        "trimLeft",
+        "trimRight",
+        "valueOf"
+    ],
+    
+    safeArrays = [
+        "concat",
+        "copyWithin",
+        "filter",
+        "join",
+        "map",
+        "reverse",
+        "slice",
+        "sort",
+        "splice"
     ];
 
+function makeCallExpressionCheck(obj, prop) {
+    return function(node) {
+        return t.isCallExpression(node) &&
+            t.isMemberExpression(node.callee) &&
+            t.isIdentifier(node.callee.object, { name : obj }) &&
+            t.isIdentifier(node.callee.property, { name : prop });
+    };
+}
+    
+// Check if this is an invocation of an Array.prototype method on an array
+exports.isArrayExpression = function(node) {
+    if(!t.isCallExpression(node) ||
+       !t.isMemberExpression(node.callee) ||
+       !t.isArrayExpression(node.callee.object)
+    ) {
+        return false;
+    }
+    
+    if(t.isIdentifier(node.callee.property) &&
+       safeArrays.indexOf(node.callee.property.name) !== -1
+    ) {
+        return true;
+    }
+    
+    return t.isStringLiteral(node.callee.property) &&
+        safeArrays.indexOf(node.callee.property.value) !== -1;
+};
+
+// Check if this is an invocation of a String.prototype method on a string
+exports.isStringExpression = function(node) {
+    if(!t.isCallExpression(node) ||
+       !t.isMemberExpression(node.callee) ||
+       !t.isStringLiteral(node.callee.object)
+    ) {
+        return false;
+    }
+    
+    if(t.isIdentifier(node.callee.property) &&
+       safeStrings.indexOf(node.callee.property.name) !== -1
+    ) {
+        return true;
+    }
+    
+    return t.isStringLiteral(node.callee.property) &&
+        safeStrings.indexOf(node.callee.property.value) !== -1;
+};
+
+// Check if this is an invocation of an ConditionalExpression
+exports.isConditionalExpression = function(node) {
+    return t.isConditionalExpression(node) &&
+        exports.children(node.consequent) &&
+        exports.children(node.alternate);
+};
+
+// JSON.stringify( ... )
+exports.isJsonStringify = makeCallExpressionCheck("JSON", "stringify");
+
+// m( ... )
+exports.isM = function(node) {
+    return t.isCallExpression(node) &&
+        t.isIdentifier(node.callee, { name : "m" });
+};
+
+// m.trust(...)
+exports.isMithrilTrust = makeCallExpressionCheck("m", "trust");
+
+// m.component(...)
+exports.isMithrilComponent = makeCallExpressionCheck("m", "component");
+
+// Valid children nodes that we can optimize
 exports.children = function(node) {
     // m(".fooga", [ ... ])
     // m(".fooga", "wooga")
     // m(".fooga", "wooga" + "booga")
+    // m(".fooga", 10)
+    // m(".fooga", true)
     if(childrenTypes.indexOf(node.type) > -1) {
         return true;
     }
     
     // m(".fooga", m(".booga"), ...)
-    if(mithril.m(node)) {
+    if(exports.isM(node)) {
         return true;
     }
     
     // m(".fooga", [ ... ].map)
-    if(arrayExpression(node)) {
+    if(exports.isArrayExpression(node)) {
         return true;
     }
     
     // m(".fooga", "foo".replace())
-    if(stringExpression(node)) {
+    if(exports.isStringExpression(node)) {
         return true;
     }
     
     // m(".fooga", foo ? "bar" : "baz")
-    if(conditionalExpression(node)) {
+    if(exports.isConditionalExpression(node)) {
         return true;
     }
     
     // m(".fooga", m.trust("<div>"))
-    if(mithril.trust(node)) {
+    if(exports.isMithrilTrust(node)) {
         return true;
     }
     
     // m(".fooga", m.component(thing))
-    if(mithril.component(node)) {
+    if(exports.isMithrilComponent(node)) {
         return true;
     }
     
     // m(".fooga", JSON.stringify({}))
-    if(json.stringify(node)) {
+    if(exports.isJsonStringify(node)) {
         return true;
     }
     
     return false;
 };
 
-// Test arguments
+// Is the param an argument, or children?
 exports.arg = function(node) {
     // m(".fooga", { ... })
-    if(node.type === "ObjectExpression") {
+    if(t.isObjectExpression(node)) {
         return true;
     }
     
@@ -72,17 +182,26 @@ exports.arg = function(node) {
 
 // Test to see if a node is a passable mithril invocation
 exports.mithril = function(node) {
-    // Table stakes: m()
-    if(!mithril.m(node)) {
+    var first = node.arguments[0];
+    
+    // m()
+    if(!exports.isM(node)) {
         return false;
     }
     
-    // We can only safely optimize static string selectors: m(".fooga.wooga")
-    if(node.arguments[0].type !== "Literal") {
+    // m(".fooga" + ".wooga")
+    if(t.isBinaryExpression(first, { operator : "+" }) &&
+       literals.indexOf(first.left.type) > -1 &&
+       literals.indexOf(first.right.type) > -1
+    ) {
+        return true;
+    }
+    
+    // m(".fooga.wooga")
+    if(!t.isStringLiteral(first)) {
         return false;
     }
     
-    // What should be allowed?
     // m(".fooga")
     if(node.arguments.length === 1) {
         return true;

@@ -1,15 +1,15 @@
 "use strict";
 
-// safe Array.prototype methods that we can optimize (because they return an array)
-var arrayExpression  = require("./array-expression"),
+var t = require("babel-core").types,
     
-    isString = require("./string"),
-    isValid  = require("./valid");
+    valid = require("./valid");
 
-function getClass(node) {
-    var type = "className";
-
-    if(node.arguments[1] && node.arguments[1].type === "ObjectExpression") {
+function getClass(path) {
+    var node = path.node,
+        type = "className";
+    
+    if(node.arguments[1] && t.isObjectExpression(node.arguments[1])) {
+        // TODO: REWRITE
         node.arguments[1].properties.some(function(property) {
             var key = property.key.name || property.key.value;
 
@@ -26,139 +26,150 @@ function getClass(node) {
     return type;
 }
 
-function parseSelector(node, out) {
-    var classes = [];
+function parseSelector(state) {
+    var node = state.path.node,
+        css  = [],
+        src  = node.arguments[0];
     
-    // No need to parse the empty selector
-    if(!node.arguments[0].value) {
+    // Simple binary expressions like "foo" + "bar" can be statically handled
+    // It'd be weird to write it, but you never know
+    if(t.isBinaryExpression(src) && src.operator === "+") {
+        src = src.left.value + src.right.value;
+    } else {
+        src = src.value;
+    }
+    
+    if(!src) {
         return;
     }
     
-    node.arguments[0].value.match(/(?:(^|#|\.)([^#\.\[\]]+))|(\[.+?\])/g).forEach(function(match) {
+    src.match(/(?:(^|#|\.)([^#\.\[\]]+))|(\[.+?\])/g).forEach(function(match) {
         var lead = match.charAt(0),
             parts;
 
         if(lead === "#") {
-            out.attrs.id = "\"" + match.slice(1) + "\"";
+            state.attrs.id = t.stringLiteral(match.slice(1));
 
             return;
         }
 
         if(lead === ".") {
-            classes.push(match.slice(1));
+            css.push(match.slice(1));
 
             return;
         }
 
         if(lead === "[") {
             parts = match.match(/\[(.+?)(?:=("|'|)(.*?)\2)?\]/);
-            out.attrs[parts[1]] = parts[3] ? "\"" + parts[3] + "\"" : "\"\"";
+            state.attrs[parts[1]] = t.stringLiteral(parts[3] || "");
             
             return;
         }
 
-        out.tag = match;
+        state.tag = match;
     });
-
-    if(classes.length > 0) {
-        out.attrs[getClass(node)] = classes;
+    
+    if(css.length > 0) {
+        state.attrs[state.key] = t.stringLiteral(css.join(" "));
     }
 }
 
-function parseAttrs(node, out) {
-    var className = getClass(node);
-
-    node.arguments[1].properties.forEach(function(property) {
-        var key = property.key.name || property.key.value,
-            css;
-
-        // Class combinations get weird, so handling specially
-        if(out.attrs[className] && key === className) {
-            css = out.attrs[className].join(" ");
-
-            // Strings get concatted
-            if(isString(property.value)) {
-                // But only if it's worth adding a new value
-                if(property.value.value.length) {
-                    out.attrs[className] = "\"" + css + " " + property.value.value + "\"";
-                }
+function parseAttrs(state) {
+    var existing = state.attrs[state.key];
+    
+    state.path.node.arguments[1].properties.forEach(function(property) {
+        var key = property.key.name || property.key.value;
+        
+        // Combining class strings is a little trickier
+        if(key === state.key && existing && existing.value.length) {
+            // Ignore empty strings
+            if(t.isStringLiteral(property.value) && property.value.value === "") {
+                return;
+            }
+            
+            // Literals get merged as a string
+            if(t.isStringLiteral(property.value) ||
+               t.isNumericLiteral(property.value) ||
+               t.isBooleanLiteral(property.value)
+               ) {
+                state.attrs[state.key] = t.stringLiteral(existing.value + " " + property.value.value);
                 
                 return;
             }
-
-            out.attrs[className] = "\"" + css + " \" + (" + property.value.source() + ")";
-
-            return;
-        }
-
-        // Strings need to be quoted
-        if(isString(property.value)) {
-            out.attrs[key] = "\"" + property.value.value + "\"";
+            
+            // Non-literals get combined w/ a "+"
+            state.attrs[state.key] = t.binaryExpression("+", t.stringLiteral(existing.value + " "), property.value);
 
             return;
         }
 
-        out.attrs[key] = property.value.source();
+        state.attrs[key] = property.value;
     });
 }
 
-function transform(node) {
-    var out = {
-            tag      : "div",
-            attrs    : {},
-            children : []
-        },
-        children  = 1,
-        className = getClass(node);
+function transform(path) {
+    var state = {
+            path  : path,
+            tag   : "div",
+            attrs : {},
+            nodes : [],
+            start : 1,
+            key   : getClass(path)
+        };
 
-    parseSelector(node, out);
+    parseSelector(state);
+    
+    // Is the second argument an object? Then it's attrs and they need to be parsed
+    if(t.isObjectExpression(path.node.arguments[1])) {
+        parseAttrs(state);
 
-    // Is the second argument an object? Then it's attrs and we should parse 'em!
-    if(node.arguments[1] && node.arguments[1].type === "ObjectExpression") {
-        parseAttrs(node, out);
-
-        children = 2;
+        state.start = 2;
     }
     
-    // Suck up all the children and stick 'em into their places
-    if(node.arguments.length > children) {
-        out.children = node.arguments.slice(children);
-
-        if(out.children.length === 1 && out.children[0].type === "ArrayExpression") {
-            out.children = out.children[0].elements;
+    // Make sure children is accurately sized
+    if(path.node.arguments.length > state.start) {
+        state.nodes = path.node.arguments.slice(state.start);
+    }
+    
+    // Modify children based on contents
+    if(state.nodes.length === 1) {
+        if(t.isArrayExpression(state.nodes[0])) {
+            // Make sure we don't end up w/ [ [ ... ] ]
+            state.nodes = t.arrayExpression(state.nodes[0].elements);
+        } else if(valid.isArrayExpression(state.nodes[0])) {
+            // Array expressions that return arrays get unwrapped
+            state.nodes = state.nodes[0];
+        } else {
+            // Otherwise wrap it in an array
+            state.nodes = t.arrayExpression(state.nodes);
         }
-    }
-
-    // parseSelector leaves this an array for ease of use in parseAttrs,
-    // but if parseAttrs never ran we need to convert it to a string
-    if(Array.isArray(out.attrs[className])) {
-        out.attrs[className] = "\"" + out.attrs[className].join(" ") + "\"";
-    }
-
-    // Map attrs to an array for exporting (can't use JSON.stringify because it eats functions)
-    out.attrs = Object.keys(out.attrs).map(function(key) {
-        return "\"" + key + "\": " + out.attrs[key];
-    });
-    
-    if(!out.children.length) {
-        out.children = "[]";
-    } else if(out.children.length === 1 && arrayExpression(out.children[0])) {
-        out.children = out.children[0].source();
     } else {
-        out.children = out.children.map(function(child) {
-            return child.source();
-        });
-
-        out.children = "[ " + out.children.join(",") + " ]";
+        state.nodes = t.arrayExpression(state.nodes);
     }
     
-    node.update("({ tag: \"" + out.tag + "\", attrs: { " + out.attrs.join(", ") + " }, children: " + out.children + " })");
+    return state;
 }
 
-module.exports = function(node) {
-    if(!isValid.mithril(node)) {
-        return;
-    }
-    
-    transform(node);
+module.exports = function() {
+    return {
+        visitor : {
+            CallExpression : function(path) {
+                var state;
+                
+                if(!valid.mithril(path.node)) {
+                    return;
+                }
+
+                state = transform(path);
+                    
+                path.replaceWith(t.objectExpression([
+                    t.objectProperty(t.identifier("tag"), t.stringLiteral(state.tag)),
+                    t.objectProperty(t.identifier("attrs"), t.objectExpression(Object.keys(state.attrs).map(function(key) {
+                        return t.objectProperty(t.identifier(key), state.attrs[key]);
+                    }))),
+                    t.objectProperty(t.identifier("children"), state.nodes)
+                ]));
+            }
+        }
+    };
 };
