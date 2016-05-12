@@ -136,7 +136,7 @@ function transform(path) {
         if(t.isArrayExpression(state.nodes[0])) {
             // Make sure we don't end up w/ [ [ ... ] ]
             state.nodes = t.arrayExpression(state.nodes[0].elements);
-        } else if(valid.arrayExpression(state.nodes[0])) {
+        } else if(valid.isArrayExpression(state.nodes[0])) {
             // Array expressions that return arrays get unwrapped
             state.nodes = state.nodes[0];
         } else {

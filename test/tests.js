@@ -131,6 +131,11 @@ describe("mithril-objectify", function() {
                 code('m("div", "fooga".replace("f", "g"))'),
                 '({tag:"div",attrs:{},children:["fooga".replace("f","g")]});'
             );
+            
+            assert.equal(
+                code('m("div", "fooga"["replace"]("f", "g"))'),
+                '({tag:"div",attrs:{},children:["fooga"["replace"]("f","g")]});'
+            );
         });
     });
 
