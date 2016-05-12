@@ -29,6 +29,18 @@ describe("mithril-objectify", function() {
         );
     });
     
+    it("should support hyphenated attributes (issue #35)", function() {
+        assert.deepEqual(
+            run('m(".fooga[wooga-booga=1]")'),
+            m(".fooga[wooga-booga=1]")
+        );
+        
+        assert.deepEqual(
+            run('m(".fooga", { "wooga-booga" : 1 })'),
+            m(".fooga", { "wooga-booga" : 1 })
+        );
+    });
+    
     describe("Selector w/ BinaryExpression", function() {
         it("should convert simple literal addition", function() {
             assert.equal(
