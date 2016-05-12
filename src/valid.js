@@ -60,7 +60,13 @@ function makeCallExpressionCheck(obj, prop) {
             t.isIdentifier(node.callee.property, { name : prop });
     };
 }
-    
+
+exports.isValueLiteral = function(node) {
+    return literals.some(function(check) {
+        return t["is" + check](node);
+    });
+};
+
 // Check if this is an invocation of an Array.prototype method on an array
 exports.isArrayExpression = function(node) {
     if(!t.isCallExpression(node) ||
@@ -191,8 +197,8 @@ exports.mithril = function(node) {
     
     // m(".fooga" + ".wooga")
     if(t.isBinaryExpression(first, { operator : "+" }) &&
-       literals.indexOf(first.left.type) > -1 &&
-       literals.indexOf(first.right.type) > -1
+       exports.isValueLiteral(first.left) &&
+       exports.isValueLiteral(first.right)
     ) {
         return true;
     }

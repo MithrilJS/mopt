@@ -88,10 +88,7 @@ function parseAttrs(state) {
             }
             
             // Literals get merged as a string
-            if(t.isStringLiteral(property.value) ||
-               t.isNumericLiteral(property.value) ||
-               t.isBooleanLiteral(property.value)
-               ) {
+            if(valid.isValueLiteral(property.value)) {
                 state.attrs[state.key] = t.stringLiteral(existing.value + " " + property.value.value);
                 
                 return;
@@ -165,7 +162,10 @@ module.exports = function() {
                 path.replaceWith(t.objectExpression([
                     t.objectProperty(t.identifier("tag"), t.stringLiteral(state.tag)),
                     t.objectProperty(t.identifier("attrs"), t.objectExpression(Object.keys(state.attrs).map(function(key) {
-                        return t.objectProperty(t.identifier(key), state.attrs[key]);
+                        return t.objectProperty(
+                            t.isValidIdentifier(key) ? t.identifier(key) : t.stringLiteral(key),
+                            state.attrs[key]
+                        );
                     }))),
                     t.objectProperty(t.identifier("children"), state.nodes)
                 ]));
