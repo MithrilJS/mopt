@@ -28,14 +28,22 @@ function getClass(path) {
 
 function parseSelector(state) {
     var node = state.path.node,
-        css  = [];
+        css  = [],
+        src  = node.arguments[0];
     
-    // No need to parse the empty selector
-    if(!node.arguments[0].value) {
+    // Simple binary expressions like "foo" + "bar" can be statically handled
+    // It'd be weird to write it, but you never know
+    if(t.isBinaryExpression(src) && src.operator === "+") {
+        src = src.left.value + src.right.value;
+    } else {
+        src = src.value;
+    }
+    
+    if(!src) {
         return;
     }
     
-    node.arguments[0].value.match(/(?:(^|#|\.)([^#\.\[\]]+))|(\[.+?\])/g).forEach(function(match) {
+    src.match(/(?:(^|#|\.)([^#\.\[\]]+))|(\[.+?\])/g).forEach(function(match) {
         var lead = match.charAt(0),
             parts;
 

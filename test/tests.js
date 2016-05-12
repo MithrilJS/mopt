@@ -28,6 +28,51 @@ describe("mithril-objectify", function() {
             m("#fooga")
         );
     });
+    
+    it("Selector w/ BinaryExpression", function() {
+        it("should convert simple literal addition", function() {
+            assert.equal(
+                code('m("input" + ".pure-u")'),
+                '({tag:"input",attrs:{className:"pure-u"},children:[]});'
+            );
+            
+            assert.equal(
+                code('m("input.a" + 3)'),
+                '({tag:"input",attrs:{className:"a3"},children:[]});'
+            );
+            
+            assert.equal(
+                code('m("input." + true)'),
+                '({tag:"input",attrs:{className:"true"},children:[]});'
+            );
+        });
+        
+        it("should not convert other operators", function() {
+            assert.equal(
+                code('m("input" - 2)'),
+                'm("input"-2);'
+            );
+            
+            assert.equal(
+                code("m(3 * 2)"),
+                "m(3*2);"
+            );
+        });
+        
+        it("should not convert more than 2 values", function() {
+            assert.equal(
+                code('m("input" + ".pure-u" + ".pure-u-1-2")'),
+                'm("input"+".pure-u"+".pure-u-1-2");'
+            );
+        });
+        
+        it("should not convert non-literal values", function() {
+            assert.equal(
+                code('m("input" + identifier)'),
+                'm("input"+identifer);'
+            );
+        });
+    });
 
     it("Selector w/ attribute w/ no value", function() {
         assert.deepEqual(
@@ -201,11 +246,6 @@ describe("mithril-objectify", function() {
         assert.equal(
             code('m(".fooga" + dynamic)'),
             'm(".fooga"+dynamic);'
-        );
-        
-        assert.equal(
-            code('m("input" + ".pure-u")'),
-            'm("input"+".pure-u");'
         );
         
         // Identifiers can't be resolved at compile time, so ignore
