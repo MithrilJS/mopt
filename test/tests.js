@@ -2,7 +2,7 @@
 
 var assert = require("assert"),
 
-    m    = require("mithril"),
+    m    = require("mithril/render/hyperscript"),
 
     run    = require("./lib/run"),
     code   = require("./lib/code");

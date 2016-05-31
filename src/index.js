@@ -111,7 +111,8 @@ function transform(path) {
             attrs : {},
             nodes : [],
             start : 1,
-            key   : getClass(path)
+            key   : getClass(path),
+            text  : undefined
         };
 
     parseSelector(state);
@@ -151,23 +152,47 @@ module.exports = function() {
     return {
         visitor : {
             CallExpression : function(path) {
-                var state;
+                var state, attrs;
                 
                 if(!valid.mithril(path.node)) {
                     return;
                 }
 
                 state = transform(path);
-                    
-                path.replaceWith(t.objectExpression([
-                    t.objectProperty(t.identifier("tag"), t.stringLiteral(state.tag)),
-                    t.objectProperty(t.identifier("attrs"), t.objectExpression(Object.keys(state.attrs).map(function(key) {
+                
+                if(Object.keys(state.attrs).length) {
+                    attrs = t.objectExpression(Object.keys(state.attrs).map(function(key) {
                         return t.objectProperty(
                             t.isValidIdentifier(key) ? t.identifier(key) : t.stringLiteral(key),
                             state.attrs[key]
                         );
-                    }))),
-                    t.objectProperty(t.identifier("children"), state.nodes)
+                    }));
+                } else {
+                    attrs = t.identifier("undefined");
+                }
+                //
+                // {
+                //   tag: tag,
+                //   key: key,
+                //   attrs: attrs,
+                //   children: children,
+                //   text: text,
+                //   dom: dom,
+                //   domSize: undefined,
+                //   state: {},
+                //   events: undefined
+                // }
+                
+                path.replaceWith(t.objectExpression([
+                    t.objectProperty(t.identifier("tag"), t.stringLiteral(state.tag)),
+                    t.objectProperty(t.identifier("attrs"), attrs),
+                    t.objectProperty(t.identifier("children"), state.nodes),
+                    t.objectProperty(t.identifier("dom"), t.identifier("undefined")),
+                    t.objectProperty(t.identifier("domSize"), t.identifier("undefined")),
+                    t.objectProperty(t.identifier("events"), t.identifier("undefined")),
+                    t.objectProperty(t.identifier("key"), t.identifier("undefined")),
+                    t.objectProperty(t.identifier("state"), t.objectExpression([])),
+                    t.objectProperty(t.identifier("text"), t.identifier("undefined"))
                 ]));
             }
         }

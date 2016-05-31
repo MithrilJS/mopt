@@ -5,7 +5,7 @@
 
 var assert = require("assert"),
 
-    m = require("mithril"),
+    m = require("mithril/render/hyperscript"),
     
     run = require("./lib/run");
 
@@ -49,7 +49,7 @@ describe("mithril-objectify", function() {
 
     describe("Children", function() {
         describe("literal children", function() {
-            it("should support single literal children (string)", function() {
+            it.only("should support single literal children (string)", function() {
                 assert.deepEqual(
                     run('m("div", "test")'),
                     m("div", "test")
