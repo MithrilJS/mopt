@@ -49,7 +49,7 @@ describe("mithril-objectify", function() {
 
     describe("Children", function() {
         describe("literal children", function() {
-            it.only("should support single literal children (string)", function() {
+            it("should support single literal children (string)", function() {
                 assert.deepEqual(
                     run('m("div", "test")'),
                     m("div", "test")
@@ -129,13 +129,13 @@ describe("mithril-objectify", function() {
                 );
                 
                 assert.deepEqual(
-                    run('m("svg", [ m("g") ])'),
-                    m("svg", [ m("g") ])
+                    run('m("div", [ m("p") ])'),
+                    m("div", [ m("p") ])
                 );
                 
                 assert.deepEqual(
-                    run('m("svg", [ m("a[href=\'http://google.com\']") ])'),
-                    m("svg", [ m("a[href='http://google.com']") ])
+                    run('m("div", [ m("a[href=\'http://google.com\']") ])'),
+                    m("div", [ m("a[href='http://google.com']") ])
                 );
             });
             
@@ -169,7 +169,7 @@ describe("mithril-objectify", function() {
         });
         
         describe("mixed children", function() {
-            it("should support mixed array and literal children", function() {
+            it.only("should support mixed array and literal children", function() {
                 assert.deepEqual(
                     run('m("div", [ 1, 2, 3 ], 4)'),
                     m("div", [ 1, 2, 3 ], 4)

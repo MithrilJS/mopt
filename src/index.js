@@ -4,6 +4,15 @@ var t = require("babel-core").types,
     
     valid = require("./valid");
 
+function getState() {
+    return {
+        tag   : "div",
+        attrs : {},
+        nodes : [],
+        text  : t.identifier("undefined")
+    };
+}
+
 function getClass(path) {
     var node = path.node,
         type = "className";
@@ -104,16 +113,68 @@ function parseAttrs(state) {
     });
 }
 
-function transform(path) {
-    var state = {
-            path  : path,
-            tag   : "div",
-            attrs : {},
-            nodes : [],
-            start : 1,
-            key   : getClass(path),
-            text  : undefined
-        };
+// Modify children based on contents
+function processChildren(state) {
+    var child;
+    
+    if(!state.nodes.length) {
+        state.nodes = t.arrayExpression([]);
+        
+        return;
+    }
+    
+    if(state.nodes.length > 1) {
+        state.nodes = t.arrayExpression(state.nodes.map(function(node) {
+            if(valid.isValueLiteral(node)) {
+                child = getState();
+                
+                child.tag = "#";
+                child.nodes = node;
+                
+                return transform(child);
+            }
+            
+            return node;
+        }));
+        
+        return;
+    }
+    
+    // Make sure we don't end up w/ [ [ ... ] ]
+    if(t.isArrayExpression(state.nodes[0])) {
+        state.nodes = state.nodes[0].elements;
+        
+        processChildren(state);
+        
+        return;
+    }
+    
+    // Array expressions that return arrays get unwrapped
+    if(valid.isArrayExpression(state.nodes[0])) {
+        state.nodes = state.nodes[0];
+        
+        return;
+    }
+    
+    if(valid.isValueLiteral(state.nodes[0])) {
+        state.text = state.nodes[0];
+        state.nodes = t.identifier("undefined");
+        
+        return;
+    }
+    
+    // Otherwise wrap it in an array
+    state.nodes = t.arrayExpression(state.nodes);
+    
+    return;
+}
+
+function process(path) {
+    var state = getState();
+    
+    state.path = path;
+    state.start = 1;
+    state.key = getClass(path);
 
     parseSelector(state);
     
@@ -129,71 +190,53 @@ function transform(path) {
         state.nodes = path.node.arguments.slice(state.start);
     }
     
-    // Modify children based on contents
-    if(state.nodes.length === 1) {
-        if(t.isArrayExpression(state.nodes[0])) {
-            // Make sure we don't end up w/ [ [ ... ] ]
-            state.nodes = t.arrayExpression(state.nodes[0].elements);
-        } else if(valid.isArrayExpression(state.nodes[0])) {
-            // Array expressions that return arrays get unwrapped
-            state.nodes = state.nodes[0];
-        } else {
-            // Otherwise wrap it in an array
-            state.nodes = t.arrayExpression(state.nodes);
-        }
-    } else {
-        state.nodes = t.arrayExpression(state.nodes);
-    }
+    processChildren(state);
     
     return state;
+}
+
+function transform(state) {
+     var attrs = t.identifier("undefined");
+     
+     if(Object.keys(state.attrs).length) {
+        attrs = t.objectExpression(Object.keys(state.attrs).map(function(key) {
+            return t.objectProperty(
+                t.isValidIdentifier(key) ? t.identifier(key) : t.stringLiteral(key),
+                state.attrs[key]
+            );
+        }));
+    }
+    
+    return t.objectExpression([
+        t.objectProperty(t.identifier("tag"), t.stringLiteral(state.tag)),
+        t.objectProperty(t.identifier("attrs"), attrs),
+        t.objectProperty(t.identifier("children"), state.nodes),
+        t.objectProperty(t.identifier("dom"), t.identifier("undefined")),
+        t.objectProperty(t.identifier("domSize"), t.identifier("undefined")),
+        t.objectProperty(t.identifier("events"), t.identifier("undefined")),
+        t.objectProperty(t.identifier("key"), t.identifier("undefined")),
+        t.objectProperty(t.identifier("state"), t.objectExpression([])),
+        t.objectProperty(t.identifier("text"), state.text)
+    ]);
 }
 
 module.exports = function() {
     return {
         visitor : {
             CallExpression : function(path) {
-                var state, attrs;
+                var state;
                 
                 if(!valid.mithril(path.node)) {
                     return;
                 }
 
-                state = transform(path);
+                state = process(path);
                 
-                if(Object.keys(state.attrs).length) {
-                    attrs = t.objectExpression(Object.keys(state.attrs).map(function(key) {
-                        return t.objectProperty(
-                            t.isValidIdentifier(key) ? t.identifier(key) : t.stringLiteral(key),
-                            state.attrs[key]
-                        );
-                    }));
-                } else {
-                    attrs = t.identifier("undefined");
+                if(state.tag === "svg") {
+                    return;
                 }
-                //
-                // {
-                //   tag: tag,
-                //   key: key,
-                //   attrs: attrs,
-                //   children: children,
-                //   text: text,
-                //   dom: dom,
-                //   domSize: undefined,
-                //   state: {},
-                //   events: undefined
-                // }
                 
-                path.replaceWith(t.objectExpression([
-                    t.objectProperty(t.identifier("tag"), t.stringLiteral(state.tag)),
-                    t.objectProperty(t.identifier("attrs"), attrs),
-                    t.objectProperty(t.identifier("children"), state.nodes),
-                    t.objectProperty(t.identifier("dom"), t.identifier("undefined")),
-                    t.objectProperty(t.identifier("domSize"), t.identifier("undefined")),
-                    t.objectProperty(t.identifier("events"), t.identifier("undefined")),
-                    t.objectProperty(t.identifier("key"), t.identifier("undefined")),
-                    t.objectProperty(t.identifier("state"), t.objectExpression([])),
-                    t.objectProperty(t.identifier("text"), t.identifier("undefined"))
-                ]));
+                path.replaceWith(transform(state));
             }
         }
     };
