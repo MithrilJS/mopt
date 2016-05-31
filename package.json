@@ -28,6 +28,9 @@
     "mithril": "^0.2.4",
     "mocha": "^2.4.5"
   },
+  "publishConfig": {
+    "tag": "rewrite"
+  },
   "eslintConfig": {
     "extends": "arenanet",
     "env": {
