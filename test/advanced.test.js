@@ -162,8 +162,6 @@ describe("mithril-objectify", function() {
         });
     });
 
-    
-
     describe("String children", function() {
         it("should support one", function() {
             assert.deepEqual(
