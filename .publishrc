@@ -8,6 +8,5 @@
     "gitTag": true
   },
   "confirm": true,
-  "publishTag": "rewrite",
   "prePublishScript": "npm test"
 }

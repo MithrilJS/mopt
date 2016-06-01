@@ -31,9 +31,6 @@
     "mocha": "^2.4.5",
     "publish-please": "^2.1.4"
   },
-  "publishConfig": {
-    "tag": "rewrite"
-  },
   "eslintConfig": {
     "extends": "arenanet",
     "env": {
