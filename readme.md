@@ -17,9 +17,13 @@ mopt [![NPM Version](https://img.shields.io/npm/v/mopt.svg)](https://www.npmjs.c
 </p>
 
 
-A [babel](babeljs.io) plugin to transform [mithril](http://mithril.js.org) hyperscript function invocations like `m(".fooga")` into static JS objects like:
+A [babel](babeljs.io) plugin to statically optimize [mithril](http://mithril.js.org) hyperscript function invocations into simple objects.
 
 ```js
+// This hyperscript function invocation
+m(".fooga")
+
+// Becomes this static JS object!
 ({
     tag: "div",
     attrs: {
@@ -34,9 +38,6 @@ A [babel](babeljs.io) plugin to transform [mithril](http://mithril.js.org) hyper
     text: undefined
 });
 ```
-
-for speeeeeed.
-
 Please file an issue if you come across any cases that this doesn't handle, I'd love to improve the number of structures I can rewrite!
 
 ## Installation
