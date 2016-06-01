@@ -8,7 +8,9 @@
     "lint": "eslint .",
     "cover": "istanbul test --print both ./node_modules/mocha/bin/_mocha",
     "mocha": "mocha",
-    "preversion": "npm test"
+    "preversion": "npm test",
+    "publish-please": "publish-please",
+    "prepublish": "publish-please guard"
   },
   "author": "Pat Cavit <pcavit@arena.net>",
   "repository": "tivac/mithril-objectify",
@@ -26,7 +28,8 @@
     "istanbul": "^0.4.0",
     "lodash.assign": "^4.0.8",
     "mithril": "github:lhorie/mithril.js#rewrite",
-    "mocha": "^2.4.5"
+    "mocha": "^2.4.5",
+    "publish-please": "^2.1.4"
   },
   "publishConfig": {
     "tag": "rewrite"
