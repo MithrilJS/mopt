@@ -1,8 +1,5 @@
 "use strict";
 
-// These tests are replicating the core mithril tests around the behavior of m(...),
-// which I grabbed from https://github.com/lhorie/mithril.js/blob/next/tests/mithril-tests.js#L6-L44
-
 var assert = require("assert"),
 
     m = require("mithril/render/hyperscript"),
@@ -17,7 +14,7 @@ describe("mithril-objectify", function() {
                 m("div")
             );
         });
-
+        
         it("should support class selectors", function() {
             assert.deepEqual(
                 run('m(".foo")'),
@@ -92,7 +89,7 @@ describe("mithril-objectify", function() {
             });
         });
         
-        describe("array children", function() {
+        describe("Array Children", function() {
             it("should support array children", function() {
                 assert.deepEqual(
                     run('m("div", [ "test" ])'),
@@ -114,7 +111,7 @@ describe("mithril-objectify", function() {
         });
         
         
-        describe("nested m()", function() {
+        describe("Nested m()", function() {
             it("should support nested m() invocations", function() {
                 assert.deepEqual(
                     run('m("div", m("div"))'),
@@ -168,7 +165,7 @@ describe("mithril-objectify", function() {
             });
         });
         
-        describe("mixed children", function() {
+        describe("Mixed Children", function() {
             it("should support mixed array and literal children", function() {
                 assert.deepEqual(
                     run('m("div", [ 1 ], 2)'),
@@ -190,7 +187,7 @@ describe("mithril-objectify", function() {
         });
     });
 
-    describe("class vs className", function() {
+    describe("Attributes: class vs className", function() {
         it("should combine tag class & attr class", function() {
             assert.deepEqual(
                 run('m(".foo", { class : "bar" })'),
@@ -205,6 +202,12 @@ describe("mithril-objectify", function() {
             );
         });
         
+        it("should combine tag class & attr className", function() {
+            assert.deepEqual(
+                run('m(".foo[checked]", { className : "bar" })'),
+                m(".foo[checked]", { className : "bar" })
+            );
+        });
         
         it("selector class, empty className attr", function() {
             assert.deepEqual(
@@ -224,6 +227,22 @@ describe("mithril-objectify", function() {
             assert.deepEqual(
                 run('m("div", { class : "" })'),
                 m("div", { class : "" })
+            );
+        });
+    });
+    
+    describe("SVG", function() {
+        it("should support svg selectors", function() {
+            assert.deepEqual(
+                run('m("svg")'),
+                m("svg")
+            );
+        });
+        
+        it("should support nested svg selectors", function() {
+            assert.deepEqual(
+                run('m("svg", m("g"))'),
+                m("svg", m("g"))
             );
         });
     });
