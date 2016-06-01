@@ -7,7 +7,7 @@ var assert = require("assert"),
     run    = require("./lib/run"),
     code   = require("./lib/code");
 
-describe.skip("mithril-objectify", function() {
+describe("mithril-objectify", function() {
     it("Dynamic classes", function() {
         assert.deepEqual(
             run('m("input.fooga", { class : true ? "true" : "false" })'),
