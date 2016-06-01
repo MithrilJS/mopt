@@ -17,5 +17,4 @@ deploy:
   on:
     tags: true
     repo: tivac/mithril-objectify
-    branch: master
     node: 'node'
