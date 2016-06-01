@@ -3,16 +3,9 @@
 var t = require("babel-core").types,
     
     valid  = require("./valid"),
-    create = require("./create");
-
-function createState() {
-    return {
-        tag   : t.stringLiteral("div"),
-        attrs : t.objectExpression([]),
-        nodes : t.arrayExpression([]),
-        text  : t.identifier("undefined")
-    };
-}
+    create = require("./create"),
+    
+    visitor;
 
 function parseSelector(state) {
     var node = state.path.node,
@@ -49,7 +42,10 @@ function parseSelector(state) {
 
         if(lead === "[") {
             parts = match.match(/\[(.+?)(?:=("|'|)(.*?)\2)?\]/);
-            state.attrs.properties.push(create.prop(parts[1], t.stringLiteral(parts[3] || "")));
+            
+            state.attrs.properties.push(
+                create.prop(parts[1], parts[3] ? t.stringLiteral(parts[3]) : t.identifier("true"))
+            );
             
             return;
         }
@@ -63,7 +59,7 @@ function parseSelector(state) {
 }
 
 function parseAttrs(state) {
-    var existing; // = state.attrs.className;
+    var existing;
 
     state.attrs.properties.some(function(property) {
         if(property.key.name === "className") {
@@ -115,7 +111,13 @@ function parseAttrs(state) {
         }
             
         // Non-literals get combined w/ a "+"
-        existing.value = t.binaryExpression("+", t.stringLiteral(existing.value + " "), property.value);
+        existing.value = t.binaryExpression("+",
+            existing.value,
+            t.binaryExpression("+",
+                t.stringLiteral(" "),
+                property.value
+            )
+        );
 
         return;
     });
@@ -136,7 +138,7 @@ function processChildren(state) {
     if(size > 1) {
         state.nodes = t.arrayExpression(state.nodes.elements.map(function(node) {
             if(t.isArrayExpression(node)) {
-                child = createState();
+                child = create.state();
 
                 child.tag = t.stringLiteral("[");
                 child.nodes = node;
@@ -147,7 +149,7 @@ function processChildren(state) {
             }
             
             if(valid.isValueLiteral(node)) {
-                child = createState();
+                child = create.state();
                 
                 child.tag = t.stringLiteral("#");
                 child.nodes = node;
@@ -164,13 +166,13 @@ function processChildren(state) {
     first = state.nodes.elements[0];
 
     // Array expressions that return arrays get unwrapped
-    if(valid.isArrayExpression(first)) {
+    if(valid.isArrayExpressionArray(first)) {
         state.nodes = first;
         
         return;
     }
     
-    if(valid.isValueLiteral(first)) {
+    if(valid.isValueLiteral(first) || valid.isArrayExpressionString(first)) {
         // m("div", "text") modifies the "text" property
         if(valid.isSafeTag(state)) {
             state.text = first;
@@ -180,7 +182,7 @@ function processChildren(state) {
         }
 
         // Otherwise create a text node (tag: "#") and set it as the sole child
-        child = createState();
+        child = create.state();
 
         child.tag = t.stringLiteral("#");
         child.nodes = first;
@@ -203,7 +205,7 @@ function processChildren(state) {
 }
 
 function process(path) {
-    var state = createState(),
+    var state = create.state(),
         start = 1;
     
     state.path = path;
@@ -227,24 +229,40 @@ function process(path) {
     return state;
 }
 
+visitor = {
+    CallExpression : function(path) {
+        var state;
+                    
+        if(valid.isMithrilTrust(path.node)) {
+            path.replaceWith(create.mTrust(path.node.arguments[0]));
+            
+            return;
+        }
+        
+        if(valid.isMithril(path.node)) {
+            state = process(path);
+            
+            if(state.tag.value === "svg") {
+                this.ns = t.stringLiteral("http://www.w3.org/2000/svg");
+                
+                path.traverse(visitor, { ns : this.ns });
+            }
+            
+            if(this.ns) {
+                state.ns = this.ns;
+            }
+            
+            path.replaceWith(create.vnode(state));
+            
+            return;
+        }
+        
+        return;
+    }
+};
+
 module.exports = function() {
     return {
-        visitor : {
-            CallExpression : function(path) {
-                var state;
-                
-                if(!valid.mithril(path.node)) {
-                    return;
-                }
-
-                state = process(path);
-                
-                if(state.tag === "svg") {
-                    return;
-                }
-                
-                path.replaceWith(create.vnode(state));
-            }
-        }
+        visitor : visitor
     };
 };
