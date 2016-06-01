@@ -137,6 +137,15 @@ function processChildren(state) {
     // Multiple nodes means we need to walk them
     if(size > 1) {
         state.nodes = t.arrayExpression(state.nodes.elements.map(function(node) {
+            if(valid.isArrayExpressionArray(node)) {
+                child = create.state();
+                
+                child.tag = t.stringLiteral("[");
+                child.nodes = node;
+                
+                return create.vnode(child);
+            }
+            
             if(t.isArrayExpression(node)) {
                 child = create.state();
 

@@ -208,8 +208,14 @@ describe("mithril-objectify", function() {
             );
         });
         
+        it("should support Array.prototype comprehensions when there are multiple children", function() {
+            assert.deepEqual(
+                code('m("div", [ 1, 2 ], [ 3, 4 ].map(function(val) { return val; }))'),
+                '({tag:"div",attrs:undefined,children:[{tag:"[",attrs:undefined,children:[{tag:"#",attrs:undefined,children:1,dom:undefined,domSize:undefined,events:undefined,key:undefined,state:{},text:undefined},{tag:"#",attrs:undefined,children:2,dom:undefined,domSize:undefined,events:undefined,key:undefined,state:{},text:undefined}],dom:undefined,domSize:undefined,events:undefined,key:undefined,state:{},text:undefined},{tag:"[",attrs:undefined,children:[3,4].map(function(val){return val;}),dom:undefined,domSize:undefined,events:undefined,key:undefined,state:{},text:undefined}],dom:undefined,domSize:undefined,events:undefined,key:undefined,state:{},text:undefined});'
+            );
+        });
+        
         it("should handle Array.prototype methods that return a string", function() {
-            // TODO: I think this is actually wrong
             assert.equal(
                 code('m("div", [ 1, 2 ].join(""))'),
                 '({tag:"div",attrs:undefined,children:undefined,dom:undefined,domSize:undefined,events:undefined,key:undefined,state:{},text:[1,2].join("")});'
