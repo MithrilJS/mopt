@@ -40,16 +40,19 @@ var t = require("babel-core").types,
         "valueOf"
     ],
     
-    safeArrays = [
+    safeArrayMethodsArray = [
         "concat",
         "copyWithin",
         "filter",
-        "join",
         "map",
         "reverse",
         "slice",
         "sort",
         "splice"
+    ],
+    
+    safeArrayMethodsString = [
+        "join"
     ],
     
     unsafeTags = [
@@ -67,14 +70,7 @@ function makeCallExpressionCheck(obj, prop) {
     };
 }
 
-exports.isValueLiteral = function(node) {
-    return literals.some(function(check) {
-        return t["is" + check](node);
-    });
-};
-
-// Check if this is an invocation of an Array.prototype method on an array
-exports.isArrayExpression = function(node) {
+function makeArrayExpressionCheck(valid, node) {
     if(!t.isCallExpression(node) ||
        !t.isMemberExpression(node.callee) ||
        !t.isArrayExpression(node.callee.object)
@@ -83,14 +79,29 @@ exports.isArrayExpression = function(node) {
     }
     
     if(t.isIdentifier(node.callee.property) &&
-       safeArrays.indexOf(node.callee.property.name) !== -1
+       valid.indexOf(node.callee.property.name) !== -1
     ) {
         return true;
     }
     
     return t.isStringLiteral(node.callee.property) &&
-        safeArrays.indexOf(node.callee.property.value) !== -1;
+        valid.indexOf(node.callee.property.value) !== -1;
+}
+
+exports.isValueLiteral = function(node) {
+    return literals.some(function(check) {
+        return t["is" + check](node);
+    });
 };
+
+// Check if this is an invocation of an Array.prototype method on an array that returns an array
+exports.isArrayExpressionArray = makeArrayExpressionCheck.bind(null, safeArrayMethodsArray);
+
+// Check if this is an invocation of an Array.prototype method on an array that returns a string
+exports.isArrayExpressionString = makeArrayExpressionCheck.bind(null, safeArrayMethodsString);
+
+// Check if this is an invocation of an Array.prototype method on an array
+exports.isArrayExpression = makeArrayExpressionCheck.bind(null, safeArrayMethodsArray.concat(safeArrayMethodsString));
 
 // Check if this is an invocation of a String.prototype method on a string
 exports.isStringExpression = function(node) {
@@ -114,8 +125,8 @@ exports.isStringExpression = function(node) {
 // Check if this is an invocation of an ConditionalExpression
 exports.isConditionalExpression = function(node) {
     return t.isConditionalExpression(node) &&
-        exports.children(node.consequent) &&
-        exports.children(node.alternate);
+        exports.isChildren(node.consequent) &&
+        exports.isChildren(node.alternate);
 };
 
 // JSON.stringify( ... )
@@ -134,11 +145,8 @@ exports.isM = function(node) {
 // m.trust(...)
 exports.isMithrilTrust = makeCallExpressionCheck("m", "trust");
 
-// m.component(...)
-exports.isMithrilComponent = makeCallExpressionCheck("m", "component");
-
 // Valid children nodes that we can optimize
-exports.children = function(node) {
+exports.isChildren = function(node) {
     // m(".fooga", [ ... ])
     // m(".fooga", "wooga")
     // m(".fooga", "wooga" + "booga")
@@ -173,11 +181,6 @@ exports.children = function(node) {
         return true;
     }
     
-    // m(".fooga", m.component(thing))
-    if(exports.isMithrilComponent(node)) {
-        return true;
-    }
-    
     // m(".fooga", JSON.stringify({}))
     if(exports.isJsonStringify(node)) {
         return true;
@@ -187,17 +190,17 @@ exports.children = function(node) {
 };
 
 // Is the param an argument, or children?
-exports.arg = function(node) {
+exports.isArg = function(node) {
     // m(".fooga", { ... })
     if(t.isObjectExpression(node)) {
         return true;
     }
     
-    return exports.children(node);
+    return exports.isChildren(node);
 };
 
 // Test to see if a node is a passable mithril invocation
-exports.mithril = function(node) {
+exports.isMithril = function(node) {
     var first = node.arguments[0];
     
     // m()
@@ -223,5 +226,5 @@ exports.mithril = function(node) {
         return true;
     }
     
-    return exports.arg(node.arguments[1]);
+    return exports.isArg(node.arguments[1]);
 };
