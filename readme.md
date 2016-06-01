@@ -16,7 +16,6 @@ mopt [![NPM Version](https://img.shields.io/npm/v/mopt.svg)](https://www.npmjs.c
     </a>
 </p>
 
-
 A [babel](babeljs.io) plugin to statically optimize [mithril](http://mithril.js.org) hyperscript function invocations into simple objects.
 
 ```js
@@ -39,6 +38,12 @@ m(".fooga")
 });
 ```
 Please file an issue if you come across any cases that this doesn't handle, I'd love to improve the number of structures I can rewrite!
+
+## Mithril Version Warning
+
+`mopt` **only** works with the mithril `rewrite` branch.
+
+For optimizing the current stable mithril release see [mithril-objectify](https://www.npmjs.com/package/mithril-objectify).
 
 ## Installation
 
