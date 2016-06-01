@@ -1,9 +1,9 @@
-mithril-objectify [![NPM Version](https://img.shields.io/npm/v/mithril-objectify.svg)](https://www.npmjs.com/package/mithril-objectify) [![NPM License](https://img.shields.io/npm/l/mithril-objectify.svg)](https://www.npmjs.com/package/mithril-objectify)
+mopt [![NPM Version](https://img.shields.io/npm/v/mopt.svg)](https://www.npmjs.com/package/mopt) [![NPM License](https://img.shields.io/npm/l/mopt.svg)](https://www.npmjs.com/package/mopt)
 =================
 
 <p align="center">
-    <a href="https://www.npmjs.com/package/mithril-objectify" alt="NPM Downloads">
-        <img src="https://img.shields.io/npm/dm/mithril-objectify.svg" />
+    <a href="https://www.npmjs.com/package/mopt" alt="NPM Downloads">
+        <img src="https://img.shields.io/npm/dm/mopt.svg" />
     </a>
     <a href="https://travis-ci.org/tivac/mithril-objectify" alt="Build Status">
         <img src="https://img.shields.io/travis/tivac/mithril-objectify/master.svg" />
@@ -20,7 +20,19 @@ mithril-objectify [![NPM Version](https://img.shields.io/npm/v/mithril-objectify
 A [babel](babeljs.io) plugin to transform [mithril](http://mithril.js.org) hyperscript function invocations like `m(".fooga")` into static JS objects like:
 
 ```js
-{ tag: "div", attrs: { "className" : "fooga" }, children: [ ] }
+({
+    tag: "div",
+    attrs: {
+        className: "fooga",
+    }
+    children: [],
+    dom: undefined,
+    domSize: undefined,
+    events: undefined,
+    key: undefined,
+    state: {},
+    text: undefined
+});
 ```
 
 for speeeeeed.
@@ -31,7 +43,7 @@ Please file an issue if you come across any cases that this doesn't handle, I'd 
 
 Install with npm
 
-`npm i mithril-objectify`
+`npm i mopt`
 
 ## Usage
 
@@ -40,19 +52,19 @@ Install with npm
 ```js
 // .babelrc
 {
-    "plugins": [ "mithril-objectify" ]
+    "plugins": [ "mopt" ]
 }
 ```
 
 ### CLI
 
-`$ babel --plugins mithril-objectify script.js`
+`$ babel --plugins mopt script.js`
 
 ### API
 
 ```js
 require("babel-core").transform("<code>", {
-  plugins: [ "mithril-objectify" ]
+  plugins: [ "mopt" ]
 });
 ```
 
