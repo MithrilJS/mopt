@@ -1,6 +1,6 @@
 {
   "name": "mopt",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "Babel plugin to optimize Mithril m() calls into simple JS objects",
   "main": "./src/index.js",
   "scripts": {
