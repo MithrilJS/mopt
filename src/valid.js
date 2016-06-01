@@ -50,6 +50,12 @@ var t = require("babel-core").types,
         "slice",
         "sort",
         "splice"
+    ],
+    
+    unsafeTags = [
+        "[",
+        "#",
+        "<"
     ];
 
 function makeCallExpressionCheck(obj, prop) {
@@ -114,6 +120,10 @@ exports.isConditionalExpression = function(node) {
 
 // JSON.stringify( ... )
 exports.isJsonStringify = makeCallExpressionCheck("JSON", "stringify");
+
+exports.isSafeTag = function(state) {
+    return unsafeTags.indexOf(state.tag.value) === -1;
+};
 
 // m( ... )
 exports.isM = function(node) {

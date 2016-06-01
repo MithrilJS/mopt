@@ -169,10 +169,10 @@ describe("mithril-objectify", function() {
         });
         
         describe("mixed children", function() {
-            it.only("should support mixed array and literal children", function() {
+            it("should support mixed array and literal children", function() {
                 assert.deepEqual(
-                    run('m("div", [ 1, 2, 3 ], 4)'),
-                    m("div", [ 1, 2, 3 ], 4)
+                    run('m("div", [ 1 ], 2)'),
+                    m("div", [ 1 ], 2)
                 );
             });
             
@@ -191,29 +191,36 @@ describe("mithril-objectify", function() {
     });
 
     describe("class vs className", function() {
-        it("should combine tag class & attr class/className", function() {
+        it("should combine tag class & attr class", function() {
             assert.deepEqual(
                 run('m(".foo", { class : "bar" })'),
                 m(".foo", { class : "bar" })
             );
-        
+        });
+
+        it("should combine tag class & attr className", function() {
             assert.deepEqual(
                 run('m(".foo", { className : "bar" })'),
                 m(".foo", { className : "bar" })
             );
         });
         
-        it("empty attr class/className", function() {
+        
+        it("selector class, empty className attr", function() {
             assert.deepEqual(
                 run('m(".foo", { className : "" })'),
                 m(".foo", { className : "" })
             );
-            
+        });
+
+        it("no selector class, empty className attr", function() {
             assert.deepEqual(
                 run('m("div", { className : "" })'),
                 m("div", { className : "" })
             );
-            
+        });
+
+        it("no selector class, empty class attr", function() {
             assert.deepEqual(
                 run('m("div", { class : "" })'),
                 m("div", { class : "" })
