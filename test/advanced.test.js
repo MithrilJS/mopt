@@ -3,12 +3,9 @@
 var assert = require("assert"),
 
     m     = require("mithril/render/hyperscript"),
-    trust = require("mithril/render/trust"),
 
     run    = require("./lib/run"),
     code   = require("./lib/code");
-
-m.trust = trust;
 
 describe("mithril-objectify", function() {
     it("Dynamic classes", function() {
@@ -66,13 +63,6 @@ describe("mithril-objectify", function() {
         assert.deepEqual(
             run('m("div", { "fooga" : 0 })'),
             m("div", { "fooga" : 0 })
-        );
-    });
-
-    it("m.trust children", function() {
-        assert.deepEqual(
-            run('m("div", m.trust("<div>"))'),
-            m("div", m.trust("<div>"))
         );
     });
 

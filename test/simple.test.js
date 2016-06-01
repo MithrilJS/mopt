@@ -2,7 +2,8 @@
 
 var assert = require("assert"),
 
-    m = require("mithril/render/hyperscript"),
+    m     = require("mithril/render/hyperscript"),
+    trust = require("mithril/render/trust"),
     
     run = require("./lib/run");
 
@@ -243,6 +244,23 @@ describe("mithril-objectify", function() {
             assert.deepEqual(
                 run('m("svg", m("g"))'),
                 m("svg", m("g"))
+            );
+        });
+    });
+    
+    describe("m.trust", function() {
+        // These tests aren't using m.trust, but trust is the same thing
+        it("should optimize a bare m.trust()", function() {
+            assert.deepEqual(
+                run('m.trust("<div>")'),
+                trust("<div>")
+            );
+        });
+        
+        it("should optimize m.trust() children", function() {
+            assert.deepEqual(
+                run('m("div", m.trust("<div>"))'),
+                m("div", trust("<div>"))
             );
         });
     });
