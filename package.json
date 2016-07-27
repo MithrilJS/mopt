@@ -22,7 +22,7 @@
   "devDependencies": {
     "babel-core": "^6.8.0",
     "eslint": "^3.1.1",
-    "eslint-config-arenanet": "^2.0.3",
+    "eslint-config-arenanet": "^3.0.0",
     "istanbul": "^0.4.0",
     "lodash.assign": "^4.0.8",
     "mithril": "^0.2.4",
