@@ -126,7 +126,7 @@ describe("mithril-objectify", function() {
             );
         });
 
-        it.only("should support attributes and non-string children", function() {
+        it("should support attributes and non-string children", function() {
             assert.equal(
                 code('m("div", { }, FOOGA)'),
                 '({tag:"div",attrs:{},children:[FOOGA]});'
