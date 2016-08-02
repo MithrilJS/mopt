@@ -8,13 +8,6 @@ var assert = require("assert"),
     code   = require("./lib/code");
 
 describe("mithril-objectify", function() {
-    it("Dynamic classes", function() {
-        assert.deepEqual(
-            run('m("input.fooga", { class : true ? "true" : "false" })'),
-            m("input.fooga", { class : true ? "true" : "false" }) // eslint-disable-line
-        );
-    });
-
     it("Empty selector", function() {
         assert.deepEqual(
             run('m("")'),
@@ -29,15 +22,10 @@ describe("mithril-objectify", function() {
         );
     });
     
-    it("should support hyphenated attributes (issue #35)", function() {
+    it("should support hyphenated attributes in the selector (issue #35)", function() {
         assert.deepEqual(
             run('m(".fooga[wooga-booga=1]")'),
             m(".fooga[wooga-booga=1]")
-        );
-        
-        assert.deepEqual(
-            run('m(".fooga", { "wooga-booga" : 1 })'),
-            m(".fooga", { "wooga-booga" : 1 })
         );
     });
     
@@ -85,42 +73,65 @@ describe("mithril-objectify", function() {
             );
         });
     });
-
-    it("Selector w/ attribute w/ no value", function() {
+    
+    it("should support selector attributes w/o a value", function() {
         assert.deepEqual(
             run('m("div[fooga]")'),
             m("div[fooga]")
         );
     });
 
-    it("Non-string attr values", function() {
-        assert.deepEqual(
-            run('m("div", { fooga : 0 })'),
-            m("div", { fooga : 0 })
-        );
-        
-        assert.deepEqual(
-            run('m("div", { fooga : false })'),
-            m("div", { fooga : false })
-        );
-        
-        assert.deepEqual(
-            run('m("div", { fooga : null })'),
-            m("div", { fooga : null })
-        );
-        
-        assert.deepEqual(
-            run('m("div", { fooga : undefined })'),
-            m("div", { fooga : undefined })
-        );
-    });
+    describe("Attributes", function() {
+        it("should support dynamic attribute property values", function() {
+            assert.deepEqual(
+                run('m("input.fooga", { class : true ? "true" : "false" })'),
+                m("input.fooga", { class : true ? "true" : "false" }) // eslint-disable-line
+            );
+        });
 
-    it("Quoted properties (issue #6)", function() {
-        /* eslint quote-props:0 */
-        assert.deepEqual(
-            run('m("div", { "fooga" : 0 })'),
-            m("div", { "fooga" : 0 })
-        );
+        it("should support hyphenated attribute properties (issue #35)", function() {
+            assert.deepEqual(
+                run('m(".fooga", { "wooga-booga" : 1 })'),
+                m(".fooga", { "wooga-booga" : 1 })
+            );
+        });
+
+        it("should use non-string attribute values correctly", function() {
+            assert.deepEqual(
+                run('m("div", { fooga : 0 })'),
+                m("div", { fooga : 0 })
+            );
+            
+            assert.deepEqual(
+                run('m("div", { fooga : false })'),
+                m("div", { fooga : false })
+            );
+            
+            assert.deepEqual(
+                run('m("div", { fooga : null })'),
+                m("div", { fooga : null })
+            );
+            
+            assert.deepEqual(
+                run('m("div", { fooga : undefined })'),
+                m("div", { fooga : undefined })
+            );
+        });
+
+        it("should support quoted attribute properties (issue #6)", function() {
+            /* eslint quote-props:0 */
+            assert.deepEqual(
+                run('m("div", { "fooga" : 0 })'),
+                m("div", { "fooga" : 0 })
+            );
+        });
+
+        it.only("should support attributes and non-string children", function() {
+            assert.equal(
+                code('m("div", { }, FOOGA)'),
+                '({tag:"div",attrs:{},children:[FOOGA]});'
+            );
+        });
     });
 
     describe("String children", function() {

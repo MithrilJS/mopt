@@ -21,7 +21,7 @@
   ],
   "devDependencies": {
     "babel-core": "^6.8.0",
-    "eslint": "^3.2.1",
+    "eslint": "^3.2.2",
     "eslint-config-arenanet": "^3.0.0",
     "istanbul": "^0.4.0",
     "lodash.assign": "^4.1.0",

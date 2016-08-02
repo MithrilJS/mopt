@@ -113,7 +113,6 @@ describe("mithril-objectify", function() {
             });
         });
         
-        
         describe("nested m()", function() {
             it("should support nested m() invocations", function() {
                 assert.deepEqual(
