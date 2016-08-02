@@ -27,6 +27,12 @@ for speeeeeed.
 
 Please file an issue if you come across any cases that this doesn't handle, I'd love to improve the number of structures I can rewrite!
 
+## :warning: `mithril@1.x` Compatibility :warning: 
+
+Currently `mithril-objectify` is **NOT** compatible with `mithril@1.x`, the vnode structure has changed significantly and is [difficult to statically analyze](https://github.com/lhorie/mithril.js/issues/1086). Completed work on the transition lives in the [`rewrite`](https://github.com/tivac/mithril-objectify/tree/rewrite) branch.
+
+Hopefully I'll get it working, but you should not use `mithril-objectify` with `mithril@1.x` right now.
+
 ## Installation
 
 Install with npm
