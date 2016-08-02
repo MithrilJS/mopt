@@ -1,6 +1,6 @@
 {
   "name": "mithril-objectify",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "Babel plugin to optimize Mithril m() calls into simple JS objects",
   "main": "./src/index.js",
   "scripts": {
