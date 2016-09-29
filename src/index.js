@@ -1,11 +1,10 @@
 "use strict";
 
-var t = require("babel-core").types,
-    
-    valid = require("./valid");
+var valid = require("./valid");
 
-function getClass(path) {
-    var node = path.node,
+function getClass(api, path) {
+    var t    = api.types,
+        node = path.node,
         type = "className";
     
     if(node.arguments[1] && t.isObjectExpression(node.arguments[1])) {
@@ -27,7 +26,8 @@ function getClass(path) {
 }
 
 function parseSelector(state) {
-    var node = state.path.node,
+    var t    = state.types,
+        node = state.path.node,
         css  = [],
         src  = node.arguments[0];
     
@@ -75,7 +75,10 @@ function parseSelector(state) {
 }
 
 function parseAttrs(state) {
-    var existing = state.attrs[state.key];
+    var t = state.types,
+        v = state.valid,
+
+        existing = state.attrs[state.key];
     
     state.path.node.arguments[1].properties.forEach(function(property) {
         var key = property.key.name || property.key.value;
@@ -88,14 +91,14 @@ function parseAttrs(state) {
             }
             
             // Literals get merged as a string
-            if(valid.isValueLiteral(property.value)) {
-                state.attrs[state.key] = t.stringLiteral(existing.value + " " + property.value.value);
+            if(v.isValueLiteral(property.value)) {
+                state.attrs[state.key] = t.stringLiteral(`${existing.value} ${property.value.value}`);
                 
                 return;
             }
             
             // Non-literals get combined w/ a "+"
-            state.attrs[state.key] = t.binaryExpression("+", t.stringLiteral(existing.value + " "), property.value);
+            state.attrs[state.key] = t.binaryExpression("+", t.stringLiteral(`${existing.value} `), property.value);
 
             return;
         }
@@ -104,15 +107,18 @@ function parseAttrs(state) {
     });
 }
 
-function transform(path) {
-    var state = {
+function transform(api, path) {
+    var state = Object.assign({}, api, {
             path  : path,
             tag   : "div",
             attrs : {},
             nodes : [],
             start : 1,
-            key   : getClass(path)
-        };
+            key   : getClass(api, path),
+        }),
+        
+        t = state.types,
+        v = state.valid;
 
     parseSelector(state);
     
@@ -133,7 +139,7 @@ function transform(path) {
         if(t.isArrayExpression(state.nodes[0])) {
             // Make sure we don't end up w/ [ [ ... ] ]
             state.nodes = t.arrayExpression(state.nodes[0].elements);
-        } else if(valid.isArrayExpression(state.nodes[0])) {
+        } else if(v.isArrayExpression(state.nodes[0])) {
             // Array expressions that return arrays get unwrapped
             state.nodes = state.nodes[0];
         } else {
@@ -147,17 +153,23 @@ function transform(path) {
     return state;
 }
 
-module.exports = function() {
+module.exports = function(api) {
+    var t = api.types,
+        v = valid(api);
+    
     return {
         visitor : {
             CallExpression : function(path) {
                 var state;
                 
-                if(!valid.mithril(path.node)) {
+                if(!v.mithril(path.node)) {
                     return;
                 }
 
-                state = transform(path);
+                state = transform({
+                    types : t,
+                    valid : v
+                }, path);
                     
                 path.replaceWith(t.objectExpression([
                     t.objectProperty(t.identifier("tag"), t.stringLiteral(state.tag)),
