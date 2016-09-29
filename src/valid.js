@@ -65,7 +65,7 @@ module.exports = function(api) {
 
     out.isValueLiteral = function(node) {
         return literals.some(function(check) {
-            return t["is" + check](node);
+            return t[`is${check}`](node);
         });
     };
 
@@ -131,6 +131,7 @@ module.exports = function(api) {
 
     // Valid children nodes that we can optimize
     out.children = function(node) {
+        /* eslint max-statements:[ 2, 17 ] */
         // m(".fooga", [ ... ])
         // m(".fooga", "wooga")
         // m(".fooga", "wooga" + "booga")

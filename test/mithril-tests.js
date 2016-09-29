@@ -65,8 +65,8 @@ describe("mithril-objectify", function() {
             
             it("should support single literal children (object)", function() {
                 assert.deepEqual(
-                    run('m("div", [ { foo : "bar" } ])'),
-                    m("div", [ { foo : "bar" } ])
+                    run('m("div", [{ foo : "bar" }])'),
+                    m("div", [{ foo : "bar" }])
                 );
             });
             

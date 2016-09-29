@@ -21,7 +21,7 @@ fs.readFile(process.argv[2], function(errin, file) {
                 throw new Error(errout);
             }
 
-            console.log("Wrote " + process.argv[3]);
+            console.log(`Wrote ${process.argv[3]}`);
         });
     }
 

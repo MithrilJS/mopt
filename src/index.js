@@ -114,7 +114,7 @@ function transform(api, path) {
             attrs : {},
             nodes : [],
             start : 1,
-            key   : getClass(api, path),
+            key   : getClass(api, path)
         }),
         
         t = state.types,
