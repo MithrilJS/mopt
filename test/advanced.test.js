@@ -91,6 +91,7 @@ describe("mithril-objectify", function() {
             code('m(".fooga", identifier)'),
             'm(".fooga",identifier);'
         );
+        
         assert.equal(
             code('m(".fooga", { class: "x" }, identifier)'),
             'm(".fooga",{class:"x"},identifier);'
@@ -250,6 +251,7 @@ describe("mithril-objectify", function() {
                 'm("div",a.map(function(val){return val;}));'
             );
         });
+        
         it("shouldn't attempt to transform array.prototype methods on unknown targets with attributes", function() {
             assert.equal(
                 code('m("div", {class:"x"}, a.map(function(val) { return val; }))'),
