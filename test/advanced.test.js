@@ -91,6 +91,10 @@ describe("mithril-objectify", function() {
             code('m(".fooga", identifier)'),
             'm(".fooga",identifier);'
         );
+        assert.equal(
+            code('m(".fooga", { class: "x" }, identifier)'),
+            'm(".fooga",{class:"x"},identifier);'
+        );
     });
     
     it("should output correct source maps", function() {
