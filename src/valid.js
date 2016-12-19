@@ -201,7 +201,8 @@ exports.isArg = function(node) {
 
 // Test to see if a node is a passable mithril invocation
 exports.isMithril = function(node) {
-    var first = node.arguments[0];
+    var first = node.arguments[0],
+        argumentsLength = node.arguments.length;
     
     // m()
     if(!exports.isM(node)) {
@@ -222,9 +223,11 @@ exports.isMithril = function(node) {
     }
     
     // m(".fooga")
-    if(node.arguments.length === 1) {
+    if(argumentsLength === 1) {
         return true;
     }
     
-    return exports.isArg(node.arguments[1]);
+    return Array.prototype.slice.call(node.arguments, 1, argumentsLength).every( function(arg) {
+        return exports.isArg(arg);
+    });
 };

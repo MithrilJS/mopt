@@ -246,6 +246,12 @@ describe("mithril-objectify", function() {
                 'm("div",a.map(function(val){return val;}));'
             );
         });
+        it("shouldn't attempt to transform array.prototype methods on unknown targets with attributes", function() {
+            assert.equal(
+                code('m("div", {class:"x"}, a.map(function(val) { return val; }))'),
+                'm("div",{class:"x"},a.map(function(val){return val;}));'
+            );
+        });
     });
 
     describe("Conditional expression children", function() {
