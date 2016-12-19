@@ -226,5 +226,7 @@ exports.isMithril = function(node) {
         return true;
     }
     
-    return exports.isArg(node.arguments[1]);
+    return Array.prototype.slice.call(node.arguments, 1, node.arguments.length).every( function(arg) {
+        return exports.isArg(arg);
+    });
 };
