@@ -242,31 +242,11 @@ visitor = {
     CallExpression : function(path) {
         var state;
                     
-        if(valid.isMithrilTrust(path.node)) {
-            path.replaceWith(create.mTrust(path.node.arguments[0]));
-            
+        if(!valid.isMithril(path.node)) {
             return;
         }
         
-        if(valid.isMithril(path.node)) {
-            state = process(path);
-            
-            if(state.tag.value === "svg") {
-                this.ns = t.stringLiteral("http://www.w3.org/2000/svg");
-                
-                path.traverse(visitor, { ns : this.ns });
-            }
-            
-            if(this.ns) {
-                state.ns = this.ns;
-            }
-            
-            path.replaceWith(create.vnode(state));
-            
-            return;
-        }
-        
-        return;
+        return path.replaceWith(create.vnode(state));
     }
 };
 
