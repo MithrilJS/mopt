@@ -1,31 +1,36 @@
 "use strict";
 
-var code = require("./lib/code");
+var assert = require("assert"),
+    
+    code = require("./lib/code");
 
 describe("mithril-objectify", function() {
     describe("Children", function() {
-        describe("literal children", function() {
+        describe.only("literal children", function() {
             it("should optimize the empty selector", function() {
                 assert.deepEqual(
-                    run('m("")'),
-                    m.vnode("")
+                    code('m("")'),
+                    `m.vnode("div",undefined,undefined,[],undefined,undefined);`
                 );
             });
 
-            it.only("should optimize a selector containing a tag", function() {
-                expect(code(`m("p")`)).toBe(`m.vnode("p",undefined,undefined,[],undefined,undefined);`);
+            it("should optimize a selector containing a tag", function() {
+                assert.equal(
+                    code(`m("p")`),
+                    `m.vnode("p",undefined,undefined,[],undefined,undefined);`
+                );
             });
 
             it("should optimize a selector containing only an id", function() {
                 assert.deepEqual(
                     code('m("#fooga")'),
-                    `m.vnode("div", undefined, { id : "fooga" })`
+                    `m.vnode("div",undefined,{id:"fooga"},[],undefined,undefined);`
                 );
             });
 
             it("should optimize a selector containing an attribute w/o a value", function() {
                 assert.deepEqual(
-                    run('m("div[fooga]")'),
+                    code('m("div[fooga]")'),
                     `m.vnode("div[fooga]")`
                 );
             });

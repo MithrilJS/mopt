@@ -1,6 +1,9 @@
 "use strict";
 
-var t = require("babel-core").types,
+var match = require("./match.js"),
+    
+    // TODO: REMOVE REMOVE REMOVE
+    t = require("babel-core").types,
     
     literals = [
         "StringLiteral",
@@ -137,10 +140,12 @@ exports.isSafeTag = function(state) {
 };
 
 // m( ... )
-exports.isM = function(node) {
-    return t.isCallExpression(node) &&
-        t.isIdentifier(node.callee, { name : "m" });
-};
+exports.isM = (node) => match(node, {
+    type : "CallExpression",
+    callee : {
+        name : "m"
+    }
+});
 
 // m.trust(...)
 exports.isMithrilTrust = makeCallExpressionCheck("m", "trust");
@@ -203,21 +208,23 @@ exports.isArg = function(node) {
 exports.isMithril = function(node) {
     var first = node.arguments[0];
     
-    // m()
+    // m( ... )
     if(!exports.isM(node)) {
         return false;
     }
     
     // m(".fooga" + ".wooga")
-    if(t.isBinaryExpression(first, { operator : "+" }) &&
-       exports.isValueLiteral(first.left) &&
-       exports.isValueLiteral(first.right)
-    ) {
-        return true;
-    }
+    // if(t.isBinaryExpression(first, { operator : "+" }) &&
+    //    exports.isValueLiteral(first.left) &&
+    //    exports.isValueLiteral(first.right)
+    // ) {
+    //     return true;
+    // }
     
-    // m(".fooga.wooga")
-    if(!t.isStringLiteral(first)) {
+    // m(identifier)
+    // m(function() { ... })
+    // etc
+    if(!match(first, { type : "StringLiteral" })) {
         return false;
     }
     
@@ -226,5 +233,6 @@ exports.isMithril = function(node) {
         return true;
     }
     
+    // m(".fooga", ... )
     return exports.isArg(node.arguments[1]);
 };
