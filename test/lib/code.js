@@ -1,12 +1,11 @@
 "use strict";
 
 var babel  = require("babel-core"),
-    assign = require("lodash.assign"),
     
     plugin = require("../../");
 
 module.exports = function(source, options) {
-    var result = babel.transform(source, assign({
+    var result = babel.transform(source, Object.assign({
             compact : true,
             plugins : [
                 plugin

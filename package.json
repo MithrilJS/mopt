@@ -27,7 +27,6 @@
     "eslint-config-arenanet": "^3.1.0",
     "eslint-plugin-import": "^2.2.0",
     "istanbul": "^0.4.0",
-    "lodash.assign": "^4.0.8",
     "mithril": "^1.0.0-rc.6",
     "mocha": "^3.2.0",
     "publish-please": "^2.2.0"
