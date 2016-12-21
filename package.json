@@ -3,15 +3,6 @@
   "version": "4.0.4",
   "description": "Babel plugin to statically optimize Mithril m() calls",
   "main": "./src/index.js",
-  "scripts": {
-    "test": "mocha",
-    "posttest": "npm run lint",
-    "lint": "eslint .",
-    "cover": "istanbul test --print both ./node_modules/mocha/bin/_mocha",
-    "preversion": "npm test",
-    "publish-please": "publish-please",
-    "prepublish": "publish-please guard"
-  },
   "author": "Pat Cavit <pcavit@arena.net>",
   "repository": "tivac/mithril-objectify",
   "license": "MIT",
@@ -21,6 +12,9 @@
     "ast",
     "babel-plugin"
   ],
+  "dependencies": {
+    "lodash.ismatchwith": "^4.4.0"
+  },
   "devDependencies": {
     "babel-core": "^6.21.0",
     "eslint": "^3.12.2",
@@ -30,6 +24,15 @@
     "mithril": "^1.0.0-rc.6",
     "mocha": "^3.2.0",
     "publish-please": "^2.2.0"
+  },
+  "scripts": {
+    "test": "mocha",
+    "posttest": "npm run lint",
+    "lint": "echo LINTING GOES HERE",
+    "cover": "istanbul test --print both ./node_modules/mocha/bin/_mocha",
+    "preversion": "npm test",
+    "publish-please": "publish-please",
+    "prepublish": "publish-please guard"
   },
   "eslintConfig": {
     "extends": "arenanet",
