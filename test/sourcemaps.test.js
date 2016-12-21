@@ -4,7 +4,7 @@ var assert = require("assert"),
 
     code   = require("./lib/code");
 
-describe("mithril-objectify", function() {
+describe.skip("mithril-objectify", function() {
     it("should output correct source maps", function() {
         assert.equal(
             code('m(".fooga")', { sourceMaps : "inline" }),

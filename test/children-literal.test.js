@@ -1,8 +1,6 @@
 "use strict";
 
-var assert = require("assert"),
-
-    code = require("./lib/code");
+var code = require("./lib/code");
 
 describe("mithril-objectify", function() {
     describe("Children", function() {
@@ -10,28 +8,32 @@ describe("mithril-objectify", function() {
             it("should optimize the empty selector", function() {
                 assert.deepEqual(
                     run('m("")'),
-                    m("")
+                    m.vnode("")
                 );
+            });
+
+            it.only("should optimize a selector containing a tag", function() {
+                expect(code(`m("p")`)).toBe(`m.vnode("p",undefined,undefined,[],undefined,undefined);`);
             });
 
             it("should optimize a selector containing only an id", function() {
                 assert.deepEqual(
-                    run('m("#fooga")'),
-                    m("#fooga")
+                    code('m("#fooga")'),
+                    `m.vnode("div", undefined, { id : "fooga" })`
                 );
             });
 
             it("should optimize a selector containing an attribute w/o a value", function() {
                 assert.deepEqual(
                     run('m("div[fooga]")'),
-                    m("div[fooga]")
+                    `m.vnode("div[fooga]")`
                 );
             });
 
             it("should support single literal children (string)", function() {
                 assert.deepEqual(
                     code('m("div", "test")'),
-                    m("div", "test")
+                    `m.vnode("div", "test")`
                 );
             });
 
@@ -106,35 +108,35 @@ describe("mithril-objectify", function() {
             it("should support single literal children (undefined)", function() {
                 assert.deepEqual(
                     code('m("div", [ undefined ])'),
-                    m("div", [ undefined ])
+                    `m.vnode("div", [ undefined ])`
                 );
             });
             
             it("should support single literal children (object)", function() {
                 assert.deepEqual(
                     code('m("div", [ { foo : "bar" } ])'),
-                    m("div", [ { foo : "bar" } ])
+                    `m.vnode("div", [ { foo : "bar" } ])`
                 );
             });
             
             it("should multiple literal children", function() {
                 assert.deepEqual(
                     code('m("div", "test", "test2")'),
-                    m("div", "test", "test2")
+                    `m.vnode("div", "test", "test2")`
                 );
             });
             
             it("should support attrs + single children", function() {
                 assert.deepEqual(
                     code('m("div", { title : "bar" }, "test")'),
-                    m("div", { title : "bar" }, "test")
+                    `m.vnode("div", { title : "bar" }, "test")`
                 );
             });
             
             it("should support attrs + multiple children", function() {
                 assert.deepEqual(
                     code('m("div", { title : "bar" }, "test0", "test1", "test2", "test3")'),
-                    m("div", { title : "bar" }, "test0", "test1", "test2", "test3")
+                    `m.vnode("div", { title : "bar" }, "test0", "test1", "test2", "test3")`
                 );
             });
         });

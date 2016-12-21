@@ -4,7 +4,7 @@ var assert = require("assert"),
 
     code   = require("./lib/code");
 
-describe("mithril-objectify", function() {
+describe.skip("mithril-objectify", function() {
     describe("JSON function children", function() {
         it("should know that JSON.stringify is safe", function() {
             assert.equal(

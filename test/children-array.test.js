@@ -1,28 +1,26 @@
 "use strict";
 
-var assert = require("assert"),
+var code = require("./lib/code");
 
-    code = require("./lib/code");
-
-describe("mithril-objectify", function() {
+describe.skip("mithril-objectify", function() {
     describe("Children", function() {
         describe("Array Children", function() {
             it("should support array children", function() {
                 assert.deepEqual(
                     code('m("div", [ "test" ])'),
-                    m("div", [ "test" ])
+                    `m.vnode("div", [ "test" ])`
                 );
                 
                 assert.deepEqual(
                     code('m("div", [ 1, 2, 3 ])'),
-                    m("div", [ 1, 2, 3 ])
+                    `m.vnode("div", [ 1, 2, 3 ])`
                 );
             });
             
             it("should support attrs + array children", function() {
                 assert.deepEqual(
                     code('m("div", { title : "bar" }, [ "test" ])'),
-                    m("div", { title : "bar" }, [ "test" ])
+                    `m.vnode("div", { title : "bar" }, [ "test" ])`
                 );
             });
 
