@@ -1,13 +1,13 @@
 {
   "name": "mopt",
   "version": "4.0.4",
-  "description": "Babel plugin to optimize Mithril m() calls into simple JS objects",
+  "description": "Babel plugin to statically optimize Mithril m() calls",
   "main": "./src/index.js",
   "scripts": {
-    "test": "npm run lint && npm run mocha",
+    "test": "mocha",
+    "posttest": "npm run lint",
     "lint": "eslint .",
     "cover": "istanbul test --print both ./node_modules/mocha/bin/_mocha",
-    "mocha": "mocha",
     "preversion": "npm test",
     "publish-please": "publish-please",
     "prepublish": "publish-please guard"
@@ -22,15 +22,15 @@
     "babel-plugin"
   ],
   "devDependencies": {
-    "babel-core": "^6.8.0",
-    "eslint": "^2.5.3",
-    "eslint-config-arenanet": "^2.0.3",
-    "eslint-plugin-import": "^1.8.1",
+    "babel-core": "^6.21.0",
+    "eslint": "^3.12.2",
+    "eslint-config-arenanet": "^3.1.0",
+    "eslint-plugin-import": "^2.2.0",
     "istanbul": "^0.4.0",
     "lodash.assign": "^4.0.8",
-    "mithril": "github:lhorie/mithril.js#rewrite",
-    "mocha": "^2.4.5",
-    "publish-please": "^2.1.4"
+    "mithril": "^1.0.0-rc.6",
+    "mocha": "^3.2.0",
+    "publish-please": "^2.2.0"
   },
   "eslintConfig": {
     "extends": "arenanet",
@@ -42,7 +42,12 @@
       "mocha": true
     },
     "rules": {
-      "import/no-unresolved": [2, { "commonjs": true }]
+      "import/no-unresolved": [
+        "error",
+        {
+          "commonjs": true
+        }
+      ]
     }
   }
 }
