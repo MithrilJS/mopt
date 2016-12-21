@@ -1,7 +1,5 @@
 "use strict";
 
-var t = require("babel-core").types;
-
 exports.state = function() {
     return {
         tag   : t.stringLiteral("div"),
