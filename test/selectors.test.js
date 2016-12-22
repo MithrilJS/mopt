@@ -26,6 +26,13 @@ describe("mithril-objectify", function() {
                 `m.vnode("div",undefined,{className:"foo"},[],undefined,undefined);`
             );
         });
+
+        it("should support id selectors", function() {
+            assert.equal(
+                code(`m("#foo")`),
+                `m.vnode("div",undefined,{id:"foo"},[],undefined,undefined);`
+            );
+        });
         
         it("should support empty attribute selectors", function() {
             assert.equal(
@@ -52,6 +59,13 @@ describe("mithril-objectify", function() {
             assert.equal(
                 code(`m('[title="bar"]')`),
                 `m.vnode("div",undefined,{title:"bar"},[],undefined,undefined);`
+            );
+        });
+
+        it("should ignore non-string selectors", function() {
+            assert.equal(
+                code(`m(fooga)`),
+                `m(fooga);`
             );
         });
     });
