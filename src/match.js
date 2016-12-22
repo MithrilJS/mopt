@@ -6,7 +6,7 @@ var match = require("lodash.ismatchwith");
 module.exports = (target, filter) =>
     match(target, filter, (val, test) => {
         // Support functions for comparisons
-        if(typeof val !== "object" && typeof test === "function") {
+        if(typeof test === "function") {
             return test(val);
         }
     });

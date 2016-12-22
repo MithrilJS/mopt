@@ -139,75 +139,71 @@ exports.isSafeTag = function(state) {
     return unsafeTags.indexOf(state.tag.value) === -1;
 };
 
+exports.isText = (node) => exports.isValueLiteral(node) || exports.isStringExpression(node);
+
+// m.trust(...)
+// exports.isMithrilTrust = makeCallExpressionCheck("m", "trust");
+
 // m( ... )
 exports.isM = (node) => match(node, {
-    type : "CallExpression",
+    type   : "CallExpression",
     callee : {
         name : "m"
     }
 });
 
-// m.trust(...)
-exports.isMithrilTrust = makeCallExpressionCheck("m", "trust");
-
-// Valid children nodes that we can optimize
-exports.isChildren = function(node) {
-    // m(".fooga", [ ... ])
-    // m(".fooga", "wooga")
-    // m(".fooga", "wooga" + "booga")
-    // m(".fooga", 10)
-    // m(".fooga", true)
+// Are these valid children nodes that we understand?
+exports.isChildren = (nodes) => nodes.every((node) => {
+    // [ ... ]
+    // "wooga"
+    // "wooga" + "booga"
+    // 10
+    // true
     if(childrenTypes.indexOf(node.type) > -1) {
         return true;
     }
     
-    // m(".fooga", m(".booga"), ...)
-    if(exports.isM(node)) {
+    // m(".booga"), ...
+    if(exports.isMithril(node)) {
         return true;
     }
     
-    // m(".fooga", [ ... ].map)
+    // [ ... ].map
     if(exports.isArrayExpression(node)) {
         return true;
     }
     
-    // m(".fooga", "foo".replace())
+    // "foo".replace()
     if(exports.isStringExpression(node)) {
         return true;
     }
     
-    // m(".fooga", foo ? "bar" : "baz")
+    // foo ? "bar" : "baz"
     if(exports.isConditionalExpression(node)) {
         return true;
     }
     
-    // m(".fooga", m.trust("<div>"))
-    if(exports.isMithrilTrust(node)) {
-        return true;
-    }
+    // m.trust("<div>")
+    // if(exports.isMithrilTrust(node)) {
+    //     return true;
+    // }
     
-    // m(".fooga", JSON.stringify({}))
+    // JSON.stringify({})
     if(exports.isJsonStringify(node)) {
         return true;
     }
     
     return false;
-};
+});
 
-// Is the param an argument, or children?
-exports.isArg = function(node) {
+// Is this node an attributes object?
+exports.isAttributes = function(node) {
     // m(".fooga", { ... })
-    if(t.isObjectExpression(node)) {
-        return true;
-    }
-    
-    return exports.isChildren(node);
+    return t.isObjectExpression(node);
 };
 
-// Test to see if a node is a passable mithril invocation
+// Is this node a mithril invocation?
 exports.isMithril = function(node) {
-    var first = node.arguments[0];
-    
     // m( ... )
     if(!exports.isM(node)) {
         return false;
@@ -221,10 +217,8 @@ exports.isMithril = function(node) {
     //     return true;
     // }
     
-    // m(identifier)
-    // m(function() { ... })
-    // etc
-    if(!match(first, { type : "StringLiteral" })) {
+    // m("...")
+    if(!match(node.arguments[0], { type : "StringLiteral" })) {
         return false;
     }
     
@@ -233,6 +227,16 @@ exports.isMithril = function(node) {
         return true;
     }
     
-    // m(".fooga", ... )
-    return exports.isArg(node.arguments[1]);
+    if(node.arguments.length > 2) {
+        // m(".fooga", { ... }, "wooga" )
+        // m(".fooga", "wooga", "booga")
+        // m(".fooga", "wooga", "booga", ...)
+        return exports.isAttributes(node.arguments[1]) ?
+            exports.isChildren(node.arguments.slice(2)) :
+            exports.isChildren(node.arguments.slice(1));
+    }
+
+    // m(".fooga", { ... } )
+    // m(".fooga", "test")
+    return exports.isAttributes(node.arguments[1]) || exports.isChildren(node.arguments.slice(1));
 };

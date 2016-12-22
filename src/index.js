@@ -1,98 +1,76 @@
 "use strict";
 
-var valid = require("./valid.js"),
-    t;
-
-function parseSelector(node) {
-    var attrs = {},
-        css   = [],
-        src   = node.arguments[0].value,
-        tag   = "div";
-    
-    if(!src) {
-        return {
-            tag
-        };
-    }
-    
-    src.match(/(?:(^|#|\.)([^#\.\[\]]+))|(\[.+?\])/g).forEach(function(match) {
-        var lead = match.charAt(0),
-            parts;
-
-        if(lead === "#") {
-            attrs.id = match.slice(1);
-
-            return;
-        }
-
-        if(lead === ".") {
-            css.push(match.slice(1));
-
-            return;
-        }
-
-        if(lead === "[") {
-            parts = match.match(/\[(.+?)(?:=("|'|)(.*?)\2)?\]/);
-            
-            attrs[parts[1]] = parts[3] ? parts[3] : true;
-            
-            return;
-        }
-
-        tag = match;
-    });
-    
-    if(css.length > 0) {
-        attrs.className = css.join(" ");
-    }
-
-    return {
-        tag,
-
-        // Only want this to have a value if there was something there
-        attrs : Object.keys(attrs).length ? attrs : null
-    };
-}
+var valid  = require("./valid.js"),
+    parse  = require("./parse.js"),
+    create = require("./create.js");
 
 module.exports = function(babel) {
-    // make available to other fns (yes this is hella weird shut up)
-    t = babel.types;
+    var t     = babel.types,
+        undef = t.identifier("undefined");
 
     return {
         visitor : {
             CallExpression : {
                 exit(path) {
-                    var selector;
+                    // Vnode(tag, key, attrs, children, text, dom)
+                    var selector, args, merged,
+                        tag      = undef,
+                        key      = undef,
+                        attrs    = undef,
+                        children = undef,
+                        text     = undef,
+                        dom      = undef;
+                    
 
                     if(!valid.isMithril(path.node)) {
                         return;
                     }
-
-                    selector = parseSelector(path.node);
-
-                    console.log(selector);
                     
-                    return path.replaceWith(t.callExpression(
+                    selector = parse.selector(t, path.node);
+                    args = parse.args(t, path.node);
+
+                    // Concat all attrs props together
+                    merged = selector.attrs.concat(args.attrs);
+
+                    tag = selector.tag;
+                    
+                    // TODO: support finding key from `merged`
+                    
+                    if(merged.length) {
+                        attrs = t.objectExpression(merged);
+                    }
+
+                    if(args.children) {
+                        children = args.children;
+                    } else if(!args.text) {
+                        children = t.arrayExpression();
+                    }
+
+                    if(args.text) {
+                        text = args.text;
+                    }
+
+                    // console.log([
+                    //     tag,
+                    //     key,
+                    //     attrs,
+                    //     children,
+                    //     text,
+                    //     dom
+                    // ]);
+
+                    path.replaceWith(t.callExpression(
                         t.memberExpression(
                             t.identifier("m"),
                             t.identifier("vnode")
                         ),
                         [
-                            t.stringLiteral(selector.tag),
-                            t.identifier("undefined"),
-                            selector.attrs ?
-                                t.objectExpression(
-                                    Object.keys(selector.attrs).map((key) =>
-                                        t.objectProperty(
-                                            t.identifier(key),
-                                            t.stringLiteral(selector.attrs[key])
-                                        )
-                                    )
-                                ) :
-                                t.identifier("undefined"),
-                            t.arrayExpression(),
-                            t.identifier("undefined"),
-                            t.identifier("undefined")
+                            tag,
+                            key,
+                            attrs,
+                            children,
+                            text,
+                            dom
                         ]
                     ));
                 }

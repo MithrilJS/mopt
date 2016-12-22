@@ -49,6 +49,13 @@
         {
           "commonjs": true
         }
+      ],
+      "quotes": [
+        "warning",
+        "double",
+        {
+          "allowTemplateLiterals": true
+        }
       ]
     }
   }
