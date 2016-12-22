@@ -8,14 +8,14 @@ describe.skip("mithril-objectify", function() {
     describe("SVG", function() {
         it("should support svg selectors", function() {
             assert.equal(
-                code('m("svg")'),
+                code(`m("svg")`),
                 `m.vnode("svg")`
             );
         });
         
         it("should support nested svg selectors", function() {
             assert.equal(
-                code('m("svg", m("g"))'),
+                code(`m("svg", m("g"))`),
                 `m.vnode("svg", m("g"))`
             );
         });
