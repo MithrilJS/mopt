@@ -16,26 +16,14 @@ mopt [![NPM Version](https://img.shields.io/npm/v/mopt.svg)](https://www.npmjs.c
     </a>
 </p>
 
-A [babel](babeljs.io) plugin to statically optimize [mithril](http://mithril.js.org) hyperscript function invocations into simple objects.
+A [babel](babeljs.io) plugin to statically optimize [mithril](http://mithril.js.org) hyperscript function invocations.
 
 ```js
 // This hyperscript function invocation
-m(".fooga")
+m(".fooga");
 
-// Becomes this static JS object!
-({
-    tag: "div",
-    attrs: {
-        className: "fooga",
-    }
-    children: [],
-    dom: undefined,
-    domSize: undefined,
-    events: undefined,
-    key: undefined,
-    state: {},
-    text: undefined
-});
+// Gets optimized into
+m.vnode("div",undefined,{className:"fooga"},undefined,undefined,undefined);
 ```
 Please file an issue if you come across any cases that this doesn't handle, I'd love to improve the number of structures I can rewrite!
 
