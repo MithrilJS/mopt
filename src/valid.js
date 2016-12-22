@@ -19,16 +19,36 @@ exports.isTextArray = (node) =>
 exports.isM = (node) =>
     match(node, {
         type   : "CallExpression",
+        callee : { name : "m" }
+    });
+
+exports.isMVnode = (node) =>
+    match(node, {
+        type   : "CallExpression",
         callee : {
-            name : "m"
+            type     : "MemberExpression",
+            object   : { name : "m" },
+            property : { name : "vnode" }
         }
     });
 
 // Is this a valid child node that we understand?
-// TODO: add support for single-item arrays
-exports.isChild = (node) =>
-    exports.isText(node) ||
-    exports.isTextArray(node);
+exports.isChild = (node) => {
+    if(
+        exports.isText(node) ||
+        exports.isTextArray(node) ||
+        exports.isM(node) ||
+        exports.isMVnode(node)
+    ) {
+        return true;
+    }
+
+    if(match(node, { type : "ArrayExpression" })) {
+        return exports.isChildren(node.elements);
+    }
+
+    return false;
+};
 
 // Are these valid children nodes that we understand?
 exports.isChildren = (nodes) =>

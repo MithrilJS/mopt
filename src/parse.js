@@ -1,6 +1,5 @@
 var valid  = require("./valid.js"),
     create = require("./create.js"),
-    match  = require("./match.js"),
     
     selectorRegex = /(?:(^|#|\.)([^#\.\[\]]+))|(\[.+?\])/g,
     attrRegex     = /\[(.+?)(?:=("|'|)(.*?)\2)?\]/;
@@ -85,30 +84,38 @@ exports.args = function parseChildren(types, node) {
     if(children.length === 1) {
         if(valid.isText(children[0])) {
             out.text = children[0];
+
+            return out;
         }
 
         // m("...", [ 1 ])
-        // m("...", [ 1, 2, 3 ])
-        if(match(children[0], {
-            type     : "ArrayExpression",
-            elements : [
-                valid.isText
-            ]
-        })) {
+        // m("...", [ 1, "foo", true ])
+        if(
+            types.isArrayExpression(children[0]) &&
+            children[0].elements.every(valid.isText)
+        ) {
             if(children[0].elements.length === 1) {
                 out.text = children[0].elements[0];
-            } else {
-                out.children = create.normalize(types, children[0]);
+
+                return out;
             }
+            
+            out.children = types.arrayExpression(
+                children[0].elements.map((el) => create.textVnode(types, el))
+            );
+
+            return out;
         }
+
+        out.children = types.isArrayExpression(children[0]) ?
+            children[0] :
+            types.arrayExpression(children);
 
         return out;
     }
     
     if(children.length) {
         out.children = create.normalize(types, types.arrayExpression(children));
-
-        return out;
     }
 
     return out;

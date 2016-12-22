@@ -35,67 +35,65 @@ module.exports = function(babel) {
 
     return {
         visitor : {
-            CallExpression : {
-                exit(path) {
-                    // Vnode(tag, key, attrs, children, text, dom)
-                    var selector, args,
-                        tag      = undef,
-                        key      = undef,
-                        attrs    = undef,
-                        children = undef,
-                        text     = undef,
-                        dom      = undef;
-                    
+            CallExpression(path) {
+                // Vnode(tag, key, attrs, children, text, dom)
+                var selector, args,
+                    tag      = undef,
+                    key      = undef,
+                    attrs    = undef,
+                    children = undef,
+                    text     = undef,
+                    dom      = undef;
+                
 
-                    if(!valid.isMithril(path.node)) {
-                        return;
-                    }
-                    
-                    selector = parse.selector(t, path.node);
-                    args = parse.args(t, path.node);
-
-                    attrs = mergeAttrs(t, [ selector.attrs, args.attrs ]);
-                    
-                    tag = selector.tag;
-                    
-                    // TODO: support finding key from `merged`
-                    
-                    attrs = attrs.length ? t.objectExpression(attrs) : undef;
-
-                    if(args.children) {
-                        children = args.children;
-                    } else if(!args.text) {
-                        children = t.arrayExpression();
-                    }
-
-                    if(args.text) {
-                        text = args.text;
-                    }
-
-                    // console.log([
-                    //     tag,
-                    //     key,
-                    //     attrs,
-                    //     children,
-                    //     text,
-                    //     dom
-                    // ]);
-
-                    path.replaceWith(t.callExpression(
-                        t.memberExpression(
-                            t.identifier("m"),
-                            t.identifier("vnode")
-                        ),
-                        [
-                            tag,
-                            key,
-                            attrs,
-                            children,
-                            text,
-                            dom
-                        ]
-                    ));
+                if(!valid.isMithril(path.node)) {
+                    return;
                 }
+                
+                selector = parse.selector(t, path.node);
+                args = parse.args(t, path.node);
+
+                attrs = mergeAttrs(t, [ selector.attrs, args.attrs ]);
+                
+                tag = selector.tag;
+                
+                // TODO: support finding key from `merged`
+                
+                attrs = attrs.length ? t.objectExpression(attrs) : undef;
+
+                if(args.children) {
+                    children = args.children;
+                } else if(!args.text) {
+                    children = t.arrayExpression();
+                }
+
+                if(args.text) {
+                    text = args.text;
+                }
+
+                // console.log([
+                //     tag,
+                //     key,
+                //     attrs,
+                //     children,
+                //     text,
+                //     dom
+                // ]);
+
+                path.replaceWith(t.callExpression(
+                    t.memberExpression(
+                        t.identifier("m"),
+                        t.identifier("vnode")
+                    ),
+                    [
+                        tag,
+                        key,
+                        attrs,
+                        children,
+                        text,
+                        dom
+                    ]
+                ));
             }
         }
     };
