@@ -31,7 +31,7 @@ module.exports = function(babel) {
 
                     // Concat all attrs props together
                     merged = selector.attrs.concat(args.attrs);
-
+                    
                     tag = selector.tag;
                     
                     // TODO: support finding key from `merged`

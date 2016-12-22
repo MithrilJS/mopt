@@ -7,7 +7,7 @@ var assert = require("assert"),
 describe("mithril-objectify", function() {
     describe("Children", function() {
         describe("literal children", function() {
-            it.only("should support single literal children (string)", function() {
+            it("should support single literal children (string)", function() {
                 assert.equal(
                     code('m("div", "test")'),
                     `m.vnode("div",undefined,undefined,undefined,"test",undefined);`

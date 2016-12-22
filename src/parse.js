@@ -66,9 +66,19 @@ exports.args = function parseChildren(types, node) {
             children : null
         };
     
-    // m("...", { ... })
+    // m("...", {...})
     if(valid.isAttributes(node.arguments[1])) {
         out.attrs = out.attrs.concat(node.arguments[1].properties);
+        
+        // m("...", {...}, "...")
+        if(valid.isText(node.arguments[2])) {
+            out.text = node.arguments[2];
+        }
+    }
+
+    // m("...", "...")
+    if(valid.isText(node.arguments[1])) {
+        out.text = node.arguments[1];
     }
 
     return out;
