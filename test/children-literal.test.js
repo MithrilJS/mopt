@@ -28,10 +28,10 @@ describe("mithril-objectify", function() {
                 );
             });
 
-            it.skip("should support multiple literal children", function() {
+            it("should support multiple literal children", function() {
                 assert.equal(
                     code('m("div", "test", "test2")'),
-                    `m.vnode("div",undefined,undefined,[m.vnode("#",undefined,undefined,undefined,"test",undefined),m.vnode("#",undefined,undefined,undefined,"test2",undefined)],undefined,undefined);`
+                    `m.vnode("div",undefined,undefined,m.vnode.normalizeChildren(["test","test2"]),undefined,undefined);`
                 );
             });
             

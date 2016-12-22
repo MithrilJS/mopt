@@ -64,21 +64,41 @@ exports.args = function parseChildren(types, node) {
             attrs    : [],
             text     : null,
             children : null
-        };
+        },
+        start = 1,
+        children;
     
+    // m("...", "...")
+    // m("...", "...", "...")
     // m("...", {...})
+    // m("...", {...}, "...")
+    // m("...", {...}, "...", "...")
+
     if(valid.isAttributes(node.arguments[1])) {
         out.attrs = out.attrs.concat(node.arguments[1].properties);
-        
-        // m("...", {...}, "...")
-        if(valid.isText(node.arguments[2])) {
-            out.text = node.arguments[2];
-        }
+
+        start = 2;
     }
 
-    // m("...", "...")
-    if(valid.isText(node.arguments[1])) {
-        out.text = node.arguments[1];
+    children = node.arguments.slice(start);
+
+    if(children.length === 1) {
+        if(valid.isText(children[0])) {
+            out.text = children[0];
+        }
+    } else if(children.length) {
+        out.children = types.callExpression(
+            types.memberExpression(
+                types.memberExpression(
+                    types.identifier("m"),
+                    types.identifier("vnode")
+                ),
+                types.identifier("normalizeChildren")
+            ),
+            [
+                types.arrayExpression(children)
+            ]
+        );
     }
 
     return out;
