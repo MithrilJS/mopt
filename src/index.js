@@ -1,8 +1,7 @@
 "use strict";
 
 var valid  = require("./valid.js"),
-    parse  = require("./parse.js"),
-    create = require("./create.js");
+    parse  = require("./parse.js");
 
 module.exports = function(babel) {
     var t     = babel.types,

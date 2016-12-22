@@ -17,27 +17,27 @@ exports.selector = function parseSelector(types, node) {
         return out;
     }
     
-    src.match(selectorRegex).forEach(function(match) {
-        var lead = match.charAt(0),
+    src.match(selectorRegex).forEach(function(part) {
+        var lead = part.charAt(0),
             parts;
 
         if(lead === "#") {
             // TODO: add location info
             out.attrs.push(
-                create.prop(types, "id", types.stringLiteral(match.slice(1)))
+                create.prop(types, "id", types.stringLiteral(part.slice(1)))
             );
 
             return;
         }
 
         if(lead === ".") {
-            css.push(match.slice(1));
+            css.push(part.slice(1));
 
             return;
         }
 
         if(lead === "[") {
-            parts = match.match(attrRegex);
+            parts = part.match(attrRegex);
             
             // TODO: add location info
             out.attrs.push(
@@ -47,7 +47,7 @@ exports.selector = function parseSelector(types, node) {
             return;
         }
 
-        out.tag = create.literal(types, match);
+        out.tag = create.literal(types, part);
     });
     
     if(css.length > 0) {
@@ -65,6 +65,7 @@ exports.selector = function parseSelector(types, node) {
 // m("...", {...}, "...")
 // m("...", {...}, "...", ...)
 exports.args = function parseChildren(types, node) {
+    /* eslint max-statements:off */
     var out = {
             attrs    : [],
             text     : null,
