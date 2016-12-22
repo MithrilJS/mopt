@@ -33,7 +33,7 @@
     "cover": "istanbul cover --print both ./node_modules/mocha/bin/_mocha",
     "preversion": "npm test",
     "version": "changes",
-    "postversion": "gist push --follow-tags"
+    "postversion": "git push --follow-tags"
   },
   "eslintConfig": {
     "extends": "arenanet",
