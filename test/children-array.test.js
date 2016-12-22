@@ -6,7 +6,7 @@ var assert = require("assert"),
 
 describe("mithril-objectify", function() {
     describe("Children", function() {
-        describe("Array Children", function() {
+        describe.skip("Array Children", function() {
             it("should support array children w/ 1 entry", function() {
                 assert.equal(
                     code('m("div", [ "test" ])'),
@@ -14,7 +14,7 @@ describe("mithril-objectify", function() {
                 );
             });
 
-            it.skip("should support array children w/ > 1 entry", function() {
+            it("should support array children w/ > 1 entry", function() {
                 assert.equal(
                     code('m("div", [ 1, 2, 3 ])'),
                     `m.vnode("div", [ 1, 2, 3 ])`
@@ -28,14 +28,14 @@ describe("mithril-objectify", function() {
                 );
             });
 
-            it.skip("should support attrs + array children w/ > 1 entry", function() {
+            it("should support attrs + array children w/ > 1 entry", function() {
                 assert.equal(
                     code('m("div", { title : "bar" }, [ 1, 2, 3 ])'),
                     `m.vnode("div", [ 1, 2, 3 ])`
                 );
             });
 
-            it.skip("should unwrap Array.prototype children that return an array", function() {
+            it("should unwrap Array.prototype children that return an array", function() {
                 assert.equal(
                     code('m("div", [ 1, 2 ].map(function(val) { return val; }))'),
                     '({tag:"div",attrs:undefined,children:[1,2].map(function(val){return val;}),dom:undefined,domSize:undefined,events:undefined,key:undefined,state:{},text:undefined});'
@@ -52,14 +52,14 @@ describe("mithril-objectify", function() {
                 );
             });
             
-            it.skip("should support Array.prototype comprehensions when there are multiple children", function() {
+            it("should support Array.prototype comprehensions when there are multiple children", function() {
                 assert.equal(
                     code('m("div", [ 1, 2 ], [ 3, 4 ].map(function(val) { return val; }))'),
                     '({tag:"div",attrs:undefined,children:[{tag:"[",attrs:undefined,children:[{tag:"#",attrs:undefined,children:1,dom:undefined,domSize:undefined,events:undefined,key:undefined,state:{},text:undefined},{tag:"#",attrs:undefined,children:2,dom:undefined,domSize:undefined,events:undefined,key:undefined,state:{},text:undefined}],dom:undefined,domSize:undefined,events:undefined,key:undefined,state:{},text:undefined},{tag:"[",attrs:undefined,children:[3,4].map(function(val){return val;}),dom:undefined,domSize:undefined,events:undefined,key:undefined,state:{},text:undefined}],dom:undefined,domSize:undefined,events:undefined,key:undefined,state:{},text:undefined});'
                 );
             });
             
-            it.skip("should handle Array.prototype methods that return a string", function() {
+            it("should handle Array.prototype methods that return a string", function() {
                 assert.equal(
                     code('m("div", [ 1, 2 ].join(""))'),
                     '({tag:"div",attrs:undefined,children:undefined,dom:undefined,domSize:undefined,events:undefined,key:undefined,state:{},text:[1,2].join("")});'
@@ -72,7 +72,7 @@ describe("mithril-objectify", function() {
                 );
             });
             
-            it.skip("shouldn't unwrap Array.prototype children when they don't return an array", function() {
+            it("shouldn't unwrap Array.prototype children when they don't return an array", function() {
                 assert.equal(
                     code('m("div", [ 1, 2 ].forEach(function(val) { return val === 1 }))'),
                     'm("div",[1,2].forEach(function(val){return val===1;}));'
@@ -84,7 +84,7 @@ describe("mithril-objectify", function() {
                 );
             });
             
-            it.skip("shouldn't attempt to transform array.prototype methods on unknown targets", function() {
+            it("shouldn't attempt to transform array.prototype methods on unknown targets", function() {
                 assert.equal(
                     code('m("div", a.map(function(val) { return val; }))'),
                     'm("div",a.map(function(val){return val;}));'
