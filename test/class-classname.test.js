@@ -4,8 +4,15 @@ var assert = require("assert"),
 
     code = require("./lib/code");
 
-describe("mithril-objectify", function() {
-    describe("Attributes: class vs className", function() {
+describe("Attributes", function() {
+    describe("class vs className", function() {
+        it("should combine attr class & attr className", function() {
+            assert.equal(
+                code(`m("div", { className : "foo", class : "bar" })`),
+                `m.vnode("div",undefined,{className:"foo bar"},[],undefined,undefined);`
+            );
+        });
+        
         it("should combine tag class & attr class", function() {
             assert.equal(
                 code(`m(".foo", { class : "bar" })`),
