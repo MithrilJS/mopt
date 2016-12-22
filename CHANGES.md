@@ -2,6 +2,7 @@
 
 ## 4.1.3
 
+- Working through some release weirdness, sorry for the noise.
 
 ## 4.1.2
 
@@ -26,7 +27,3 @@
 ## 4.0.5
 
 - Starting over, this is a test release :construction: :warning: :zap: :skull:
-
-
-
-
