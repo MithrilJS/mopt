@@ -7,7 +7,7 @@ exports.isText = (node) =>
         type : (val) => val === "StringLiteral" || val === "NumericLiteral" || val === "BooleanLiteral"
     });
 
-// m( ... )
+// m(...)
 exports.isM = (node) =>
     match(node, {
         type   : "CallExpression",
@@ -33,7 +33,7 @@ exports.isAttributes = (node) =>
 
 // Is this node a mithril invocation?
 exports.isMithril = (node) => {
-    // m( ... )
+    // m(...)
     if(!exports.isM(node)) {
         return false;
     }
@@ -43,12 +43,13 @@ exports.isMithril = (node) => {
         return false;
     }
     
-    // m(".fooga")
+    // m("...")
     if(node.arguments.length === 1) {
         return true;
     }
     
-    // m(".fooga", { ... } )
-    // m(".fooga", "test")
+    // m("...", {...} )
+    // m("...", "test")
+    // TODO: m("...", [...])
     return exports.isAttributes(node.arguments[1]) || exports.isChild(node.arguments[1]);
 };

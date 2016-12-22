@@ -86,6 +86,18 @@ exports.args = function parseChildren(types, node) {
         if(valid.isText(children[0])) {
             out.text = children[0];
         }
+
+        if(
+            match(children[0], {
+                type : "ArrayExpression",
+                elements : [
+                    valid.isText
+                ]
+            }) &&
+            children[0].elements.length === 1
+        ) {
+            out.text = children[0].elements[0];
+        }
     } else if(children.length) {
         out.children = types.callExpression(
             types.memberExpression(
