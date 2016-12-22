@@ -66,44 +66,8 @@ exports.args = function parseChildren(types, node) {
             children : null
         };
     
-    if(node.arguments.length === 2) {
-        // m("...", { ... })
-        if(valid.isAttributes(node.arguments[1])) {
-            out.attrs = out.attrs.concat(node.arguments[1].properties);
-        }
-        
-        // m("...", "foo")
-        if(valid.isText(node.arguments[1])) {
-            out.text = node.arguments[1];
-        }
-
-        // m("...", [ ... ])
-        // m("...", [ ... ].concat(...))
-        // m("...", [ ... ].slice(...))
-        // etc
-        if(
-            types.isArrayExpression(node.arguments[1]) ||
-            valid.isArrayExpressionArray(node.arguments[1])
-        ) {
-            out.children = node.arguments[1];
-        }
-
-        return out;
-    }
-
-    // m("...", { ... }, "foo")
-    if(
-        node.arguments.length === 3 &&
-        valid.isAttributes(node.arguments[1]) &&
-        valid.isText(node.arguments[2])
-    ) {
-        out.attrs = out.attrs.concat(node.arguments[1].properties);
-        out.text = node.arguments[2];
-
-        return out;
-    }
-
-    if(valid.isAttribute(node.arguments[1])) {
+    // m("...", { ... })
+    if(valid.isAttributes(node.arguments[1])) {
         out.attrs = out.attrs.concat(node.arguments[1].properties);
     }
 

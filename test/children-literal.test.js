@@ -6,71 +6,43 @@ var assert = require("assert"),
 
 describe("mithril-objectify", function() {
     describe("Children", function() {
-        describe.only("literal children", function() {
-            it("should support the empty selector", function() {
-                assert.equal(
-                    code('m("")'),
-                    `m.vnode("div",undefined,undefined,[],undefined,undefined);`
-                );
-            });
-
-            it("should support a selector containing a tag", function() {
-                assert.equal(
-                    code(`m("p")`),
-                    `m.vnode("p",undefined,undefined,[],undefined,undefined);`
-                );
-            });
-
-            it("should support a selector containing only an id", function() {
-                assert.equal(
-                    code('m("#fooga")'),
-                    `m.vnode("div",undefined,{id:"fooga"},[],undefined,undefined);`
-                );
-            });
-
-            it("should support a selector containing an attribute w/o a value", function() {
-                assert.equal(
-                    code('m("div[fooga]")'),
-                    `m.vnode("div",undefined,{fooga:true},[],undefined,undefined);`
-                );
-            });
-
-            it("should support single literal children (string)", function() {
+        describe("literal children", function() {
+            it.only("should support single literal children (string)", function() {
                 assert.equal(
                     code('m("div", "test")'),
                     `m.vnode("div",undefined,undefined,undefined,"test",undefined);`
                 );
             });
 
-            it("should support single literal children (undefined)", function() {
+            it("should support single literal children (number)", function() {
                 assert.equal(
-                    code('m("div", [ undefined ])'),
-                    `m.vnode("div",undefined,undefined,[undefined],undefined,undefined);`
+                    code('m("div", 1)'),
+                    `m.vnode("div",undefined,undefined,undefined,1,undefined);`
                 );
             });
-            
-            it("should support single literal children (object)", function() {
+
+            it("should support single literal children (boolean)", function() {
                 assert.equal(
-                    code('m("div", [ { foo : "bar" } ])'),
-                    `m.vnode("div",undefined,undefined,[{foo:"bar"}],undefined,undefined);`
+                    code('m("div", true)'),
+                    `m.vnode("div",undefined,undefined,undefined,true,undefined);`
                 );
             });
-            
-            it.only("should support multiple literal children", function() {
+
+            it.skip("should support multiple literal children", function() {
                 assert.equal(
                     code('m("div", "test", "test2")'),
                     `m.vnode("div",undefined,undefined,[m.vnode("#",undefined,undefined,undefined,"test",undefined),m.vnode("#",undefined,undefined,undefined,"test2",undefined)],undefined,undefined);`
                 );
             });
             
-            it("should support attrs + single children", function() {
+            it("should support attrs + single literal children children", function() {
                 assert.equal(
                     code('m("div", { title : "bar" }, "test")'),
                     `m.vnode("div",undefined,{title:"bar"},undefined,"test",undefined);`
                 );
             });
             
-            it("should support attrs + multiple children", function() {
+            it.skip("should support attrs + multiple children", function() {
                 assert.equal(
                     code('m("div", { title : "bar" }, "test0", "test1", "test2", "test3")'),
                     `m.vnode("div", { title : "bar" }, "test0", "test1", "test2", "test3")`

@@ -9,7 +9,10 @@ module.exports = function(source, options) {
             compact : true,
             plugins : [
                 plugin
-            ]
+            ],
+            generatorOpts : {
+                quotes : "double"
+            }
         }, options || {}));
     
     return result.code;
