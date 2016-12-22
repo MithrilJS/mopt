@@ -5,28 +5,40 @@ var valid  = require("./valid.js"),
     match  = require("./match.js"),
     create = require("./create.js");
 
-function mergeAttrs(types, buckets) {
-    // Concat all attrs props together
+function partition(array, test) {
+    var success = [],
+        failure = [];
+    
+    array.forEach((val) => (test(val) ?
+        success.push(val) :
+        failure.push(val)
+    ));
+
+    return {
+        success,
+        failure
+    };
+}
+
+function processAttrs(types, buckets) {
     var merged = buckets.reduce((p, c) => p.concat(c), []),
-        classes = [],
-        others  = [],
-        css;
-
-    merged.forEach((prop) => (match(prop, {
-        key : { name : /^class$|^className$/ }
-    }) ? classes.push(prop) : others.push(prop)));
-
-    css = classes
-        .map((prop) => prop.value.value)
-        .filter((str) => str.length);
+        result = partition(merged, (prop) =>
+            match(prop, {
+                key : { name : /^class$|^className$/ }
+            })
+        ),
+        
+        css = result.success
+            .map((prop) => prop.value.value)
+            .filter((str) => str.length);
     
     if(css.length) {
-        others.unshift(
+        result.failure.unshift(
             create.prop(types, "className", css.join(" "))
         );
     }
 
-    return others;
+    return result.failure;
 }
 
 module.exports = function(babel) {
@@ -36,15 +48,14 @@ module.exports = function(babel) {
     return {
         visitor : {
             CallExpression(path) {
-                // Vnode(tag, key, attrs, children, text, dom)
-                var selector, args,
+                /* eslint max-statements:off */
+                var selector, args, parts,
                     tag      = undef,
                     key      = undef,
                     attrs    = undef,
                     children = undef,
                     text     = undef,
                     dom      = undef;
-                
 
                 if(!valid.isMithril(path.node)) {
                     return;
@@ -53,13 +64,17 @@ module.exports = function(babel) {
                 selector = parse.selector(t, path.node);
                 args = parse.args(t, path.node);
 
-                attrs = mergeAttrs(t, [ selector.attrs, args.attrs ]);
+                attrs = processAttrs(t, [ selector.attrs, args.attrs ]);
                 
                 tag = selector.tag;
                 
-                // TODO: support finding key from `merged`
-                
-                attrs = attrs.length ? t.objectExpression(attrs) : undef;
+                // Find any `key` properties and extract them
+                parts = partition(attrs, (attr) => match(attr, {
+                    key : { name : "key" }
+                }));
+
+                key   = parts.success.length ? parts.success.reduce((p, c) => c).value : undef;
+                attrs = parts.failure.length ? t.objectExpression(parts.failure) : undef;
 
                 if(args.children) {
                     children = args.children;
@@ -71,15 +86,7 @@ module.exports = function(babel) {
                     text = args.text;
                 }
 
-                // console.log([
-                //     tag,
-                //     key,
-                //     attrs,
-                //     children,
-                //     text,
-                //     dom
-                // ]);
-
+                // Vnode(tag, key, attrs, children, text, dom)
                 path.replaceWith(t.callExpression(
                     t.memberExpression(
                         t.identifier("m"),
