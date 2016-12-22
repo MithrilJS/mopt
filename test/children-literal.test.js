@@ -42,10 +42,10 @@ describe("mithril-objectify", function() {
                 );
             });
             
-            it.skip("should support attrs + multiple children", function() {
+            it("should support attrs + multiple children", function() {
                 assert.equal(
                     code('m("div", { title : "bar" }, "test0", "test1", "test2", "test3")'),
-                    `m.vnode("div", { title : "bar" }, "test0", "test1", "test2", "test3")`
+                    `m.vnode("div",undefined,{title:"bar"},m.vnode.normalizeChildren(["test0","test1","test2","test3"]),undefined,undefined);`
                 );
             });
 
