@@ -1,7 +1,33 @@
 "use strict";
 
 var valid  = require("./valid.js"),
-    parse  = require("./parse.js");
+    parse  = require("./parse.js"),
+    match  = require("./match.js"),
+    create = require("./create.js");
+
+function mergeAttrs(types, buckets) {
+    // Concat all attrs props together
+    var merged = buckets.reduce((p, c) => p.concat(c), []),
+        classes = [],
+        others  = [],
+        css;
+
+    merged.forEach((prop) => (match(prop, {
+        key : { name : /^class$|^className$/ }
+    }) ? classes.push(prop) : others.push(prop)));
+
+    css = classes
+        .map((prop) => prop.value.value)
+        .filter((str) => str.length);
+    
+    if(css.length) {
+        others.unshift(
+            create.prop(types, "className", css.join(" "))
+        );
+    }
+
+    return others;
+}
 
 module.exports = function(babel) {
     var t     = babel.types,
@@ -12,7 +38,7 @@ module.exports = function(babel) {
             CallExpression : {
                 exit(path) {
                     // Vnode(tag, key, attrs, children, text, dom)
-                    var selector, args, merged,
+                    var selector, args,
                         tag      = undef,
                         key      = undef,
                         attrs    = undef,
@@ -28,16 +54,13 @@ module.exports = function(babel) {
                     selector = parse.selector(t, path.node);
                     args = parse.args(t, path.node);
 
-                    // Concat all attrs props together
-                    merged = selector.attrs.concat(args.attrs);
+                    attrs = mergeAttrs(t, [ selector.attrs, args.attrs ]);
                     
                     tag = selector.tag;
                     
                     // TODO: support finding key from `merged`
                     
-                    if(merged.length) {
-                        attrs = t.objectExpression(merged);
-                    }
+                    attrs = attrs.length ? t.objectExpression(attrs) : undef;
 
                     if(args.children) {
                         children = args.children;

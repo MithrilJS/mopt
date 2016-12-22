@@ -5,8 +5,8 @@ var assert = require("assert"),
     code = require("./lib/code");
 
 describe("mithril-objectify", function() {
-    describe("Quoted Attributes", function() {
-        it("should support quoted properties (issue #6)", function() {
+    describe("Issues", function() {
+        it("#6 should support quoted properties", function() {
             /* eslint quote-props:off */
             assert.equal(
                 code(`m("div", { "fooga" : 0 })`),

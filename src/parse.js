@@ -24,7 +24,7 @@ exports.selector = function parseSelector(types, node) {
         if(lead === "#") {
             // TODO: add location info
             out.attrs.push(
-                create.prop(types, "id", types.stringLiteral(part.slice(1)))
+                create.prop(types, "id", part.slice(1))
             );
 
             return;
@@ -41,18 +41,18 @@ exports.selector = function parseSelector(types, node) {
             
             // TODO: add location info
             out.attrs.push(
-                create.prop(types, parts[1], create.literal(types, parts[3] ? parts[3] : true))
+                create.prop(types, parts[1], parts[3] ? parts[3] : true)
             );
             
             return;
         }
 
-        out.tag = create.literal(types, part);
+        out.tag = types.valueToNode(part);
     });
     
     if(css.length > 0) {
         out.attrs.push(
-            create.prop(types, "className", types.stringLiteral(css.join(" ")))
+            create.prop(types, "className", css.join(" "))
         );
     }
 
