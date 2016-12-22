@@ -51,7 +51,7 @@
         }
       ],
       "quotes": [
-        "warning",
+        "warn",
         "double",
         {
           "allowTemplateLiterals": true
