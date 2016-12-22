@@ -4,7 +4,18 @@ var match = require("./match.js");
 
 exports.isText = (node) =>
     match(node, {
-        type : (val) => val === "StringLiteral" || val === "NumericLiteral" || val === "BooleanLiteral"
+        type : (val) =>
+            val === "StringLiteral" ||
+            val === "NumericLiteral" ||
+            val === "BooleanLiteral"
+    });
+
+exports.isTextArray = (node) =>
+    match(node, {
+        type     : "ArrayExpression",
+        elements : [
+            exports.isText
+        ]
     });
 
 // m(...)
@@ -19,7 +30,8 @@ exports.isM = (node) =>
 // Is this a valid child node that we understand?
 // TODO: add support for single-item arrays
 exports.isChild = (node) =>
-    exports.isText(node) || false;
+    exports.isText(node) ||
+    exports.isTextArray(node);
 
 // Are these valid children nodes that we understand?
 exports.isChildren = (nodes) =>
@@ -33,6 +45,8 @@ exports.isAttributes = (node) =>
 
 // Is this node a mithril invocation?
 exports.isMithril = (node) => {
+    var start = 1;
+
     // m(...)
     if(!exports.isM(node)) {
         return false;
@@ -49,7 +63,14 @@ exports.isMithril = (node) => {
     }
     
     // m("...", {...} )
-    // m("...", "test")
-    // TODO: m("...", [...])
-    return exports.isAttributes(node.arguments[1]) || exports.isChild(node.arguments[1]);
+    if(exports.isAttributes(node.arguments[1])) {
+        start = 2;
+    }
+    
+    // m("...", "...")
+    // m("...", [...])
+    // m("...", {...}, "...")
+    // m("...", {...}, [...])
+    // m("...", {...}, "...", ...)
+    return exports.isChildren(node.arguments.slice(start));
 };

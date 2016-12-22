@@ -59,6 +59,11 @@ exports.selector = function parseSelector(types, node) {
     return out;
 };
 
+// m("...", "...")
+// m("...", "...", "...")
+// m("...", {...})
+// m("...", {...}, "...")
+// m("...", {...}, "...", ...)
 exports.args = function parseChildren(types, node) {
     var out = {
             attrs    : [],
@@ -67,12 +72,6 @@ exports.args = function parseChildren(types, node) {
         },
         start = 1,
         children;
-    
-    // m("...", "...")
-    // m("...", "...", "...")
-    // m("...", {...})
-    // m("...", {...}, "...")
-    // m("...", {...}, "...", "...")
 
     if(valid.isAttributes(node.arguments[1])) {
         out.attrs = out.attrs.concat(node.arguments[1].properties);
@@ -87,30 +86,28 @@ exports.args = function parseChildren(types, node) {
             out.text = children[0];
         }
 
-        if(
-            match(children[0], {
-                type : "ArrayExpression",
-                elements : [
-                    valid.isText
-                ]
-            }) &&
-            children[0].elements.length === 1
-        ) {
-            out.text = children[0].elements[0];
-        }
-    } else if(children.length) {
-        out.children = types.callExpression(
-            types.memberExpression(
-                types.memberExpression(
-                    types.identifier("m"),
-                    types.identifier("vnode")
-                ),
-                types.identifier("normalizeChildren")
-            ),
-            [
-                types.arrayExpression(children)
+        // m("...", [ 1 ])
+        // m("...", [ 1, 2, 3 ])
+        if(match(children[0], {
+            type     : "ArrayExpression",
+            elements : [
+                valid.isText
             ]
-        );
+        })) {
+            if(children[0].elements.length === 1) {
+                out.text = children[0].elements[0];
+            } else {
+                out.children = create.normalize(types, children[0]);
+            }
+        }
+
+        return out;
+    }
+    
+    if(children.length) {
+        out.children = create.normalize(types, types.arrayExpression(children));
+
+        return out;
     }
 
     return out;
