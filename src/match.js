@@ -2,11 +2,19 @@
 
 var match = require("lodash.ismatchwith");
 
-// Simple wrapper around ismatchwith to allow for function keys in the filter object
+// Small wrapper around lodash to support function/regexp testing
 module.exports = (target, filter) =>
     match(target, filter, (val, test) => {
-        // Support functions for comparisons
+        // Support function comparisons
         if(typeof test === "function") {
             return test(val);
         }
+
+        // Support RegExp comparisons
+        if(test instanceof RegExp) {
+            return test.test(val);
+        }
+
+        // Use default comparison
+        return undefined;
     });

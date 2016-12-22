@@ -4,10 +4,7 @@ var match = require("./match.js");
 
 exports.isText = (node) =>
     match(node, {
-        type : (val) =>
-            val === "StringLiteral" ||
-            val === "NumericLiteral" ||
-            val === "BooleanLiteral"
+        type : /StringLiteral|NumericLiteral|BooleanLiteral/
     });
 
 exports.isTextArray = (node) =>
