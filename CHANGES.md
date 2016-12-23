@@ -1,5 +1,9 @@
 # Changes
 
+## 4.1.4
+
+- Fix up some bad handling of array children
+
 ## 4.1.3
 
 - Working through some release weirdness, sorry for the noise.
