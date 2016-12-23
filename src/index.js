@@ -30,7 +30,7 @@ function processAttrs(types, buckets) {
         
         css = result.success
             .map((prop) => prop.value.value)
-            .filter((str) => str.length);
+            .filter(Boolean);
     
     if(css.length) {
         result.failure.unshift(
