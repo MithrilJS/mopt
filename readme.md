@@ -29,9 +29,9 @@ Please file an issue if you come across any cases that this doesn't handle, I'd 
 
 ## Mithril Version Warning
 
-`mopt` **only** works with the mithril `rewrite` branch.
+`mopt` **only** works with `mithril@1.x`.
 
-For optimizing the current stable mithril release see [mithril-objectify](https://www.npmjs.com/package/mithril-objectify).
+For optimizing `mithril@0.2.x` see [mithril-objectify](https://www.npmjs.com/package/mithril-objectify).
 
 ## Installation
 
