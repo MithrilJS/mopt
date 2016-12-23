@@ -1,5 +1,9 @@
 # Changes
 
+## 4.2.0
+
+- Generate correct fragment nodes and optimize `m.trust()` into it's low-level `m.vnode()` representation
+
 ## 4.1.4
 
 - Fix up some bad handling of array children
@@ -31,3 +35,5 @@
 ## 4.0.5
 
 - Starting over, this is a test release :construction: :warning: :zap: :skull:
+
+
