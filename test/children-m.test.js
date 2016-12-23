@@ -29,6 +29,13 @@ describe("Children", function() {
                 `m.vnode("div",undefined,undefined,[m.vnode("p",undefined,undefined,[],undefined,undefined),m.vnode("i",undefined,undefined,[],undefined,undefined)],undefined,undefined);`
             );
         });
+
+        it("should support arrays of nested m() invocations & plain nodes", function() {
+            assert.equal(
+                code(`m("one", [ m("two"), "three" ])`),
+                `m.vnode("one",undefined,undefined,[m.vnode("two",undefined,undefined,[],undefined,undefined),m.vnode("#",undefined,undefined,"three",undefined,undefined)],undefined,undefined);`
+            );
+        });
         
         it("should support multiple nested m() invocations", function() {
             assert.equal(

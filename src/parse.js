@@ -81,7 +81,16 @@ exports.args = function parseChildren(types, node) {
 
     children = node.arguments.slice(start);
 
+    // m("...", 1)
+    // m("...", "one")
+    // m("...", true)
+    // m("...", [ 1 ])
+    // m("...", [ 1, "foo", true ])
+    // m("...", [ m(...), 1 ])
     if(children.length === 1) {
+        // m("...", 1)
+        // m("...", "one")
+        // m("...", true)
         if(valid.isText(children[0])) {
             out.text = children[0];
 
@@ -90,26 +99,26 @@ exports.args = function parseChildren(types, node) {
 
         // m("...", [ 1 ])
         // m("...", [ 1, "foo", true ])
-        if(
-            types.isArrayExpression(children[0]) &&
-            children[0].elements.every(valid.isText)
-        ) {
-            if(children[0].elements.length === 1) {
+        // m("...", [ m(...), 1 ])
+        if(types.isArrayExpression(children[0])) {
+            // m("...", [ 1 ])
+            if(children[0].elements.length === 1 && valid.isText(children[0].elements[0])) {
                 out.text = children[0].elements[0];
 
                 return out;
             }
-            
+
+            // m("...", [ 1, "foo", true ])
+            // m("...", [ m(...), 1 ])
             out.children = types.arrayExpression(
-                children[0].elements.map((el) => create.textVnode(types, el))
+                children[0].elements.map((el) => (valid.isText(el) ? create.textVnode(types, el) : el))
             );
 
             return out;
         }
 
-        out.children = types.isArrayExpression(children[0]) ?
-            children[0] :
-            types.arrayExpression(children);
+        //
+        out.children = types.arrayExpression(children);
 
         return out;
     }
