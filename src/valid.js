@@ -32,13 +32,24 @@ exports.isMVnode = (node) =>
         }
     });
 
+exports.isMTrust = (node) =>
+    match(node, {
+        type   : "CallExpression",
+        callee : {
+            type     : "MemberExpression",
+            object   : { name : "m" },
+            property : { name : "trust" }
+        }
+    });
+
 // Is this a valid child node that we understand?
 exports.isChild = (node) => {
     if(
         exports.isText(node) ||
         exports.isTextArray(node) ||
         exports.isM(node) ||
-        exports.isMVnode(node)
+        exports.isMVnode(node) ||
+        exports.isMTrust(node)
     ) {
         return true;
     }

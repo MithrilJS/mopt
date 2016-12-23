@@ -6,6 +6,24 @@ function valnode(types, value) {
         types.valueToNode(value);
 }
 
+function vnode(types, tag, value) {
+    return types.callExpression(
+        types.memberExpression(
+            types.identifier("m"),
+            types.identifier("vnode")
+        ),
+        [
+            // tag, key, attrs, children, text, dom
+            types.stringLiteral(tag),
+            types.identifier("undefined"),
+            types.identifier("undefined"),
+            valnode(types, value),
+            types.identifier("undefined"),
+            types.identifier("undefined")
+        ]
+    );
+}
+
 exports.prop = (types, key, value) =>
     types.objectProperty(
         types.isValidIdentifier(key) ?
@@ -14,33 +32,11 @@ exports.prop = (types, key, value) =>
         valnode(types, value)
     );
 
-exports.normalize = (types, children) =>
-    types.callExpression(
-        types.memberExpression(
-            types.memberExpression(
-                types.identifier("m"),
-                types.identifier("vnode")
-            ),
-            types.identifier("normalizeChildren")
-        ),
-        [
-            children
-        ]
-    );
-
 exports.textVnode = (types, value) =>
-    types.callExpression(
-        types.memberExpression(
-            types.identifier("m"),
-            types.identifier("vnode")
-        ),
-        [
-            // tag, key, attrs, children, text, dom
-            types.stringLiteral("#"),
-            types.identifier("undefined"),
-            types.identifier("undefined"),
-            valnode(types, value),
-            types.identifier("undefined"),
-            types.identifier("undefined")
-        ]
-    );
+    vnode(types, "#", value);
+
+exports.trustVnode = (types, value) =>
+    vnode(types, "<", value.arguments[0]);
+
+exports.fragmentVnode = (types, value) =>
+    vnode(types, "[", value);

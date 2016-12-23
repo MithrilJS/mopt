@@ -15,8 +15,8 @@ describe("Children", function() {
 
         it("should support array children w/ > 1 entry", function() {
             assert.equal(
-                code(`m("div", [ 1, 2, 3 ])`),
-                `m.vnode("div",undefined,undefined,[m.vnode("#",undefined,undefined,1,undefined,undefined),m.vnode("#",undefined,undefined,2,undefined,undefined),m.vnode("#",undefined,undefined,3,undefined,undefined)],undefined,undefined);`
+                code(`m("div", [ 1, 2 ])`),
+                `m.vnode("div",undefined,undefined,[m.vnode("#",undefined,undefined,1,undefined,undefined),m.vnode("#",undefined,undefined,2,undefined,undefined)],undefined,undefined);`
             );
         });
         

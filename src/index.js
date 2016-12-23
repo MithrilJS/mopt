@@ -78,8 +78,6 @@ module.exports = function(babel) {
 
                 if(args.children) {
                     children = args.children;
-                } else if(!args.text) {
-                    children = t.arrayExpression();
                 }
 
                 if(args.text) {

@@ -8,43 +8,43 @@ describe("Children", function() {
     describe("literal children", function() {
         it("should support single literal children (string)", function() {
             assert.equal(
-                code(`m("div", "test")`),
-                `m.vnode("div",undefined,undefined,undefined,"test",undefined);`
+                code(`m("1", "2")`),
+                `m.vnode("1",undefined,undefined,undefined,"2",undefined);`
             );
         });
 
         it("should support single literal children (number)", function() {
             assert.equal(
-                code(`m("div", 1)`),
-                `m.vnode("div",undefined,undefined,undefined,1,undefined);`
+                code(`m("1", 2)`),
+                `m.vnode("1",undefined,undefined,undefined,2,undefined);`
             );
         });
 
         it("should support single literal children (boolean)", function() {
             assert.equal(
-                code(`m("div", true)`),
-                `m.vnode("div",undefined,undefined,undefined,true,undefined);`
-            );
-        });
-
-        it("should support multiple literal children", function() {
-            assert.equal(
-                code(`m("div", "test", "test2")`),
-                `m.vnode("div",undefined,undefined,m.vnode.normalizeChildren(["test","test2"]),undefined,undefined);`
+                code(`m("1", true)`),
+                `m.vnode("1",undefined,undefined,undefined,true,undefined);`
             );
         });
         
         it("should support attrs + single literal children children", function() {
             assert.equal(
-                code(`m("div", { title : "bar" }, "test")`),
-                `m.vnode("div",undefined,{title:"bar"},undefined,"test",undefined);`
+                code(`m("1", { title : "bar" }, "2")`),
+                `m.vnode("1",undefined,{title:"bar"},undefined,"2",undefined);`
+            );
+        });
+
+        it("should support multiple literal children", function() {
+            assert.equal(
+                code(`m("1", "2", "3")`),
+                `m.vnode("1",undefined,undefined,[m.vnode("#",undefined,undefined,"2",undefined,undefined),m.vnode("#",undefined,undefined,"3",undefined,undefined)],undefined,undefined);`
             );
         });
         
         it("should support attrs + multiple children", function() {
             assert.equal(
-                code(`m("div", { title : "bar" }, "test0", "test1", "test2", "test3")`),
-                `m.vnode("div",undefined,{title:"bar"},m.vnode.normalizeChildren(["test0","test1","test2","test3"]),undefined,undefined);`
+                code(`m("1", { title : "bar" }, "2", "3")`),
+                `m.vnode("1",undefined,{title:"bar"},[m.vnode("#",undefined,undefined,"2",undefined,undefined),m.vnode("#",undefined,undefined,"3",undefined,undefined)],undefined,undefined);`
             );
         });
 
@@ -58,13 +58,13 @@ describe("Children", function() {
         
         it.skip("should support String.prototype methods", function() {
             assert.equal(
-                code(`m("div", "fooga".replace("f", "g"))`),
-                `({tag:"div",attrs:undefined,children:["fooga".replace("f","g")],dom:undefined,domSize:undefined,events:undefined,key:undefined,state:{},text:undefined});`
+                code(`m("1", "fooga".replace("f", "g"))`),
+                `({tag:"1",attrs:undefined,children:["fooga".replace("f","g")],dom:undefined,domSize:undefined,events:undefined,key:undefined,state:{},text:undefined});`
             );
             
             assert.equal(
-                code(`m("div", "fooga"["replace"]("f", "g"))`),
-                `({tag:"div",attrs:undefined,children:["fooga"["replace"]("f","g")],dom:undefined,domSize:undefined,events:undefined,key:undefined,state:{},text:undefined});`
+                code(`m("1", "fooga"["replace"]("f", "g"))`),
+                `({tag:"1",attrs:undefined,children:["fooga"["replace"]("f","g")],dom:undefined,domSize:undefined,events:undefined,key:undefined,state:{},text:undefined});`
             );
         });
     });

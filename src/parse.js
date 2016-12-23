@@ -1,10 +1,11 @@
 var valid  = require("./valid.js"),
+    match  = require("./match.js"),
     create = require("./create.js"),
     
     selectorRegex = /(?:(^|#|\.)([^#\.\[\]]+))|(\[.+?\])/g,
     attrRegex     = /\[(.+?)(?:=("|'|)(.*?)\2)?\]/;
 
-exports.selector = function parseSelector(types, node) {
+exports.selector = (types, node) => {
     var src = node.arguments[0].value,
         css = [],
         out = {
@@ -58,12 +59,35 @@ exports.selector = function parseSelector(types, node) {
     return out;
 };
 
+exports.child = (types, node) => {
+    if(valid.isText(node)) {
+        return create.textVnode(types, node);
+    }
+
+    if(valid.isMTrust(node)) {
+        return create.trustVnode(types, node);
+    }
+    
+    return node;
+};
+
+exports.children = (types, nodes) =>
+    nodes.map((node) => (
+        types.isArrayExpression(node) ?
+            create.fragmentVnode(
+                types,
+                types.arrayExpression(exports.children(types, node.elements))
+            ) :
+            exports.child(types, node)
+    ));
+    
+
 // m("...", "...")
 // m("...", "...", "...")
 // m("...", {...})
 // m("...", {...}, "...")
 // m("...", {...}, "...", ...)
-exports.args = function parseChildren(types, node) {
+exports.args = (types, node) => {
     /* eslint max-statements:off */
     var out = {
             attrs    : [],
@@ -81,51 +105,48 @@ exports.args = function parseChildren(types, node) {
 
     children = node.arguments.slice(start);
 
+    // Special-cased for a single text node or an array with a single text node
     // m("...", 1)
     // m("...", "one")
     // m("...", true)
     // m("...", [ 1 ])
-    // m("...", [ 1, "foo", true ])
-    // m("...", [ m(...), 1 ])
     if(children.length === 1) {
-        // m("...", 1)
         // m("...", "one")
-        // m("...", true)
         if(valid.isText(children[0])) {
             out.text = children[0];
 
             return out;
         }
 
-        // m("...", [ 1 ])
-        // m("...", [ 1, "foo", true ])
-        // m("...", [ m(...), 1 ])
-        if(types.isArrayExpression(children[0])) {
-            // m("...", [ 1 ])
-            if(children[0].elements.length === 1 && valid.isText(children[0].elements[0])) {
-                out.text = children[0].elements[0];
-
-                return out;
-            }
-
-            // m("...", [ 1, "foo", true ])
-            // m("...", [ m(...), 1 ])
-            out.children = types.arrayExpression(
-                children[0].elements.map((el) => (valid.isText(el) ? create.textVnode(types, el) : el))
-            );
+        // m("...", [ "one" ])
+        if(
+            match(children[0], {
+                type     : "ArrayExpression",
+                elements : [
+                    valid.isText
+                ]
+            }) &&
+            children[0].elements.length === 1
+        ) {
+            out.text = children[0].elements[0];
 
             return out;
         }
 
-        //
-        out.children = types.arrayExpression(children);
+        // m("...", [ ... ])
+        if(types.isArrayExpression(children[0])) {
+            out.children = types.arrayExpression(
+                exports.children(types, children[0].elements)
+            );
 
-        return out;
+            return out;
+        }
     }
-    
-    if(children.length) {
-        out.children = create.normalize(types, types.arrayExpression(children));
-    }
+
+    // m("...", ... )
+    out.children = types.arrayExpression(
+        exports.children(types, children)
+    );
 
     return out;
 };
