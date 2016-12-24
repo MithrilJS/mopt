@@ -39,6 +39,11 @@
     "version": "changes",
     "postversion": "git push --follow-tags"
   },
+  "config": {
+    "validate-commit-msg": {
+      "helpMessage": "\n-----------\n\nThere was a small validation problem with your commit message:\n\n> %s\nAn example valid commit message could be:\n\n> feat: Added a new feature\n> chore: Updated packge\n\nIf you really need to, you can skip the validation using\n\n> git commit --no-verify"
+    }
+  },
   "eslintConfig": {
     "extends": "arenanet",
     "plugins": [
