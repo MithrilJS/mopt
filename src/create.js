@@ -6,8 +6,8 @@ function valnode(types, value) {
         types.valueToNode(value);
 }
 
-function vnode(types, tag, value) {
-    return types.callExpression(
+function vnode(types, tag, value, loc) {
+    var node = types.callExpression(
         types.memberExpression(
             types.identifier("m"),
             types.identifier("vnode")
@@ -22,21 +22,36 @@ function vnode(types, tag, value) {
             types.identifier("undefined")
         ]
     );
+
+    if(loc) {
+        node.loc = loc;
+    }
+
+    return node;
 }
 
-exports.prop = (types, key, value) =>
-    types.objectProperty(
+exports.prop = (types, key, value, loc) => {
+    var prop = types.objectProperty(
         types.isValidIdentifier(key) ?
             types.identifier(key) :
             types.stringLiteral(key),
         valnode(types, value)
     );
 
-exports.textVnode = (types, value) =>
-    vnode(types, "#", value);
+    if(loc) {
+        prop.loc = loc;
+    }
 
-exports.trustVnode = (types, value) =>
-    vnode(types, "<", value.arguments[0]);
+    return prop;
+};
 
-exports.fragmentVnode = (types, value) =>
-    vnode(types, "[", value);
+exports.textVnode = (types, value, loc) =>
+    vnode(types, "#", value, loc);
+
+exports.trustVnode = (types, value, loc) =>
+    vnode(types, "<", value.arguments[0], loc);
+
+exports.fragmentVnode = (types, value, loc) =>
+    vnode(types, "[", value, loc);
+
+

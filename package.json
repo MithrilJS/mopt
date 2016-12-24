@@ -19,6 +19,7 @@
   "devDependencies": {
     "@studio/changes": "^1.0.4",
     "babel-core": "^6.21.0",
+    "common-tags": "^1.4.0",
     "eslint": "^3.12.2",
     "eslint-config-arenanet": "^3.1.0",
     "eslint-plugin-import": "^2.2.0",

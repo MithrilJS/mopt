@@ -21,9 +21,8 @@ exports.selector = (types, node) => {
             parts;
 
         if(lead === "#") {
-            // TODO: add location info
             out.attrs.push(
-                create.prop(types, "id", part.slice(1))
+                create.prop(types, "id", part.slice(1), node.arguments[0].loc)
             );
 
             return;
@@ -38,9 +37,8 @@ exports.selector = (types, node) => {
         if(lead === "[") {
             parts = part.match(attrRegex);
             
-            // TODO: add location info
             out.attrs.push(
-                create.prop(types, parts[1], parts[3] ? parts[3] : true)
+                create.prop(types, parts[1], parts[3] ? parts[3] : true, node.arguments[0].loc)
             );
             
             return;
@@ -51,7 +49,7 @@ exports.selector = (types, node) => {
     
     if(css.length > 0) {
         out.attrs.push(
-            create.prop(types, "className", css.join(" "))
+            create.prop(types, "className", css.join(" "), node.arguments[0].loc)
         );
     }
 
