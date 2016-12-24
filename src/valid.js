@@ -1,11 +1,24 @@
 "use strict";
 
-var match = require("./match.js");
+var match = require("./match.js"),
+    
+    stringMethodsRegex = /charAt|charCodeAt|codePointAt|concat|fromCharCode|fromCodePoint|normalize|repeat|replace|slice|substr|substring|toLocaleLowerCase|toLocaleUpperCase|toLowerCase|toString|toUpperCase|trim|trimLeft|trimRight|valueOf/;
+
+exports.isString = (node) =>
+    match(node, { type : "StringLiteral" }) ||
+    match(node, {
+        type   : "CallExpression",
+        callee : {
+            object   : exports.isString,
+            property : (prop) => stringMethodsRegex.test(prop.name) || stringMethodsRegex.test(prop.value)
+        }
+    });
 
 exports.isText = (node) =>
     match(node, {
-        type : /StringLiteral|NumericLiteral|BooleanLiteral/
-    });
+        type : /NumericLiteral|BooleanLiteral/
+    }) ||
+    exports.isString(node);
 
 exports.isTextArray = (node) =>
     match(node, {
