@@ -1,24 +1,11 @@
 "use strict";
 
-var valid  = require("./valid.js"),
+var partition = require("lodash.partition"),
+    
+    valid  = require("./valid.js"),
     parse  = require("./parse.js"),
     match  = require("./match.js"),
     create = require("./create.js");
-
-function partition(array, test) {
-    var success = [],
-        failure = [];
-    
-    array.forEach((val) => (test(val) ?
-        success.push(val) :
-        failure.push(val)
-    ));
-
-    return {
-        success,
-        failure
-    };
-}
 
 function processAttrs(types, buckets) {
     var merged = buckets.reduce((p, c) => p.concat(c), []),
@@ -28,17 +15,17 @@ function processAttrs(types, buckets) {
             })
         ),
         
-        css = result.success
+        css = result[0]
             .map((prop) => prop.value.value)
             .filter(Boolean);
     
     if(css.length) {
-        result.failure.unshift(
+        result[1].unshift(
             create.prop(types, "className", css.join(" "))
         );
     }
 
-    return result.failure;
+    return result[1];
 }
 
 module.exports = function(babel) {
@@ -48,14 +35,7 @@ module.exports = function(babel) {
     return {
         visitor : {
             CallExpression(path) {
-                /* eslint max-statements:off */
-                var selector, args, parts,
-                    tag      = undef,
-                    key      = undef,
-                    attrs    = undef,
-                    children = undef,
-                    text     = undef,
-                    dom      = undef;
+                var selector, args, parts, attrs;
 
                 if(!valid.isMithril(path.node)) {
                     return;
@@ -66,23 +46,10 @@ module.exports = function(babel) {
 
                 attrs = processAttrs(t, [ selector.attrs, args.attrs ]);
                 
-                tag = selector.tag;
-                
                 // Find any `key` properties and extract them
                 parts = partition(attrs, (attr) => match(attr, {
                     key : { name : "key" }
                 }));
-
-                key   = parts.success.length ? parts.success.reduce((p, c) => c).value : undef;
-                attrs = parts.failure.length ? t.objectExpression(parts.failure) : undef;
-
-                if(args.children) {
-                    children = args.children;
-                }
-
-                if(args.text) {
-                    text = args.text;
-                }
 
                 // Vnode(tag, key, attrs, children, text, dom)
                 path.replaceWith(t.callExpression(
@@ -91,12 +58,14 @@ module.exports = function(babel) {
                         t.identifier("vnode")
                     ),
                     [
-                        tag,
-                        key,
-                        attrs,
-                        children,
-                        text,
-                        dom
+                        selector.tag,
+                        // Use the last key attribute found
+                        parts[0].length ? parts[0].reduce((p, c) => c).value : undef,
+                        // Create attributes object
+                        parts[1].length ? t.objectExpression(parts[1]) : undef,
+                        args.children || undef,
+                        args.text || undef,
+                        undef
                     ]
                 ));
             }

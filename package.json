@@ -13,7 +13,8 @@
     "babel-plugin"
   ],
   "dependencies": {
-    "lodash.ismatchwith": "^4.4.0"
+    "lodash.ismatchwith": "^4.4.0",
+    "lodash.partition": "^4.6.0"
   },
   "devDependencies": {
     "@studio/changes": "^1.0.4",
