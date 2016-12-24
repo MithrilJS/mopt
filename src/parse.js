@@ -1,5 +1,4 @@
 var valid  = require("./valid.js"),
-    match  = require("./match.js"),
     create = require("./create.js"),
     
     selectorRegex = /(?:(^|#|\.)([^#\.\[\]]+))|(\[.+?\])/g,
