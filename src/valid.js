@@ -2,7 +2,9 @@
 
 var match = require("./match.js"),
     
-    stringMethodsRegex = /charAt|charCodeAt|codePointAt|concat|fromCharCode|fromCodePoint|normalize|repeat|replace|slice|substr|substring|toLocaleLowerCase|toLocaleUpperCase|toLowerCase|toString|toUpperCase|trim|trimLeft|trimRight|valueOf/;
+    stringToStringRegex = /charAt|charCodeAt|codePointAt|concat|fromCharCode|fromCodePoint|normalize|repeat|replace|slice|substr|substring|toLocaleLowerCase|toLocaleUpperCase|toLowerCase|toString|toUpperCase|trim|trimLeft|trimRight|valueOf/,
+    arrayToArrayRegex   = /concat|copyWithin|filter|map|reverse|slice|sort|splice/,
+    arrayToStringRegex  = /join/;
 
 exports.isString = (node) =>
     match(node, { type : "StringLiteral" }) ||
@@ -10,16 +12,27 @@ exports.isString = (node) =>
     match(node, {
         type   : "CallExpression",
         callee : {
+            type     : "MemberExpression",
             object   : exports.isString,
-            property : (prop) => stringMethodsRegex.test(prop.name) || stringMethodsRegex.test(prop.value)
+            property : (prop) => stringToStringRegex.test(prop.name) || stringToStringRegex.test(prop.value)
         }
     }) ||
     // JSON.stringify returns a string
     match(node, {
         type   : "CallExpression",
         callee : {
+            type     : "MemberExpression",
             object   : { name : "JSON" },
             property : { name : "stringify" }
+        }
+    }) ||
+    // Array.prototype methods that return a string
+    match(node, {
+        type   : "CallExpression",
+        callee : {
+            type     : "MemberExpression",
+            object   : exports.isArray,
+            property : (prop) => arrayToStringRegex.test(prop.name) || arrayToStringRegex.test(prop.value)
         }
     });
 
@@ -32,9 +45,7 @@ exports.isText = (node) =>
 exports.isTextArray = (node) =>
     match(node, {
         type     : "ArrayExpression",
-        elements : [
-            exports.isText
-        ]
+        elements : (elements) => elements.length === 1 && exports.isText(elements[0])
     });
 
 // m(...)
@@ -64,24 +75,25 @@ exports.isMTrust = (node) =>
         }
     });
 
+exports.isArray = (node) =>
+    match(node, { type : "ArrayExpression" }) ||
+    match(node, {
+        type   : "CallExpression",
+        callee : {
+            type     : "MemberExpression",
+            object   : exports.isArray,
+            property : (prop) => arrayToArrayRegex.test(prop.name) || arrayToArrayRegex.test(prop.value)
+        }
+    });
+
 // Is this a valid child node that we understand?
-exports.isChild = (node) => {
-    if(
-        exports.isText(node) ||
-        exports.isTextArray(node) ||
-        exports.isM(node) ||
-        exports.isMVnode(node) ||
-        exports.isMTrust(node)
-    ) {
-        return true;
-    }
-
-    if(match(node, { type : "ArrayExpression" })) {
-        return exports.isChildren(node.elements);
-    }
-
-    return false;
-};
+exports.isChild = (node) =>
+    exports.isText(node) ||
+    exports.isTextArray(node) ||
+    exports.isM(node) ||
+    exports.isMVnode(node) ||
+    exports.isMTrust(node) ||
+    exports.isArray(node);
 
 // Are these valid children nodes that we understand?
 exports.isChildren = (nodes) =>

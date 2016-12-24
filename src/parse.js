@@ -87,6 +87,8 @@ exports.children = (types, nodes) =>
 // m("...", {...})
 // m("...", {...}, "...")
 // m("...", {...}, "...", ...)
+// m("...", [...])
+// m("...", {...}, [...])
 exports.args = (types, node) => {
     /* eslint max-statements:off */
     var out = {
@@ -119,25 +121,25 @@ exports.args = (types, node) => {
         }
 
         // m("...", [ "one" ])
-        if(
-            match(children[0], {
-                type     : "ArrayExpression",
-                elements : [
-                    valid.isText
-                ]
-            }) &&
-            children[0].elements.length === 1
-        ) {
+        if(valid.isTextArray(children[0])) {
             out.text = children[0].elements[0];
 
             return out;
         }
 
-        // m("...", [ ... ])
+        // m("...", [ 1, m("..."), m.trust("...") ])
         if(types.isArrayExpression(children[0])) {
             out.children = types.arrayExpression(
                 exports.children(types, children[0].elements)
             );
+
+            return out;
+        }
+
+        // m("...", [...].map(...))
+        // m("...", [...].filter(...))
+        if(valid.isArray(children[0])) {
+            out.children = children[0];
 
             return out;
         }
