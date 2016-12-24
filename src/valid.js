@@ -129,7 +129,9 @@ exports.isMithril = (node) => {
         return false;
     }
     
+
     // m("...")
+    // Can't do anything more exciting here because it isn't parsable :(
     if(!match(node.arguments[0], { type : "StringLiteral" })) {
         return false;
     }
