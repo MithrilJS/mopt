@@ -43,6 +43,12 @@ exports.isString = (node) =>
         type       : "ConditionalExpression",
         consequent : exports.isText,
         alternate  : exports.isText
+    }) ||
+    // String concatenation via plus signs
+    match(node, {
+        type  : "BinaryExpression",
+        left  : exports.isText,
+        right : exports.isText
     });
 
 exports.isText = (node) =>

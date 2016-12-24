@@ -5,52 +5,46 @@ var assert = require("assert"),
     code = require("./lib/code");
 
 describe("Children", function() {
-    describe.skip("Expression children", function() {
+    describe("Expression children", function() {
         it("should support expressions with literal values (strings)", function() {
             assert.equal(
-                code(`m("div", "fooga" + "wooga")`),
-                `({tag:"div",attrs:undefined,children:["fooga"+"wooga"],dom:undefined,domSize:undefined,events:undefined,key:undefined,state:{},text:undefined});`
+                code(`m("0", "1" + "2")`),
+                `m.vnode("0",undefined,undefined,undefined,"1"+"2",undefined);`
             );
         });
 
         it("should support expressions with literal values (numbers)", function() {
             assert.equal(
-                code(`m("div", 1 + 2)`),
-                `({tag:"div",attrs:undefined,children:["fooga"+"wooga"],dom:undefined,domSize:undefined,events:undefined,key:undefined,state:{},text:undefined});`
+                code(`m("0", 1 + 2)`),
+                `m.vnode("0",undefined,undefined,undefined,1+2,undefined);`
             );
         });
 
         it("should support expressions with literal values (strings + numbers)", function() {
             assert.equal(
-                code(`m("div", 1 + "wooga")`),
-                `({tag:"div",attrs:undefined,children:["fooga"+"wooga"],dom:undefined,domSize:undefined,events:undefined,key:undefined,state:{},text:undefined});`
+                code(`m("0", 1 + "2")`),
+                `m.vnode("0",undefined,undefined,undefined,1+"2",undefined);`
             );
         });
 
-        it("should not convert expressions with operators other than +", function() {
+        it("should convert expressions containing more than 2 values", function() {
             assert.equal(
-                code(`m("input" - 2)`),
-                `m("input"-2);`
-            );
-            
-            assert.equal(
-                code("m(3 * 2)"),
-                "m(3*2);"
+                code(`m("0", "1" + "2" + "3")`),
+                `m.vnode("0",undefined,undefined,undefined,"1"+"2"+"3",undefined);`
             );
         });
-        
-        // TODO: why not?
-        it("should not convert expressions containing more than 2 values", function() {
+
+        it("should convert expressions with operators other than +", function() {
             assert.equal(
-                code(`m("input" + ".pure-u" + ".pure-u-1-2")`),
-                `m("input"+".pure-u"+".pure-u-1-2");`
+                code(`m("0", 1 - 2)`),
+                `m.vnode("0",undefined,undefined,undefined,1-2,undefined);`
             );
         });
         
         it("should not convert non-literal values", function() {
             assert.equal(
-                code(`m("input" + identifier)`),
-                `m("input"+identifier);`
+                code(`m("0", a + b)`),
+                `m("0",a+b);`
             );
         });
     });
