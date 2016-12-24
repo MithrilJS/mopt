@@ -44,6 +44,13 @@ describe("Children", function() {
             );
         });
 
+        it.only("should normalize non-text array children", function() {
+            assert.equal(
+                code(`m("0", [ 1, bar ])`),
+                `m.vnode("0",undefined,undefined,[m.vnode("#",undefined,undefined,1,undefined,undefined),m.vnode.normalize(bar)],undefined,undefined);`
+            );
+        });
+
         it("should support Array.prototype children that return an array", function() {
             assert.equal(
                 code(`m("0", [ 1, 2 ].map(function(val) { return val; }))`),

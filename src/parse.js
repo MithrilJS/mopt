@@ -70,11 +70,14 @@ exports.child = (types, node) => {
 
 exports.children = (types, nodes) =>
     nodes.map((node) => (
-        types.isArrayExpression(node) ?
-            create.fragmentVnode(
-                types,
-                types.arrayExpression(exports.children(types, node.elements))
-            ) :
+        // TODO: totally broken and non-working
+        // TODO: Need to shell out to m.vnode.normalizeChildren if dynamic array
+        // TODO: or walk static array and call m.vnode.normalizeChild on all non-text entries
+        // types.isArrayExpression(node) ?
+        //     create.normalizedChildren(
+        //         types,
+        //         types.arrayExpression(exports.children(types, node.elements))
+        //     ) :
             exports.child(types, node)
     ));
     
@@ -124,6 +127,7 @@ exports.args = (types, node) => {
             return out;
         }
 
+        // TODO: needs to walk children and wrap unrecognized entries in m.vnode.normalizeChild
         // m("...", [ 1, m("..."), m.trust("...") ])
         if(types.isArrayExpression(children[0])) {
             out.children = types.arrayExpression(
@@ -133,6 +137,7 @@ exports.args = (types, node) => {
             return out;
         }
 
+        // TODO: needs to wrap array in m.vnode.normalizeChildren
         // m("...", [...].map(...))
         // m("...", [...].filter(...))
         if(valid.isArray(children[0])) {
