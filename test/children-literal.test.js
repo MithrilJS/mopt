@@ -55,17 +55,5 @@ describe("Children", function() {
                 `m(".fooga",identifier);`
             );
         });
-        
-        it.skip("should support String.prototype methods", function() {
-            assert.equal(
-                code(`m("1", "fooga".replace("f", "g"))`),
-                `({tag:"1",attrs:undefined,children:["fooga".replace("f","g")],dom:undefined,domSize:undefined,events:undefined,key:undefined,state:{},text:undefined});`
-            );
-            
-            assert.equal(
-                code(`m("1", "fooga"["replace"]("f", "g"))`),
-                `({tag:"1",attrs:undefined,children:["fooga"["replace"]("f","g")],dom:undefined,domSize:undefined,events:undefined,key:undefined,state:{},text:undefined});`
-            );
-        });
     });
 });
