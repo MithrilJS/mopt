@@ -30,7 +30,6 @@
   "scripts": {
     "cover": "istanbul cover --print both ./node_modules/mocha/bin/_mocha",
     "commitmsg": "validate-commit-msg",
-    "precommit": "npm test",
     "lint": "eslint .",
     "prepush": "npm test",
     "test": "mocha",
