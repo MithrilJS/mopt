@@ -128,7 +128,6 @@ exports.isMithril = (node) => {
     if(!exports.isM(node)) {
         return false;
     }
-    
 
     // m("...")
     // Can't do anything more exciting here because it isn't parsable :(
