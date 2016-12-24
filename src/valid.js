@@ -6,11 +6,20 @@ var match = require("./match.js"),
 
 exports.isString = (node) =>
     match(node, { type : "StringLiteral" }) ||
+    // String.prototype methods that return a string
     match(node, {
         type   : "CallExpression",
         callee : {
             object   : exports.isString,
             property : (prop) => stringMethodsRegex.test(prop.name) || stringMethodsRegex.test(prop.value)
+        }
+    }) ||
+    // JSON.stringify returns a string
+    match(node, {
+        type   : "CallExpression",
+        callee : {
+            object   : { name : "JSON" },
+            property : { name : "stringify" }
         }
     });
 
