@@ -34,6 +34,12 @@ exports.isString = (node) =>
             object   : exports.isArray,
             property : (prop) => arrayToStringRegex.test(prop.name) || arrayToStringRegex.test(prop.value)
         }
+    }) ||
+    // Conditionals via ternary logic
+    match(node, {
+        type       : "ConditionalExpression",
+        consequent : exports.isText,
+        alternate  : exports.isText
     });
 
 exports.isText = (node) =>
