@@ -60,7 +60,7 @@ module.exports = function(babel) {
                     [
                         selector.tag,
                         // Use the last key attribute found
-                        parts[0].length ? parts[0].reduce((p, c) => c).value : undef,
+                        parts[0].length ? parts[0].pop().value : undef,
                         // Create attributes object
                         parts[1].length ? t.objectExpression(parts[1]) : undef,
                         args.children || undef,
