@@ -7,7 +7,10 @@ var match = require("./match.js"),
     arrayToStringRegex  = /join/;
 
 exports.isString = (node) =>
-    match(node, { type : "StringLiteral" }) ||
+    // Simple string or template literal
+    match(node, {
+        type : /StringLiteral|TemplateLiteral/
+    }) ||
     // String.prototype methods that return a string
     match(node, {
         type   : "CallExpression",

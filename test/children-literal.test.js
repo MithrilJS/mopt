@@ -26,6 +26,13 @@ describe("Children", function() {
                 `m.vnode("1",undefined,undefined,undefined,true,undefined);`
             );
         });
+
+        it("should support single literal children (template)", function() {
+            assert.equal(
+                code(`m("1", \`2\`)`),
+                `m.vnode("1",undefined,undefined,undefined,\`2\`,undefined);`
+            );
+        });
         
         it("should support attrs + single literal children children", function() {
             assert.equal(

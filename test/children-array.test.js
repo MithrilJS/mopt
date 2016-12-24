@@ -11,6 +11,16 @@ describe("Children", function() {
                 code(`m("0", [ 1 ])`),
                 `m.vnode("0",undefined,undefined,undefined,1,undefined);`
             );
+
+            assert.equal(
+                code(`m("0", [ "1" ])`),
+                `m.vnode("0",undefined,undefined,undefined,"1",undefined);`
+            );
+
+            assert.equal(
+                code(`m("0", [ \`1\` ])`),
+                `m.vnode("0",undefined,undefined,undefined,\`1\`,undefined);`
+            );
         });
 
         it("should support attrs + array children w/ 1 entry", function() {
@@ -26,7 +36,6 @@ describe("Children", function() {
                 `m.vnode("0",undefined,undefined,[m.vnode("#",undefined,undefined,1,undefined,undefined),m.vnode("#",undefined,undefined,2,undefined,undefined)],undefined,undefined);`
             );
         });
-        
 
         it("should support attrs + array children w/ > 1 entry", function() {
             assert.equal(
