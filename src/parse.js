@@ -56,31 +56,19 @@ exports.selector = (types, node) => {
     return out;
 };
 
-exports.child = (types, node) => {
-    if(valid.isText(node)) {
-        return create.textVnode(types, node);
-    }
+function parseChildren(types, nodes) {
+    return nodes.map((node) => {
+        if(valid.isText(node)) {
+            return create.textVnode(types, node);
+        }
 
-    if(valid.isMTrust(node)) {
-        return create.trustVnode(types, node);
-    }
-    
-    return node;
-};
-
-exports.children = (types, nodes) =>
-    nodes.map((node) => (
-        // TODO: totally broken and non-working
-        // TODO: Need to shell out to m.vnode.normalizeChildren if dynamic array
-        // TODO: or walk static array and call m.vnode.normalizeChild on all non-text entries
-        // types.isArrayExpression(node) ?
-        //     create.normalizedChildren(
-        //         types,
-        //         types.arrayExpression(exports.children(types, node.elements))
-        //     ) :
-            exports.child(types, node)
-    ));
-    
+        if(valid.isMTrust(node)) {
+            return create.trustVnode(types, node);
+        }
+        
+        return create.normalize(types, node);
+    });
+}
 
 // m("...", "...")
 // m("...", "...", "...")
@@ -127,11 +115,10 @@ exports.args = (types, node) => {
             return out;
         }
 
-        // TODO: needs to walk children and wrap unrecognized entries in m.vnode.normalizeChild
         // m("...", [ 1, m("..."), m.trust("...") ])
         if(types.isArrayExpression(children[0])) {
             out.children = types.arrayExpression(
-                exports.children(types, children[0].elements)
+                parseChildren(types, children[0].elements)
             );
 
             return out;
@@ -141,7 +128,7 @@ exports.args = (types, node) => {
         // m("...", [...].map(...))
         // m("...", [...].filter(...))
         if(valid.isArray(children[0])) {
-            out.children = children[0];
+            out.children = create.normalizeChildren(types, children[0]);
 
             return out;
         }
@@ -149,7 +136,7 @@ exports.args = (types, node) => {
 
     // m("...", ... )
     out.children = types.arrayExpression(
-        exports.children(types, children)
+        parseChildren(types, children)
     );
 
     return out;

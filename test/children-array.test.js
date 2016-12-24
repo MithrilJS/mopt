@@ -44,26 +44,26 @@ describe("Children", function() {
             );
         });
 
-        it.only("should normalize non-text array children", function() {
+        it("should normalize non-text array children", function() {
             assert.equal(
                 code(`m("0", [ 1, bar ])`),
                 `m.vnode("0",undefined,undefined,[m.vnode("#",undefined,undefined,1,undefined,undefined),m.vnode.normalize(bar)],undefined,undefined);`
             );
         });
 
-        it("should support Array.prototype children that return an array", function() {
+        it("should wrap Array.prototype children that return an array in m.vnode.normalizeChildren", function() {
             assert.equal(
                 code(`m("0", [ 1, 2 ].map(function(val) { return val; }))`),
-                `m.vnode("0",undefined,undefined,[1,2].map(function(val){return val;}),undefined,undefined);`
+                `m.vnode("0",undefined,undefined,m.vnode.normalizeChildren([1,2].map(function(val){return val;})),undefined,undefined);`
             );
 
             assert.equal(
                 code(`m("0", [ 1, 2 ].filter(function(val) { return val === 1; }))`),
-                `m.vnode("0",undefined,undefined,[1,2].filter(function(val){return val===1;}),undefined,undefined);`
+                `m.vnode("0",undefined,undefined,m.vnode.normalizeChildren([1,2].filter(function(val){return val===1;})),undefined,undefined);`
             );
         });
         
-        it("shouldn't unwrap Array.prototype children that do not return an array", function() {
+        it("shouldn't convert when there are Array.prototype children that do not return an array", function() {
             assert.equal(
                 code(`m("0", [ 1, 2 ].forEach(function(val) { return val === 1 }))`),
                 `m("0",[1,2].forEach(function(val){return val===1;}));`
@@ -75,14 +75,14 @@ describe("Children", function() {
             );
         });
 
-        it("shouldn't unwrap Array.prototype children with a non-array object", function() {
+        it("shouldn't convert when there are Array.prototype children with a non-array object", function() {
             assert.equal(
                 code(`m("0", a.map(function(val) { return val; }))`),
                 `m("0",a.map(function(val){return val;}));`
             );
         });
 
-        it("should support Array.prototype comprehensions when there are multiple children", function() {
+        it.only("should support wrapping Array.prototype children when there are multiple children", function() {
             assert.equal(
                 code(`m("0", [ 1 ], [ 2 ].map(function(val) { return val; }))`),
                 `m.vnode("0",undefined,undefined,[m.vnode("[",undefined,undefined,[m.vnode("#",undefined,undefined,1,undefined,undefined)],undefined,undefined),[2].map(function(val){return val;})],undefined,undefined);`

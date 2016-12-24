@@ -55,29 +55,26 @@ exports.fragmentVnode = (types, value, loc) =>
     vnode(types, "[", value, loc);
 
 
-exports.normalizedChildren = (types, node, loc) => {
-    var call = types.callExpression(
+exports.normalize = (types, node) =>
+    types.callExpression(
         types.memberExpression(
             types.memberExpression(
                 types.identifier("m"),
                 types.identifier("vnode")
             ),
-            types.identifier
+            types.identifier("normalize")
         ),
-        [
-            // tag, key, attrs, children, text, dom
-            types.stringLiteral(tag),
-            types.identifier("undefined"),
-            types.identifier("undefined"),
-            valnode(types, value),
-            types.identifier("undefined"),
-            types.identifier("undefined")
-        ]
+        [ node ]
     );
 
-    if(loc) {
-        call.loc = loc;
-    }
-
-    return call;
-}
+exports.normalizeChildren = (types, node) =>
+    types.callExpression(
+        types.memberExpression(
+            types.memberExpression(
+                types.identifier("m"),
+                types.identifier("vnode")
+            ),
+            types.identifier("normalizeChildren")
+        ),
+        [ node ]
+    );
