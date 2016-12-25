@@ -1,9 +1,9 @@
-mithril-objectify [![NPM Version](https://img.shields.io/npm/v/mithril-objectify.svg)](https://www.npmjs.com/package/mithril-objectify) [![NPM License](https://img.shields.io/npm/l/mithril-objectify.svg)](https://www.npmjs.com/package/mithril-objectify)
+mopt [![NPM Version](https://img.shields.io/npm/v/mopt.svg)](https://www.npmjs.com/package/mopt) [![NPM License](https://img.shields.io/npm/l/mopt.svg)](https://www.npmjs.com/package/mopt)
 =================
 
 <p align="center">
-    <a href="https://www.npmjs.com/package/mithril-objectify" alt="NPM Downloads">
-        <img src="https://img.shields.io/npm/dm/mithril-objectify.svg" />
+    <a href="https://www.npmjs.com/package/mopt" alt="NPM Downloads">
+        <img src="https://img.shields.io/npm/dm/mopt.svg" />
     </a>
     <a href="https://travis-ci.org/tivac/mithril-objectify" alt="Build Status">
         <img src="https://img.shields.io/travis/tivac/mithril-objectify/master.svg" />
@@ -16,16 +16,22 @@ mithril-objectify [![NPM Version](https://img.shields.io/npm/v/mithril-objectify
     </a>
 </p>
 
-
-A [babel](babeljs.io) plugin to transform [mithril](http://mithril.js.org) hyperscript function invocations like `m(".fooga")` into static JS objects like:
+A [babel](babeljs.io) plugin to statically optimize [mithril](http://mithril.js.org) hyperscript function invocations.
 
 ```js
-{ tag: "div", attrs: { "className" : "fooga" }, children: [ ] }
+// This hyperscript function invocation
+m(".fooga");
+
+// Gets optimized into
+m.vnode("div",undefined,{className:"fooga"},undefined,undefined,undefined);
 ```
-
-for speeeeeed.
-
 Please file an issue if you come across any cases that this doesn't handle, I'd love to improve the number of structures I can rewrite!
+
+## Mithril Version Warning
+
+`mopt` **only** works with `mithril@1.x`.
+
+For optimizing `mithril@0.2.x` see [mithril-objectify](https://www.npmjs.com/package/mithril-objectify).
 
 ## :warning: `mithril@1.x` Compatibility :warning: 
 
@@ -37,7 +43,7 @@ Hopefully I'll get it working, but you should not use `mithril-objectify` with `
 
 Install with npm
 
-`npm i mithril-objectify`
+`npm i mopt`
 
 ## Usage
 
@@ -46,19 +52,19 @@ Install with npm
 ```js
 // .babelrc
 {
-    "plugins": [ "mithril-objectify" ]
+    "plugins": [ "mopt" ]
 }
 ```
 
 ### CLI
 
-`$ babel --plugins mithril-objectify script.js`
+`$ babel --plugins mopt script.js`
 
 ### API
 
 ```js
 require("babel-core").transform("<code>", {
-  plugins: [ "mithril-objectify" ]
+  plugins: [ "mopt" ]
 });
 ```
 

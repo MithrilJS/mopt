@@ -1,15 +1,8 @@
 {
-  "name": "mithril-objectify",
-  "version": "3.1.0",
-  "description": "Babel plugin to optimize Mithril m() calls into simple JS objects",
+  "name": "mopt",
+  "version": "4.3.1",
+  "description": "Babel plugin to statically optimize Mithril m() calls",
   "main": "./src/index.js",
-  "scripts": {
-    "test": "npm run lint && npm run mocha",
-    "lint": "eslint .",
-    "cover": "istanbul test --print both ./node_modules/mocha/bin/_mocha",
-    "mocha": "mocha",
-    "preversion": "npm test"
-  },
   "author": "Pat Cavit <pcavit@arena.net>",
   "repository": "tivac/mithril-objectify",
   "license": "MIT",
@@ -19,20 +12,63 @@
     "ast",
     "babel-plugin"
   ],
+  "dependencies": {
+    "lodash.ismatchwith": "^4.4.0",
+    "lodash.partition": "^4.6.0"
+  },
   "devDependencies": {
-    "babel-core": "^6.8.0",
-    "eslint": "^3.2.2",
-    "eslint-config-arenanet": "^3.0.0",
+    "@studio/changes": "^1.0.4",
+    "babel-core": "^6.21.0",
+    "common-tags": "^1.4.0",
+    "eslint": "^3.12.2",
+    "eslint-config-arenanet": "^3.1.0",
+    "eslint-plugin-import": "^2.2.0",
+    "husky": "^0.12.0",
     "istanbul": "^0.4.0",
-    "lodash.assign": "^4.1.0",
-    "mithril": "^0.2.4",
-    "mocha": "^3.0.0"
+    "mithril": "^1.0.0-rc.6",
+    "mocha": "^3.2.0",
+    "validate-commit-msg": "^2.8.2"
+  },
+  "scripts": {
+    "cover": "istanbul cover --print both ./node_modules/mocha/bin/_mocha",
+    "commitmsg": "validate-commit-msg",
+    "lint": "eslint .",
+    "prepush": "npm test",
+    "test": "mocha",
+    "posttest": "npm run lint",
+    "preversion": "npm test",
+    "version": "changes",
+    "postversion": "git push --follow-tags"
+  },
+  "config": {
+    "validate-commit-msg": {
+      "helpMessage": "\n-----------\n\nThere was a small validation problem with your commit message:\n\n> %s\nAn example valid commit message could be:\n\n> feat: Added a new feature\n> chore: Updated packge\n\nIf you really need to, you can skip the validation using\n\n> git commit --no-verify"
+    }
   },
   "eslintConfig": {
     "extends": "arenanet",
+    "plugins": [
+      "import"
+    ],
     "env": {
       "node": true,
       "mocha": true
+    },
+    "rules": {
+      "import/no-unresolved": [
+        "error",
+        {
+          "commonjs": true
+        }
+      ],
+      "indent": "off",
+      "quotes": [
+        "warn",
+        "double",
+        {
+          "allowTemplateLiterals": true
+        }
+      ]
     }
   }
 }

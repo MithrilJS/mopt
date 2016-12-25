@@ -1,186 +1,70 @@
 "use strict";
 
-var valid = require("./valid");
-
-function getClass(api, path) {
-    var t    = api.types,
-        node = path.node,
-        type = "className";
+var partition = require("lodash.partition"),
     
-    if(node.arguments[1] && t.isObjectExpression(node.arguments[1])) {
-        // TODO: REWRITE
-        node.arguments[1].properties.some(function(property) {
-            var key = property.key.name || property.key.value;
+    valid  = require("./valid.js"),
+    parse  = require("./parse.js"),
+    match  = require("./match.js"),
+    create = require("./create.js");
 
-            if(key === "class") {
-                type = "class";
-
-                return true;
-            }
-            
-            return false;
-        });
-    }
-
-    return type;
-}
-
-function parseSelector(state) {
-    var t    = state.types,
-        node = state.path.node,
-        css  = [],
-        src  = node.arguments[0];
-    
-    // Simple binary expressions like "foo" + "bar" can be statically handled
-    // It'd be weird to write it, but you never know
-    if(t.isBinaryExpression(src) && src.operator === "+") {
-        src = src.left.value + src.right.value;
-    } else {
-        src = src.value;
-    }
-    
-    if(!src) {
-        return;
-    }
-    
-    src.match(/(?:(^|#|\.)([^#\.\[\]]+))|(\[.+?\])/g).forEach(function(match) {
-        var lead = match.charAt(0),
-            parts;
-
-        if(lead === "#") {
-            state.attrs.id = t.stringLiteral(match.slice(1));
-
-            return;
-        }
-
-        if(lead === ".") {
-            css.push(match.slice(1));
-
-            return;
-        }
-
-        if(lead === "[") {
-            parts = match.match(/\[(.+?)(?:=("|'|)(.*?)\2)?\]/);
-            state.attrs[parts[1]] = t.stringLiteral(parts[3] || "");
-            
-            return;
-        }
-
-        state.tag = match;
-    });
-    
-    if(css.length > 0) {
-        state.attrs[state.key] = t.stringLiteral(css.join(" "));
-    }
-}
-
-function parseAttrs(state) {
-    var t = state.types,
-        v = state.valid,
-
-        existing = state.attrs[state.key];
-    
-    state.path.node.arguments[1].properties.forEach(function(property) {
-        var key = property.key.name || property.key.value;
+function processAttrs(types, buckets, loc) {
+    var merged = buckets.reduce((p, c) => p.concat(c), []),
+        result = partition(merged, (prop) =>
+            match(prop, {
+                key : { name : /^class$|^className$/ }
+            })
+        ),
         
-        // Combining class strings is a little trickier
-        if(key === state.key && existing && existing.value.length) {
-            // Ignore empty strings
-            if(t.isStringLiteral(property.value) && property.value.value === "") {
-                return;
-            }
-            
-            // Literals get merged as a string
-            if(v.isValueLiteral(property.value)) {
-                state.attrs[state.key] = t.stringLiteral(`${existing.value} ${property.value.value}`);
-                
-                return;
-            }
-            
-            // Non-literals get combined w/ a "+"
-            state.attrs[state.key] = t.binaryExpression("+", t.stringLiteral(`${existing.value} `), property.value);
+        css = result[0]
+            .map((prop) => prop.value.value)
+            .filter(Boolean);
+    
+    if(css.length) {
+        result[1].unshift(
+            create.prop(types, "className", css.join(" "), loc)
+        );
+    }
 
-            return;
-        }
-
-        state.attrs[key] = property.value;
-    });
+    return result[1];
 }
 
-function transform(api, path) {
-    var state = Object.assign({}, api, {
-            path  : path,
-            tag   : "div",
-            attrs : {},
-            nodes : [],
-            start : 1,
-            key   : getClass(api, path)
-        }),
-        
-        t = state.types,
-        v = state.valid;
+module.exports = function(babel) {
+    var t     = babel.types,
+        undef = t.identifier("undefined");
 
-    parseSelector(state);
-    
-    // Is the second argument an object? Then it's attrs and they need to be parsed
-    if(t.isObjectExpression(path.node.arguments[1])) {
-        parseAttrs(state);
-
-        state.start = 2;
-    }
-    
-    // Make sure children is accurately sized
-    if(path.node.arguments.length > state.start) {
-        state.nodes = path.node.arguments.slice(state.start);
-    }
-    
-    // Modify children based on contents
-    if(state.nodes.length === 1) {
-        if(t.isArrayExpression(state.nodes[0])) {
-            // Make sure we don't end up w/ [ [ ... ] ]
-            state.nodes = t.arrayExpression(state.nodes[0].elements);
-        } else if(v.isArrayExpression(state.nodes[0])) {
-            // Array expressions that return arrays get unwrapped
-            state.nodes = state.nodes[0];
-        } else {
-            // Otherwise wrap it in an array
-            state.nodes = t.arrayExpression(state.nodes);
-        }
-    } else {
-        state.nodes = t.arrayExpression(state.nodes);
-    }
-    
-    return state;
-}
-
-module.exports = function(api) {
-    var t = api.types,
-        v = valid(api);
-    
     return {
         visitor : {
-            CallExpression : function(path) {
-                var state;
-                
-                if(!v.mithril(path.node)) {
+            CallExpression(path) {
+                var selector, args, parts, attrs;
+
+                if(!valid.isMithril(path.node)) {
                     return;
                 }
+                
+                selector = parse.selector(t, path.node);
+                args = parse.args(t, path.node);
 
-                state = transform({
-                    types : t,
-                    valid : v
-                }, path);
-                    
-                path.replaceWith(t.objectExpression([
-                    t.objectProperty(t.identifier("tag"), t.stringLiteral(state.tag)),
-                    t.objectProperty(t.identifier("attrs"), t.objectExpression(Object.keys(state.attrs).map(function(key) {
-                        return t.objectProperty(
-                            t.isValidIdentifier(key) ? t.identifier(key) : t.stringLiteral(key),
-                            state.attrs[key]
-                        );
-                    }))),
-                    t.objectProperty(t.identifier("children"), state.nodes)
-                ]));
+                attrs = processAttrs(t, [ selector.attrs, args.attrs ], path.node.loc);
+                
+                // Find any `key` properties and extract them
+                parts = partition(attrs, (attr) => match(attr, {
+                    key : { name : "key" }
+                }));
+
+                // Vnode(tag, key, attrs, children, text, dom)
+                path.replaceWith(
+                    create.vnode(t,
+                        selector.tag,
+                        // Use the last key attribute found
+                        parts[0].length ? parts[0].pop().value : undef,
+                        // Create attributes object
+                        parts[1].length ? t.objectExpression(parts[1]) : undef,
+                        args.children || undef,
+                        args.text || undef,
+                        undef,
+                        path.node.loc
+                    )
+                );
             }
         }
     };
