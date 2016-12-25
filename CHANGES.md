@@ -1,5 +1,10 @@
 # Changes
 
+## 5.0.0
+
+- build: new repo location!
+- docs: clean up version confusion
+
 ## 4.3.1
 
 - Working through some release weirdness, AGAIN. Still sorry about the noise.
