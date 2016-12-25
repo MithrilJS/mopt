@@ -6,23 +6,7 @@ function valnode(types, value) {
         types.valueToNode(value);
 }
 
-function vnode(types, tag, value, loc) {
-    var node = types.callExpression(
-        types.memberExpression(
-            types.identifier("m"),
-            types.identifier("vnode")
-        ),
-        [
-            // tag, key, attrs, children, text, dom
-            types.stringLiteral(tag),
-            types.identifier("undefined"),
-            types.identifier("undefined"),
-            valnode(types, value),
-            types.identifier("undefined"),
-            types.identifier("undefined")
-        ]
-    );
-
+function location(node, loc) {
     if(loc) {
         node.loc = loc;
     }
@@ -30,51 +14,73 @@ function vnode(types, tag, value, loc) {
     return node;
 }
 
-exports.prop = (types, key, value, loc) => {
-    var prop = types.objectProperty(
-        types.isValidIdentifier(key) ?
-            types.identifier(key) :
-            types.stringLiteral(key),
-        valnode(types, value)
+exports.vnode = (types, tag, key, attrs, children, text, dom, loc) =>
+    /* eslint max-params: off */
+    location(
+        types.callExpression(
+            types.memberExpression(
+                types.identifier("m"),
+                types.identifier("vnode")
+            ),
+            [
+                // tag, key, attrs, children, text, dom
+                types.stringLiteral(tag),
+                key || types.identifier("undefined"),
+                attrs || types.identifier("undefined"),
+                children ? valnode(types, children) : types.identifier("undefined"),
+                text || types.identifier("undefined"),
+                dom || types.identifier("undefined")
+            ]
+        ),
+        loc
     );
 
-    if(loc) {
-        prop.loc = loc;
-    }
+exports.prop = (types, key, value, loc) =>
+    location(
+        types.objectProperty(
+            types.isValidIdentifier(key) ?
+                types.identifier(key) :
+                types.stringLiteral(key),
+            valnode(types, value)
+        ),
+        loc
+    );
 
-    return prop;
-};
+exports.normalize = (types, node, loc) =>
+    location(
+        types.callExpression(
+            types.memberExpression(
+                types.memberExpression(
+                    types.identifier("m"),
+                    types.identifier("vnode")
+                ),
+                types.identifier("normalize")
+            ),
+            [ node ]
+        ),
+        loc
+    );
+
+exports.normalizeChildren = (types, node, loc) =>
+    location(
+        types.callExpression(
+            types.memberExpression(
+                types.memberExpression(
+                    types.identifier("m"),
+                    types.identifier("vnode")
+                ),
+                types.identifier("normalizeChildren")
+            ),
+            [ node ]
+        ),
+        loc
+    );
 
 exports.textVnode = (types, value, loc) =>
-    vnode(types, "#", value, loc);
+    exports.vnode(types, "#", null, null, value, null, null, loc);
 
 exports.trustVnode = (types, value, loc) =>
-    vnode(types, "<", value.arguments[0], loc);
+    exports.vnode(types, "<", null, null, value.arguments[0], null, null, loc);
 
 exports.fragmentVnode = (types, value, loc) =>
-    vnode(types, "[", value, loc);
-
-
-exports.normalize = (types, node) =>
-    types.callExpression(
-        types.memberExpression(
-            types.memberExpression(
-                types.identifier("m"),
-                types.identifier("vnode")
-            ),
-            types.identifier("normalize")
-        ),
-        [ node ]
-    );
-
-exports.normalizeChildren = (types, node) =>
-    types.callExpression(
-        types.memberExpression(
-            types.memberExpression(
-                types.identifier("m"),
-                types.identifier("vnode")
-            ),
-            types.identifier("normalizeChildren")
-        ),
-        [ node ]
-    );
+    exports.vnode(types, "[", null, null, value, null, null, loc);

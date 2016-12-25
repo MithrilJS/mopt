@@ -7,7 +7,7 @@ var partition = require("lodash.partition"),
     match  = require("./match.js"),
     create = require("./create.js");
 
-function processAttrs(types, buckets) {
+function processAttrs(types, buckets, loc) {
     var merged = buckets.reduce((p, c) => p.concat(c), []),
         result = partition(merged, (prop) =>
             match(prop, {
@@ -21,7 +21,7 @@ function processAttrs(types, buckets) {
     
     if(css.length) {
         result[1].unshift(
-            create.prop(types, "className", css.join(" "))
+            create.prop(types, "className", css.join(" "), loc)
         );
     }
 
@@ -44,7 +44,7 @@ module.exports = function(babel) {
                 selector = parse.selector(t, path.node);
                 args = parse.args(t, path.node);
 
-                attrs = processAttrs(t, [ selector.attrs, args.attrs ]);
+                attrs = processAttrs(t, [ selector.attrs, args.attrs ], path.node.loc);
                 
                 // Find any `key` properties and extract them
                 parts = partition(attrs, (attr) => match(attr, {
@@ -52,12 +52,8 @@ module.exports = function(babel) {
                 }));
 
                 // Vnode(tag, key, attrs, children, text, dom)
-                path.replaceWith(t.callExpression(
-                    t.memberExpression(
-                        t.identifier("m"),
-                        t.identifier("vnode")
-                    ),
-                    [
+                path.replaceWith(
+                    create.vnode(t,
                         selector.tag,
                         // Use the last key attribute found
                         parts[0].length ? parts[0].pop().value : undef,
@@ -65,9 +61,10 @@ module.exports = function(babel) {
                         parts[1].length ? t.objectExpression(parts[1]) : undef,
                         args.children || undef,
                         args.text || undef,
-                        undef
-                    ]
-                ));
+                        undef,
+                        path.node.loc
+                    )
+                );
             }
         }
     };

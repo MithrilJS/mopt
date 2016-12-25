@@ -8,8 +8,9 @@ exports.selector = (types, node) => {
     var src = node.arguments[0].value,
         css = [],
         out = {
+            src,
             attrs : [],
-            tag   : types.stringLiteral("div")
+            tag   : "div"
         };
     
     if(!src) {
@@ -44,7 +45,7 @@ exports.selector = (types, node) => {
             return;
         }
 
-        out.tag = types.valueToNode(part);
+        out.tag = part;
     });
     
     if(css.length > 0) {
@@ -60,12 +61,12 @@ function parseChildren(types, nodes) {
     return nodes.map((node) => {
         // optimize simple text nodes
         if(valid.isText(node)) {
-            return create.textVnode(types, node);
+            return create.textVnode(types, node, node.loc);
         }
 
         // optimize m.trust
         if(valid.isMTrust(node)) {
-            return create.trustVnode(types, node);
+            return create.trustVnode(types, node, node.loc);
         }
 
         // Will be transformed later
@@ -83,7 +84,7 @@ function parseChildren(types, nodes) {
         }
         
         // Can't optimize, normalize at run time :(
-        return create.normalize(types, node);
+        return create.normalize(types, node, node.loc);
     });
 }
 
@@ -145,7 +146,7 @@ exports.args = (types, node) => {
         // m("...", [...].map(...))
         // m("...", [...].filter(...))
         if(valid.isArray(children[0])) {
-            out.children = create.normalizeChildren(types, children[0]);
+            out.children = create.normalizeChildren(types, children[0], children[0].loc);
 
             return out;
         }
