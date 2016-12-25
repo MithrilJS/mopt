@@ -14,6 +14,6 @@ deploy:
     secure: XW08FMLCBaNHMcTVs9khQbibyWs+XNUOXvk59MHoByxYEd4gqbTX21pODN33kgaPom0oNFNmCz5vppxOZfLTL9h74Z1LpQzHni8zwhuOOhbvSzZ4UJdIZFOw4qIqE0/WWbNQvK1wFI7gLtajiHZH8Ey1vfHLj8DHu4ZAGb+P0VPOqFWYvdMeKXShCXyH4GAjkC3fy9comqfcoRhCrRWtrivEaAkVrWqRmMWQwbr98uanrJ4n/HYy5gSUUEyEr8Qc2xYjsCgm2g7FWvCgybwoL1fEciKL2DAs8Fp9+ui/aDaT6E0i981W1OtRGpmgaKDE4Hw92YaMnIZOIOHsV/91gxJZ57YLOlGTt7wJfh+0TfoSfgxokXSSB2bSAISWHW//DsdI379tDK1ngwvsa72wGtbqXTtOr7+UaxqLu+B1c4ijniDtb8BsySW5tMojzBvU/9H03na3g4x99cjmO5xCE+Cr1GhFw/ZVET/phCGMTYHcVZGZvd96WFhsf+OgLtwplDDQEkI6mUDT1EJJYawTxSu4emhh+ddd8hK+Izj6Zb/wyk3EHEFisoNqqV2sezHuW9zJTtwaDbXrOOiG8/Uq8heUzh4O4BGWDP7udSDT/TugGXRt56QPVRMK85jJZ6KzO3+Q2Km3Q9JHBgggpW6VFU9dI7eyCQcplhouDMI+S+Y=
   on:
     tags: true
-    repo: tivac/mithril-objectify
+    repo: tivac/mopt
     branch: mithril-0.2.x
     node: 'node'
