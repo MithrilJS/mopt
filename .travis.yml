@@ -15,5 +15,5 @@ deploy:
   on:
     tags: true
     repo: tivac/mithril-objectify
-    branch: rewrite
+    branch: master
     node: 'node'
