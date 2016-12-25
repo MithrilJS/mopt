@@ -1,5 +1,9 @@
 # Changes
 
+## 4.3.1
+
+- Working through some release weirdness, AGAIN. Still sorry about the noise.
+
 ## 4.3.0
 
 - feat: improve source map accuracy
