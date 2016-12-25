@@ -15,5 +15,5 @@ deploy:
   on:
     tags: true
     repo: tivac/mithril-objectify
-    branch: master
+    branch: mithril-0.2.x
     node: 'node'
