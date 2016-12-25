@@ -82,10 +82,10 @@ describe("Children", function() {
             );
         });
 
-        it.only("should support wrapping Array.prototype children when there are multiple children", function() {
+        it("should support wrapping Array.prototype children when there are multiple children", function() {
             assert.equal(
                 code(`m("0", [ 1 ], [ 2 ].map(function(val) { return val; }))`),
-                `m.vnode("0",undefined,undefined,[m.vnode("[",undefined,undefined,[m.vnode("#",undefined,undefined,1,undefined,undefined)],undefined,undefined),[2].map(function(val){return val;})],undefined,undefined);`
+                `m.vnode("0",undefined,undefined,[m.vnode("[",undefined,undefined,[m.vnode("#",undefined,undefined,1,undefined,undefined)],undefined,undefined),m.vnode.normalize([2].map(function(val){return val;}))],undefined,undefined);`
             );
         });
         

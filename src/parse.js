@@ -58,14 +58,31 @@ exports.selector = (types, node) => {
 
 function parseChildren(types, nodes) {
     return nodes.map((node) => {
+        // optimize simple text nodes
         if(valid.isText(node)) {
             return create.textVnode(types, node);
         }
 
+        // optimize m.trust
         if(valid.isMTrust(node)) {
             return create.trustVnode(types, node);
         }
+
+        // Will be transformed later
+        if(valid.isM(node)) {
+            return node;
+        }
+
+        // Turn arrays into fragments
+        if(types.isArrayExpression(node)) {
+            return create.fragmentVnode(
+                types,
+                types.arrayExpression(parseChildren(types, node.elements)),
+                node.loc
+            );
+        }
         
+        // Can't optimize, normalize at run time :(
         return create.normalize(types, node);
     });
 }
