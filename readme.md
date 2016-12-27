@@ -6,13 +6,13 @@ mopt [![NPM Version](https://img.shields.io/npm/v/mopt.svg)](https://www.npmjs.c
         <img src="https://img.shields.io/npm/dm/mopt.svg" />
     </a>
     <a href="https://travis-ci.org/tivac/mithril-objectify" alt="Build Status">
-        <img src="https://img.shields.io/travis/tivac/mithril-objectify/master.svg" />
+        <img src="https://img.shields.io/travis/tivac/mopt/master.svg" />
     </a>
-    <a href="https://david-dm.org/tivac/mithril-objectify" alt="Dependency Status">
-        <img src="https://img.shields.io/david/tivac/mithril-objectify.svg" />
+    <a href="https://david-dm.org/tivac/mopt" alt="Dependency Status">
+        <img src="https://img.shields.io/david/tivac/mopt.svg" />
     </a>
-    <a href="https://david-dm.org/tivac/mithril-objectify#info=devDependencies" alt="devDependency Status">
-        <img src="https://img.shields.io/david/dev/tivac/mithril-objectify.svg" />
+    <a href="https://david-dm.org/tivac/mopt#info=devDependencies" alt="devDependency Status">
+        <img src="https://img.shields.io/david/dev/tivac/mopt.svg" />
     </a>
 </p>
 
