@@ -5,7 +5,7 @@ mopt [![NPM Version](https://img.shields.io/npm/v/mopt.svg)](https://www.npmjs.c
     <a href="https://www.npmjs.com/package/mopt" alt="NPM Downloads">
         <img src="https://img.shields.io/npm/dm/mopt.svg" />
     </a>
-    <a href="https://travis-ci.org/tivac/mithril-objectify" alt="Build Status">
+    <a href="https://travis-ci.org/tivac/mopt" alt="Build Status">
         <img src="https://img.shields.io/travis/tivac/mopt/master.svg" />
     </a>
     <a href="https://david-dm.org/tivac/mopt" alt="Dependency Status">
@@ -39,7 +39,7 @@ Install with npm
 
 `npm i mopt`
 
-## Usage
+## Usage with Babel
 
 ### `.babelrc`
 
@@ -62,14 +62,7 @@ require("babel-core").transform("<code>", {
 });
 ```
 
-## [Rollup](http://rollupjs.org)
-
-[`rollup-plugin-babel`](https://www.npmjs.com/package/rollup-plugin-babel)
-
-## [Browserify](http://browserify.org/)
-
-[`babelify`](https://www.npmjs.com/package/babelify)
-
-## [WebPack](https://webpack.github.io/)
-
-[`babel-loader`](https://www.npmjs.com/package/babel-loader)
+## Usage with a bundler
+### Rollup - [`rollup-plugin-babel`](https://www.npmjs.com/package/rollup-plugin-babel)
+### Browserify - [`babelify`](https://www.npmjs.com/package/babelify)
+### WebPack - [`babel-loader`](https://www.npmjs.com/package/babel-loader)
