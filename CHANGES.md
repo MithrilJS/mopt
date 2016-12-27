@@ -1,5 +1,9 @@
 # Changes
 
+## 5.0.1
+
+- docs: readme formatting and some badge fixups
+
 ## 5.0.0
 
 - build: new repo location!
