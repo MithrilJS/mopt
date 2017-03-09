@@ -54,5 +54,19 @@ describe("Attributes", function() {
                 `m.vnode("div",undefined,undefined,[],undefined,undefined);`
             );
         });
+
+        it("no selector class, complex className attr (#57)", function() {
+            assert.equal(
+                code(`m("div", { className: foo ? "bar" : "baz" }, "inner")`),
+                `m.vnode("div",undefined,{className:foo?"bar":"baz"},undefined,"inner",undefined);`
+            );
+        });
+
+        it("selector class, complex className attr", function() {
+            assert.equal(
+                code(`m("div.a", { className: foo ? "bar" : "baz" }, "inner")`),
+                `m.vnode("div",undefined,{className:"a "+(foo?"bar":"baz")},undefined,"inner",undefined);`
+            );
+        });
     });
 });

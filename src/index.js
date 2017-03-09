@@ -7,25 +7,56 @@ var partition = require("lodash.partition"),
     match  = require("./match.js"),
     create = require("./create.js");
 
+// Combine any selector class/classNames with anything defined in code
 function processAttrs(types, buckets, loc) {
     var merged = buckets.reduce((p, c) => p.concat(c), []),
-        result = partition(merged, (prop) =>
+        props  = partition(merged, (prop) =>
             match(prop, {
                 key : { name : /^class$|^className$/ }
             })
         ),
         
-        css = result[0]
-            .map((prop) => prop.value.value)
-            .filter(Boolean);
-    
-    if(css.length) {
-        result[1].unshift(
-            create.prop(types, "className", css.join(" "), loc)
+        strings = props[0].filter((prop) => valid.isString(prop.value));
+        
+    // All class/className props were strings, merge them into a single string
+    if(strings.length === props[0].length) {
+        strings = strings.map((prop) => prop.value.value);
+        
+        // Sometimes all the strings are empty, so bail
+        if(!strings.some(Boolean)) {
+            return props[1];
+        }
+
+        props[1].unshift(
+            create.prop(
+                types,
+                "className",
+                strings
+                    .filter(Boolean)
+                    .join(" "),
+                loc
+            )
         );
+
+        return props[1];
+    }
+    
+    // Some class/className props were strings
+    if(strings.length) {
+        props[1].unshift(
+            create.prop(
+                types,
+                "className",
+                create.stringify(types, props[0].map((prop) => prop.value), loc),
+                loc
+            )
+        );
+
+        return props[1];
     }
 
-    return result[1];
+    // Combine everything
+    return merged;
 }
 
 module.exports = function(babel) {
