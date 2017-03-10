@@ -14,10 +14,9 @@ function location(node, loc) {
     return node;
 }
 
-// Takes an array of nodes and returns the smallest string it can
-exports.stringify = (types, nodes, loc) => {
-    // Return string + nested binary expressions as needed
-    return nodes.reduce((prev, curr) => {
+// Takes an array of nodes and returns string + nested binary expressions as needed
+exports.stringify = (types, nodes, loc) =>
+    nodes.reduce((prev, curr) => {
         if(valid.isString(curr)) {
             // filter out empty strings
             if(!curr.value.length) {
@@ -48,7 +47,6 @@ exports.stringify = (types, nodes, loc) => {
             loc
         );
     });
-};
 
 exports.vnode = (types, tag, key, attrs, children, text, dom, loc) =>
     /* eslint max-params: off */
