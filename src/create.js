@@ -1,5 +1,7 @@
 "use strict";
 
+var valid = require("./valid.js");
+
 function valnode(types, value) {
     return types.isNode(value) ?
         value :
@@ -7,12 +9,46 @@ function valnode(types, value) {
 }
 
 function location(node, loc) {
-    if(loc) {
-        node.loc = loc;
-    }
+    node.loc = loc;
 
     return node;
 }
+
+// Takes an array of nodes and returns the smallest string it can
+exports.stringify = (types, nodes, loc) => {
+    // Return string + nested binary expressions as needed
+    return nodes.reduce((prev, curr) => {
+        if(valid.isString(curr)) {
+            // filter out empty strings
+            if(!curr.value.length) {
+                return prev;
+            }
+            
+            // multiple strings can be simply concatted
+            if(valid.isString(prev)) {
+                prev.value += ` ${curr.value}`;
+
+                return prev;
+            }
+            
+            // appending to something, need to add seperator
+            curr.value = ` ${curr.value}`;
+        }
+        
+        if(valid.isString(prev)) {
+            prev.value += " ";
+        }
+
+        return location(
+            types.binaryExpression(
+                "+",
+                prev,
+                curr
+            ),
+            loc
+        );
+    });
+};
 
 exports.vnode = (types, tag, key, attrs, children, text, dom, loc) =>
     /* eslint max-params: off */
