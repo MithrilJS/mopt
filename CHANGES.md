@@ -1,5 +1,9 @@
 # Changes
 
+## 5.0.2
+
+- fix: non-string class/className attributes (#58)
+
 ## 5.0.1
 
 - docs: readme formatting and some badge fixups

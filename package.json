@@ -1,6 +1,6 @@
 {
   "name": "mopt",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "description": "Babel plugin to statically optimize Mithril m() calls",
   "main": "./src/index.js",
   "author": "Pat Cavit <pcavit@arena.net>",
