@@ -18,7 +18,8 @@ function processAttrs(types, buckets, loc) {
         
         strings = props[0].filter((prop) => valid.isString(prop.value));
         
-    // All class/className props were strings, merge them into a single string
+    // All class/className props were strings, might not need to do anything
+    // if they're all empty
     if(strings.length === props[0].length) {
         strings = strings.map((prop) => prop.value.value);
         
@@ -26,19 +27,6 @@ function processAttrs(types, buckets, loc) {
         if(!strings.some(Boolean)) {
             return props[1];
         }
-
-        props[1].unshift(
-            create.prop(
-                types,
-                "className",
-                strings
-                    .filter(Boolean)
-                    .join(" "),
-                loc
-            )
-        );
-
-        return props[1];
     }
     
     // Some class/className props were strings

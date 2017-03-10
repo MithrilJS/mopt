@@ -23,8 +23,12 @@ exports.stringify = (types, nodes, loc) => {
     // Combine successive strings
     nodes.forEach((node) => {
         if(valid.isString(node)) {
+            if(!node.value.length) {
+                return;
+            }
+        
             if(valid.isString(output[output.length - 1])) {
-                output[output.length - 1].value += node.value;
+                output[output.length - 1].value += ` ${node.value}`;
 
                 return;
             }

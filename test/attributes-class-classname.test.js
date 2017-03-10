@@ -62,6 +62,13 @@ describe("Attributes", function() {
             );
         });
 
+        it("no selector class, more complex className attr (#57)", function() {
+            assert.equal(
+                code(`m("div", { className: foo ? "bar" : boo ? "woo" : "baz" }, "inner")`),
+                `m.vnode("div",undefined,{className:foo?"bar":boo?"woo":"baz"},undefined,"inner",undefined);`
+            );
+        });
+
         it("selector class, complex className attr", function() {
             assert.equal(
                 code(`m("div.a", { className: foo ? "bar" : "baz" }, "inner")`),
