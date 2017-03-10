@@ -9,58 +9,41 @@ function valnode(types, value) {
 }
 
 function location(node, loc) {
-    if(loc) {
-        node.loc = loc;
-    }
+    node.loc = loc;
 
     return node;
 }
 
 // Takes an array of nodes and returns the smallest string it can
 exports.stringify = (types, nodes, loc) => {
-    var output = [];
-
-    // Combine successive strings
-    nodes.forEach((node) => {
-        if(valid.isString(node)) {
-            if(!node.value.length) {
-                return;
-            }
-        
-            if(valid.isString(output[output.length - 1])) {
-                output[output.length - 1].value += ` ${node.value}`;
-
-                return;
-            }
-        }
-
-        output.push(node);
-    });
-
-    // Single strings just return that
-    if(output.length === 1) {
-        return location(output[0], loc);
-    }
-
-    // Return nested binary expressions as needed
-    return output.reverse().reduce((prev, curr) => {
-        if(!prev) {
-            return curr;
-        }
-
+    // Return string + nested binary expressions as needed
+    return nodes.reduce((prev, curr) => {
         if(valid.isString(curr)) {
-            curr.value += " ";
-        }
+            // filter out empty strings
+            if(!curr.value.length) {
+                return prev;
+            }
+            
+            // multiple strings can be simply concatted
+            if(valid.isString(prev)) {
+                prev.value += ` ${curr.value}`;
 
+                return prev;
+            }
+            
+            // appending to something, need to add seperator
+            curr.value = ` ${curr.value}`;
+        }
+        
         if(valid.isString(prev)) {
-            prev.value = ` ${prev.value}`;
+            prev.value += " ";
         }
 
         return location(
             types.binaryExpression(
                 "+",
-                curr,
-                prev
+                prev,
+                curr
             ),
             loc
         );
