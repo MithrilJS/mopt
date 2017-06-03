@@ -21,7 +21,9 @@ function processAttrs(types, buckets, loc) {
     // All class/className props were strings, might not need to do anything
     // if they're all empty
     if(strings.length === props[0].length) {
-        strings = strings.map((prop) => prop.value.value);
+        strings = strings.map(function(prop) {
+            return types.isTemplateLiteral(prop.value) ? prop.value.quasis : prop.value.value;
+        });
         
         // Sometimes all the strings are empty, so bail
         if(!strings.some(Boolean)) {

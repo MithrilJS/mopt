@@ -97,4 +97,20 @@ describe("Attributes", function() {
             );
         });
     });
+
+    describe("class special case", function() {
+        it("attr className can be template string", function() {
+            assert.equal(
+                code(`m("div", { className : \`foo\` }, "test")`),
+                `m.vnode("div",undefined,{className:\`foo\`},undefined,"test",undefined);`
+            );
+        });
+
+        it("attr className can be template string with expressions", function() {
+            assert.equal(
+                code(`m("div", { className : \`foo \${test + 1}\` }, "test")`),
+                `m.vnode("div",undefined,{className:\`foo \${test+1}\`},undefined,"test",undefined);`
+            );
+        });
+    });
 });
