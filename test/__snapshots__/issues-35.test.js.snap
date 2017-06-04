@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Issues #35 hyphenated attributes should be supported as an attribute 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"fooga\\",\\"wooga-booga\\":1},[],undefined,undefined);"`;
+
+exports[`Issues #35 hyphenated attributes should be supported in the selector 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"fooga\\",\\"wooga-booga\\":\\"1\\"},[],undefined,undefined);"`;
