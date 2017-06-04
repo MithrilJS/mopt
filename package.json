@@ -23,11 +23,12 @@
     "eslint-config-arenanet": "^3.1.0",
     "husky": "^0.13.2",
     "jest": "^20.0.4",
+    "lint-staged": "^3.6.0",
     "mithril": "^1.1.1",
     "validate-commit-msg": "^2.8.2"
   },
   "scripts": {
-    "cover": "jest --cover",
+    "cover": "jest --coverage",
     "commitmsg": "validate-commit-msg",
     "lint": "eslint .",
     "prepush": "npm test",
@@ -51,5 +52,17 @@
     "rules": {
       "indent": "off"
     }
+  },
+  "jest": {
+    "coveragePathIgnorePatterns": [
+      "node_modules",
+      "test/lib"
+    ]
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "git add"
+    ]
   }
 }
