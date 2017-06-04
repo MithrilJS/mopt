@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Children Nested m() should support an array with an m() invocation 1`] = `"m.vnode(\\"0\\",undefined,undefined,[m.vnode(\\"1\\",undefined,undefined,[],undefined,undefined)],undefined,undefined);"`;
+
+exports[`Children Nested m() should support an array with m() invocations 1`] = `"m.vnode(\\"0\\",undefined,undefined,[m.vnode(\\"1\\",undefined,undefined,[],undefined,undefined),m.vnode(\\"2\\",undefined,undefined,[],undefined,undefined)],undefined,undefined);"`;
+
+exports[`Children Nested m() should support arrays of nested m() invocations & plain nodes 1`] = `"m.vnode(\\"one\\",undefined,undefined,[m.vnode(\\"two\\",undefined,undefined,[],undefined,undefined),m.vnode(\\"#\\",undefined,undefined,\\"three\\",undefined,undefined)],undefined,undefined);"`;
+
+exports[`Children Nested m() should support attrs + multiple nested m() invocations 1`] = `"m.vnode(\\"0\\",undefined,{title:\\"bar\\"},[m.vnode(\\"1\\",undefined,undefined,[],undefined,undefined),m.vnode(\\"2\\",undefined,undefined,[],undefined,undefined),m.vnode(\\"3\\",undefined,undefined,[],undefined,undefined)],undefined,undefined);"`;
+
+exports[`Children Nested m() should support attrs + nested m() invocations 1`] = `"m.vnode(\\"0\\",undefined,{title:\\"bar\\"},[m.vnode(\\"1\\",undefined,undefined,[],undefined,undefined)],undefined,undefined);"`;
+
+exports[`Children Nested m() should support multiple nested m() invocations 1`] = `"m.vnode(\\"0\\",undefined,undefined,[m.vnode(\\"1\\",undefined,undefined,[],undefined,undefined),m.vnode(\\"2\\",undefined,undefined,[],undefined,undefined),m.vnode(\\"3\\",undefined,undefined,[],undefined,undefined)],undefined,undefined);"`;
+
+exports[`Children Nested m() should support nested m() invocations 1`] = `"m.vnode(\\"0\\",undefined,undefined,[m.vnode(\\"1\\",undefined,undefined,[],undefined,undefined)],undefined,undefined);"`;
+
+exports[`Children Nested m() should supported attrs + arrays of nested m() invocations 1`] = `"m.vnode(\\"0\\",undefined,{title:\\"bar\\"},[m.vnode(\\"1\\",undefined,undefined,[],undefined,undefined)],undefined,undefined);"`;
