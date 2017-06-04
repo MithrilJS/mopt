@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Children String.prototype method children should support String.prototype methods using array notation 1`] = `"m.vnode(\\"div\\",undefined,undefined,undefined,\\"fooga\\"[\\"replace\\"](\\"f\\",\\"g\\"),undefined);"`;
+
+exports[`Children String.prototype method children should support String.prototype methods using dot notation 1`] = `"m.vnode(\\"div\\",undefined,undefined,undefined,\\"fooga\\".replace(\\"f\\",\\"g\\"),undefined);"`;
