@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Attributes key should extract the key attribute (boolean) 1`] = `"m.vnode(\\"div\\",true,undefined,[],undefined,undefined);"`;
+
+exports[`Attributes key should extract the key attribute (identifier) 1`] = `"m.vnode(\\"div\\",fooga,undefined,[],undefined,undefined);"`;
+
+exports[`Attributes key should extract the key attribute (number) 1`] = `"m.vnode(\\"div\\",1,undefined,[],undefined,undefined);"`;
+
+exports[`Attributes key should extract the key attribute (string) 1`] = `"m.vnode(\\"div\\",\\"1\\",undefined,[],undefined,undefined);"`;
