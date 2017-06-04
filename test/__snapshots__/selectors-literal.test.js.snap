@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Selectors Literal selectors should ignore non-string selectors 1`] = `"m(fooga);"`;
+
+exports[`Selectors Literal selectors should support attribute selectors 1`] = `"m.vnode(\\"div\\",undefined,{title:\\"bar\\"},[],undefined,undefined);"`;
+
+exports[`Selectors Literal selectors should support class selectors 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"foo\\"},[],undefined,undefined);"`;
+
+exports[`Selectors Literal selectors should support double-quoted attribute selectors 1`] = `"m.vnode(\\"div\\",undefined,{title:\\"bar\\"},[],undefined,undefined);"`;
+
+exports[`Selectors Literal selectors should support empty attribute selectors 1`] = `"m.vnode(\\"div\\",undefined,{fooga:true},[],undefined,undefined);"`;
+
+exports[`Selectors Literal selectors should support id selectors 1`] = `"m.vnode(\\"div\\",undefined,{id:\\"foo\\"},[],undefined,undefined);"`;
+
+exports[`Selectors Literal selectors should support single-quoted attribute selectors 1`] = `"m.vnode(\\"div\\",undefined,{title:\\"bar\\"},[],undefined,undefined);"`;
+
+exports[`Selectors Literal selectors should support tag selectors 1`] = `"m.vnode(\\"div\\",undefined,undefined,[],undefined,undefined);"`;
+
+exports[`Selectors Literal selectors should support the empty selector 1`] = `"m.vnode(\\"div\\",undefined,undefined,[],undefined,undefined);"`;

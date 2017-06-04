@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SVG should support nested svg selectors 1`] = `"m.vnode(\\"svg\\",undefined,undefined,[m.vnode(\\"g\\",undefined,undefined,[],undefined,undefined)],undefined,undefined);"`;
+
+exports[`SVG should support svg selectors 1`] = `"m.vnode(\\"svg\\",undefined,undefined,[],undefined,undefined);"`;

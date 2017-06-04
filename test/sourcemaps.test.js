@@ -2,8 +2,8 @@
 
 var code = require("./lib/code");
 
-describe("Source Maps", function() {
-    it("should output an accurate source map", function() {
+describe("Source Maps", () => {
+    it("should output an accurate source map", () => {
         expect(
             code(`m(".fooga")`, { sourceMaps : "inline" })
         )
