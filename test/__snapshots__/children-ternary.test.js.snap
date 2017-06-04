@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Children Ternary expressions should convert nested ternaries when all entries are literals (strings) 1`] = `"m.vnode(\\"0\\",undefined,undefined,undefined,foo?\\"1\\":bar?\\"2\\":\\"3\\",undefined);"`;
+
+exports[`Children Ternary expressions should convert when all entries are literals (string : number) 1`] = `"m.vnode(\\"0\\",undefined,undefined,undefined,foo?\\"1\\":2,undefined);"`;
+
+exports[`Children Ternary expressions should convert when all entries are literals (strings) 1`] = `"m.vnode(\\"0\\",undefined,undefined,undefined,foo?\\"1\\":\\"2\\",undefined);"`;
+
+exports[`Children Ternary expressions should not convert when entries are not literals 1`] = `"m(\\"0\\",foo?bar:\\"baz\\");"`;
+
+exports[`Children Ternary expressions should not convert when entries are not literals 2`] = `"m(\\"0\\",foo?{class:options.class}:null);"`;
