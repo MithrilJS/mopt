@@ -16,19 +16,18 @@ function processAttrs(types, buckets, loc) {
             })
         ),
         
-        strings = props[0].filter((prop) => valid.isString(prop.value));
-        
-    // All class/className props were strings, might not need to do anything
-    // if they're all empty
-    if(strings.length === props[0].length) {
-        strings = strings.map((prop) => prop.value.value);
-        
-        // Sometimes all the strings are empty, so bail
-        if(!strings.some(Boolean)) {
-            return props[1];
-        }
+        strings = props[0].filter((prop) =>
+            valid.isStringish(prop.value)
+        );
+
+    // All class/className props were strings, if they're all empty we can early-out
+    if(
+        strings.length === props[0].length &&
+        strings.every((node) => valid.isString(node.value) && !node.value.value.length)
+    ) {
+        return props[1];
     }
-    
+
     // Some class/className props were strings
     if(strings.length) {
         props[1].unshift(
@@ -72,10 +71,13 @@ module.exports = function(babel) {
 
                 // Vnode(tag, key, attrs, children, text, dom)
                 path.replaceWith(
-                    create.vnode(t,
+                    create.vnode(
+                        t,
                         selector.tag,
+                        
                         // Use the last key attribute found
                         parts[0].length ? parts[0].pop().value : undef,
+                        
                         // Create attributes object
                         parts[1].length ? t.objectExpression(parts[1]) : undef,
                         args.children || undef,

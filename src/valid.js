@@ -4,20 +4,23 @@ var match = require("./match.js"),
     
     stringToStringRegex = /charAt|charCodeAt|codePointAt|concat|fromCharCode|fromCodePoint|normalize|repeat|replace|slice|substr|substring|toLocaleLowerCase|toLocaleUpperCase|toLowerCase|toString|toUpperCase|trim|trimLeft|trimRight|valueOf/,
     arrayToArrayRegex   = /concat|copyWithin|filter|map|reverse|slice|sort|splice/,
-    arrayToStringRegex  = /join/,
-    stringTypesRegex    = /StringLiteral|TemplateLiteral/;
+    arrayToStringRegex  = /join/;
 
 exports.isString = (node) =>
     // Simple string or template literal
     match(node, {
-        type : stringTypesRegex
+        type : "StringLiteral"
     });
 
 exports.isStringish = (node) =>
-    // Simple string or template literal
+    // Simple string
     exports.isString(
         node
     ) ||
+    // template literal
+    match(node, {
+        type : "TemplateLiteral"
+    }) ||
     // String.prototype methods that return a string
     match(node, {
         type   : "CallExpression",

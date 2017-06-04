@@ -1,100 +1,98 @@
 "use strict";
 
-var assert = require("assert"),
+var dedent = require("dedent"),
+    
+    code = require("./lib/code"),
 
-    code = require("./lib/code");
+    selectors = {
+        tag   : `"selector"`,
+        class : `".selector"`,
+        tmpl  : `\`template\``,
 
-describe("Attributes", function() {
-    describe("class vs className", function() {
-        it("attr class, attr className", function() {
-            assert.equal(
-                code(`m("div", { className : "foo", class : "bar" })`),
-                `m.vnode("div",undefined,{className:"foo bar"},[],undefined,undefined);`
-            );
-        });
-        
-        it("selector class, attr class", function() {
-            assert.equal(
-                code(`m(".foo", { class : "bar" })`),
-                `m.vnode("div",undefined,{className:"foo bar"},[],undefined,undefined);`
-            );
-        });
+        "class + attr" : `".selector[attribute]"`
+    },
 
-        it("selector class, attr className", function() {
-            assert.equal(
-                code(`m(".foo", { className : "bar" })`),
-                `m.vnode("div",undefined,{className:"foo bar"},[],undefined,undefined);`
-            );
-        });
-        
-        it("selector class, selector attr, attr className", function() {
-            assert.equal(
-                code(`m(".foo[checked]", { className : "bar" })`),
-                `m.vnode("div",undefined,{className:"foo bar",checked:true},[],undefined,undefined);`
-            );
-        });
-        
-        it("selector class, empty className attr", function() {
-            assert.equal(
-                code(`m(".foo", { className : "" })`),
-                `m.vnode("div",undefined,{className:"foo"},[],undefined,undefined);`
-            );
-        });
+    classes = {
+        missing : false,
+        empty   : `""`,
+        value   : `"class"`,
+        tmpl    : `\`class\``
+    },
 
-        it("no selector class, empty className attr", function() {
-            assert.equal(
-                code(`m("div", { className : "" })`),
-                `m.vnode("div",undefined,undefined,[],undefined,undefined);`
-            );
-        });
+    classnames = {
+        missing : false,
+        empty   : `""`,
+        value   : `"className"`,
+        tmpl    : `\`className\``
+    },
+    
+    strings = {
+        missing : false,
+        value   : `"inner"`
+    };
 
-        it("no selector class, empty class attr", function() {
-            assert.equal(
-                code(`m("div", { class : "" })`),
-                `m.vnode("div",undefined,undefined,[],undefined,undefined);`
-            );
-        });
+describe("Attributes", () => {
+    describe("class vs className", () => {
+        var combinations = [];
 
-        it("no selector class, complex className attr (#57)", function() {
-            assert.equal(
-                code(`m("div", { className: foo ? "bar" : "baz" }, "inner")`),
-                `m.vnode("div",undefined,{className:foo?"bar":"baz"},undefined,"inner",undefined);`
-            );
-        });
+        Object.keys(selectors).forEach((selectorval) =>
+            Object.keys(classes).forEach((classval) =>
+                Object.keys(classnames).forEach((classnameval) =>
+                    Object.keys(strings).forEach((stringval) => {
+                        combinations.push({
+                            name      : `selector ${selectorval}, class ${classval}, className ${classnameval}, string ${stringval}`,
+                            selector  : selectors[selectorval],
+                            class     : classes[classval],
+                            classname : classnames[classnameval],
+                            string    : strings[stringval]
+                        });
+                    })
+                )
+            )
+        );
 
-        it("no selector class, more complex className attr (#57)", function() {
-            assert.equal(
-                code(`m("div", { className: foo ? "bar" : boo ? "woo" : "baz" }, "inner")`),
-                `m.vnode("div",undefined,{className:foo?"bar":boo?"woo":"baz"},undefined,"inner",undefined);`
-            );
-        });
+        combinations.forEach((test) => {
+            it(test.name, () => {
+                var str = "",
+                    
+                    hasClass     = typeof test.class === "string",
+                    hasClassName = typeof test.classname === "string",
+                    hasString    = typeof test.string === "string";
 
-        it("selector class, complex className attr", function() {
-            assert.equal(
-                code(`m(".a", { className: foo ? "bar" : "baz" }, "inner")`),
-                `m.vnode("div",undefined,{className:"a "+(foo?"bar":"baz")},undefined,"inner",undefined);`
-            );
-        });
+                str += `m(${test.selector}`;
 
-        it("selector multiple classes, complex className attr", function() {
-            assert.equal(
-                code(`m(".a.b.c", { className: foo ? "bar" : "baz" }, "inner")`),
-                `m.vnode("div",undefined,{className:"a b c "+(foo?"bar":"baz")},undefined,"inner",undefined);`
-            );
-        });
+                if(hasClass || hasClassName) {
+                    str += `, {`;
 
-        it("selector multiple classes, className attr, class attr", function() {
-            assert.equal(
-                code(`m(".a.b", { className: "c1", class: "c2" }, "inner")`),
-                `m.vnode("div",undefined,{className:"a b c1 c2"},undefined,"inner",undefined);`
-            );
-        });
+                    if(hasClass) {
+                        str += `class: ${test.class}`;
+                    }
 
-        it("selector multiple classes, complex className attr, class attr", function() {
-            assert.equal(
-                code(`m(".a.b", { className: 1 ? "c1" : "d1", class: "c2" }, "inner")`),
-                `m.vnode("div",undefined,{className:"a b "+(1?"c1":"d1")+" c2"},undefined,"inner",undefined);`
-            );
+                    if(hasClassName) {
+                        if(hasClass) {
+                            str += `, `;
+                        }
+
+                        str += `className: ${test.classname}`;
+                    }
+
+                    str += `}`;
+                }
+
+                if(hasString) {
+                    str += `, ${test.string}`;
+                }
+
+                str += `);`;
+
+                // console.log(dedent(`
+                //     Test: ${test.name}
+                //     Source: ${str}
+                //     Output: ${code(str)}
+                // `));
+
+                expect(code(str)).toMatchSnapshot();
+            });
         });
     });
 });

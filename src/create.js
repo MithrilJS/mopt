@@ -17,6 +17,11 @@ function location(node, loc) {
 // Takes an array of nodes and returns string + nested binary expressions as needed
 exports.stringify = (types, nodes, loc) =>
     nodes.reduce((prev, curr) => {
+        // If prev is empty string it's ignored
+        if(valid.isString(prev) && !prev.value.length)  {
+            return curr;
+        }
+        
         if(valid.isString(curr)) {
             // filter out empty strings
             if(!curr.value.length) {
@@ -30,19 +35,44 @@ exports.stringify = (types, nodes, loc) =>
                 return prev;
             }
             
-            // appending to something, need to add seperator
+            // appending to something, need to add space seperator
             curr.value = ` ${curr.value}`;
-        }
-        
-        if(valid.isString(prev)) {
-            prev.value += " ";
+
+            return location(
+                types.binaryExpression(
+                    "+",
+                    prev,
+                    curr
+                ),
+                loc
+            );
         }
 
+        // If previous value is a string statically inject the necessary space
+        if(valid.isString(prev)) {
+            prev.value += " ";
+
+            return location(
+                types.binaryExpression(
+                    "+",
+                    prev,
+                    curr
+                ),
+                loc
+            );
+        }
+
+        // Non-string previous values need to explicitly add the space via concatenation
+        // (assuming the current value isn't a string)
         return location(
             types.binaryExpression(
                 "+",
                 prev,
-                curr
+                types.binaryExpression(
+                    "+",
+                    types.stringLiteral(" "),
+                    curr
+                )
             ),
             loc
         );
