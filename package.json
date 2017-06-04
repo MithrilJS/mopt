@@ -31,6 +31,7 @@
     "cover": "jest --coverage",
     "commitmsg": "validate-commit-msg",
     "lint": "eslint .",
+    "release": "npm version -m \"v%s\"",
     "prepush": "npm test",
     "test": "jest",
     "posttest": "npm run lint",
