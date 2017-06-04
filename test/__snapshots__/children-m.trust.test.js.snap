@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Children Nested m.trust() should support a multi-item array of nested m.trust() invocations 1`] = `"m.vnode(\\"1\\",undefined,undefined,[m.vnode(\\"<\\",undefined,undefined,\\"2\\",undefined,undefined),m.vnode(\\"<\\",undefined,undefined,\\"3\\",undefined,undefined)],undefined,undefined);"`;
+
+exports[`Children Nested m.trust() should support a single-item array of nested m.trust() invocations 1`] = `"m.vnode(\\"1\\",undefined,undefined,[m.vnode(\\"<\\",undefined,undefined,\\"2\\",undefined,undefined)],undefined,undefined);"`;
+
+exports[`Children Nested m.trust() should support arrays of nested m.trust() invocations & plain nodes 1`] = `"m.vnode(\\"1\\",undefined,undefined,[m.vnode(\\"2\\",undefined,undefined,[],undefined,undefined),m.vnode(\\"#\\",undefined,undefined,\\"3\\",undefined,undefined)],undefined,undefined);"`;
+
+exports[`Children Nested m.trust() should support attrs + multiple nested m.trust() invocations 1`] = `"m.vnode(\\"1\\",undefined,{title:\\"bar\\"},[m.vnode(\\"<\\",undefined,undefined,\\"2\\",undefined,undefined),m.vnode(\\"<\\",undefined,undefined,\\"3\\",undefined,undefined),m.vnode(\\"<\\",undefined,undefined,\\"4\\",undefined,undefined)],undefined,undefined);"`;
+
+exports[`Children Nested m.trust() should support attrs + nested m.trust() invocations 1`] = `"m.vnode(\\"1\\",undefined,{title:\\"bar\\"},[m.vnode(\\"<\\",undefined,undefined,\\"2\\",undefined,undefined)],undefined,undefined);"`;
+
+exports[`Children Nested m.trust() should support multiple nested m.trust() invocations 1`] = `"m.vnode(\\"1\\",undefined,undefined,[m.vnode(\\"<\\",undefined,undefined,\\"2\\",undefined,undefined),m.vnode(\\"<\\",undefined,undefined,\\"3\\",undefined,undefined),m.vnode(\\"<\\",undefined,undefined,\\"4\\",undefined,undefined)],undefined,undefined);"`;
+
+exports[`Children Nested m.trust() should support nested m.trust() invocations 1`] = `"m.vnode(\\"1\\",undefined,undefined,[m.vnode(\\"<\\",undefined,undefined,\\"1\\",undefined,undefined)],undefined,undefined);"`;
+
+exports[`Children Nested m.trust() should supported attrs + arrays of nested m.trust() invocations 1`] = `"m.vnode(\\"1\\",undefined,{title:\\"bar\\"},[m.vnode(\\"<\\",undefined,undefined,\\"2\\",undefined,undefined)],undefined,undefined);"`;
