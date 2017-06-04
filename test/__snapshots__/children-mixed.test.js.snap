@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Children Mixed Children should support mixed array and literal children 1`] = `"m.vnode(\\"0\\",undefined,undefined,[m.vnode(\\"[\\",undefined,undefined,[m.vnode(\\"#\\",undefined,undefined,1,undefined,undefined)],undefined,undefined),m.vnode(\\"#\\",undefined,undefined,2,undefined,undefined)],undefined,undefined);"`;
+
+exports[`Children Mixed Children should support multiple arrays of children 1`] = `"m.vnode(\\"0\\",undefined,undefined,[m.vnode(\\"[\\",undefined,undefined,[m.vnode(\\"#\\",undefined,undefined,1,undefined,undefined)],undefined,undefined),m.vnode(\\"[\\",undefined,undefined,[m.vnode(\\"#\\",undefined,undefined,2,undefined,undefined)],undefined,undefined),m.vnode(\\"[\\",undefined,undefined,[m.vnode(\\"#\\",undefined,undefined,3,undefined,undefined)],undefined,undefined)],undefined,undefined);"`;
