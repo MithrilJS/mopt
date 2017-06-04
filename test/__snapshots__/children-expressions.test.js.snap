@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Children Expression children should convert expressions containing more than 2 values 1`] = `"m.vnode(\\"0\\",undefined,undefined,undefined,\\"1\\"+\\"2\\"+\\"3\\",undefined);"`;
+
+exports[`Children Expression children should convert expressions with operators other than + 1`] = `"m.vnode(\\"0\\",undefined,undefined,undefined,1-2,undefined);"`;
+
+exports[`Children Expression children should not convert non-literal values 1`] = `"m(\\"0\\",a+b);"`;
+
+exports[`Children Expression children should support expressions with literal values (numbers) 1`] = `"m.vnode(\\"0\\",undefined,undefined,undefined,1+2,undefined);"`;
+
+exports[`Children Expression children should support expressions with literal values (strings + numbers) 1`] = `"m.vnode(\\"0\\",undefined,undefined,undefined,1+\\"2\\",undefined);"`;
+
+exports[`Children Expression children should support expressions with literal values (strings) 1`] = `"m.vnode(\\"0\\",undefined,undefined,undefined,\\"1\\"+\\"2\\",undefined);"`;
