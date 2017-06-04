@@ -1,68 +1,68 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Attributes class vs className selector class + attr, class empty, className empty, string missing 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector\\",attribute:true},[],undefined,undefined);"`;
+exports[`Attributes class vs className selector class + attr, class empty, className empty, string missing 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector\\",attr:true},[],undefined,undefined);"`;
 
-exports[`Attributes class vs className selector class + attr, class empty, className empty, string value 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector\\",attribute:true},undefined,\\"inner\\",undefined);"`;
+exports[`Attributes class vs className selector class + attr, class empty, className empty, string value 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector\\",attr:true},undefined,\\"inner\\",undefined);"`;
 
-exports[`Attributes class vs className selector class + attr, class empty, className missing, string missing 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector\\",attribute:true},[],undefined,undefined);"`;
+exports[`Attributes class vs className selector class + attr, class empty, className missing, string missing 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector\\",attr:true},[],undefined,undefined);"`;
 
-exports[`Attributes class vs className selector class + attr, class empty, className missing, string value 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector\\",attribute:true},undefined,\\"inner\\",undefined);"`;
+exports[`Attributes class vs className selector class + attr, class empty, className missing, string value 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector\\",attr:true},undefined,\\"inner\\",undefined);"`;
 
-exports[`Attributes class vs className selector class + attr, class empty, className tmpl, string missing 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector \\"+\`className\`,attribute:true},[],undefined,undefined);"`;
+exports[`Attributes class vs className selector class + attr, class empty, className tmpl, string missing 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector \\"+\`className\`,attr:true},[],undefined,undefined);"`;
 
-exports[`Attributes class vs className selector class + attr, class empty, className tmpl, string value 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector \\"+\`className\`,attribute:true},undefined,\\"inner\\",undefined);"`;
+exports[`Attributes class vs className selector class + attr, class empty, className tmpl, string value 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector \\"+\`className\`,attr:true},undefined,\\"inner\\",undefined);"`;
 
-exports[`Attributes class vs className selector class + attr, class empty, className value, string missing 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector className\\",attribute:true},[],undefined,undefined);"`;
+exports[`Attributes class vs className selector class + attr, class empty, className value, string missing 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector className\\",attr:true},[],undefined,undefined);"`;
 
-exports[`Attributes class vs className selector class + attr, class empty, className value, string value 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector className\\",attribute:true},undefined,\\"inner\\",undefined);"`;
+exports[`Attributes class vs className selector class + attr, class empty, className value, string value 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector className\\",attr:true},undefined,\\"inner\\",undefined);"`;
 
-exports[`Attributes class vs className selector class + attr, class missing, className empty, string missing 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector\\",attribute:true},[],undefined,undefined);"`;
+exports[`Attributes class vs className selector class + attr, class missing, className empty, string missing 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector\\",attr:true},[],undefined,undefined);"`;
 
-exports[`Attributes class vs className selector class + attr, class missing, className empty, string value 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector\\",attribute:true},undefined,\\"inner\\",undefined);"`;
+exports[`Attributes class vs className selector class + attr, class missing, className empty, string value 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector\\",attr:true},undefined,\\"inner\\",undefined);"`;
 
-exports[`Attributes class vs className selector class + attr, class missing, className missing, string missing 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector\\",attribute:true},[],undefined,undefined);"`;
+exports[`Attributes class vs className selector class + attr, class missing, className missing, string missing 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector\\",attr:true},[],undefined,undefined);"`;
 
-exports[`Attributes class vs className selector class + attr, class missing, className missing, string value 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector\\",attribute:true},undefined,\\"inner\\",undefined);"`;
+exports[`Attributes class vs className selector class + attr, class missing, className missing, string value 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector\\",attr:true},undefined,\\"inner\\",undefined);"`;
 
-exports[`Attributes class vs className selector class + attr, class missing, className tmpl, string missing 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector \\"+\`className\`,attribute:true},[],undefined,undefined);"`;
+exports[`Attributes class vs className selector class + attr, class missing, className tmpl, string missing 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector \\"+\`className\`,attr:true},[],undefined,undefined);"`;
 
-exports[`Attributes class vs className selector class + attr, class missing, className tmpl, string value 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector \\"+\`className\`,attribute:true},undefined,\\"inner\\",undefined);"`;
+exports[`Attributes class vs className selector class + attr, class missing, className tmpl, string value 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector \\"+\`className\`,attr:true},undefined,\\"inner\\",undefined);"`;
 
-exports[`Attributes class vs className selector class + attr, class missing, className value, string missing 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector className\\",attribute:true},[],undefined,undefined);"`;
+exports[`Attributes class vs className selector class + attr, class missing, className value, string missing 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector className\\",attr:true},[],undefined,undefined);"`;
 
-exports[`Attributes class vs className selector class + attr, class missing, className value, string value 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector className\\",attribute:true},undefined,\\"inner\\",undefined);"`;
+exports[`Attributes class vs className selector class + attr, class missing, className value, string value 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector className\\",attr:true},undefined,\\"inner\\",undefined);"`;
 
-exports[`Attributes class vs className selector class + attr, class tmpl, className empty, string missing 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector \\"+\`class\`,attribute:true},[],undefined,undefined);"`;
+exports[`Attributes class vs className selector class + attr, class tmpl, className empty, string missing 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector \\"+\`class\`,attr:true},[],undefined,undefined);"`;
 
-exports[`Attributes class vs className selector class + attr, class tmpl, className empty, string value 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector \\"+\`class\`,attribute:true},undefined,\\"inner\\",undefined);"`;
+exports[`Attributes class vs className selector class + attr, class tmpl, className empty, string value 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector \\"+\`class\`,attr:true},undefined,\\"inner\\",undefined);"`;
 
-exports[`Attributes class vs className selector class + attr, class tmpl, className missing, string missing 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector \\"+\`class\`,attribute:true},[],undefined,undefined);"`;
+exports[`Attributes class vs className selector class + attr, class tmpl, className missing, string missing 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector \\"+\`class\`,attr:true},[],undefined,undefined);"`;
 
-exports[`Attributes class vs className selector class + attr, class tmpl, className missing, string value 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector \\"+\`class\`,attribute:true},undefined,\\"inner\\",undefined);"`;
+exports[`Attributes class vs className selector class + attr, class tmpl, className missing, string value 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector \\"+\`class\`,attr:true},undefined,\\"inner\\",undefined);"`;
 
-exports[`Attributes class vs className selector class + attr, class tmpl, className tmpl, string missing 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector \\"+\`class\`+(\\" \\"+\`className\`),attribute:true},[],undefined,undefined);"`;
+exports[`Attributes class vs className selector class + attr, class tmpl, className tmpl, string missing 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector \\"+\`class\`+(\\" \\"+\`className\`),attr:true},[],undefined,undefined);"`;
 
-exports[`Attributes class vs className selector class + attr, class tmpl, className tmpl, string value 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector \\"+\`class\`+(\\" \\"+\`className\`),attribute:true},undefined,\\"inner\\",undefined);"`;
+exports[`Attributes class vs className selector class + attr, class tmpl, className tmpl, string value 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector \\"+\`class\`+(\\" \\"+\`className\`),attr:true},undefined,\\"inner\\",undefined);"`;
 
-exports[`Attributes class vs className selector class + attr, class tmpl, className value, string missing 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector \\"+\`class\`+\\" className\\",attribute:true},[],undefined,undefined);"`;
+exports[`Attributes class vs className selector class + attr, class tmpl, className value, string missing 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector \\"+\`class\`+\\" className\\",attr:true},[],undefined,undefined);"`;
 
-exports[`Attributes class vs className selector class + attr, class tmpl, className value, string value 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector \\"+\`class\`+\\" className\\",attribute:true},undefined,\\"inner\\",undefined);"`;
+exports[`Attributes class vs className selector class + attr, class tmpl, className value, string value 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector \\"+\`class\`+\\" className\\",attr:true},undefined,\\"inner\\",undefined);"`;
 
-exports[`Attributes class vs className selector class + attr, class value, className empty, string missing 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector class\\",attribute:true},[],undefined,undefined);"`;
+exports[`Attributes class vs className selector class + attr, class value, className empty, string missing 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector class\\",attr:true},[],undefined,undefined);"`;
 
-exports[`Attributes class vs className selector class + attr, class value, className empty, string value 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector class\\",attribute:true},undefined,\\"inner\\",undefined);"`;
+exports[`Attributes class vs className selector class + attr, class value, className empty, string value 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector class\\",attr:true},undefined,\\"inner\\",undefined);"`;
 
-exports[`Attributes class vs className selector class + attr, class value, className missing, string missing 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector class\\",attribute:true},[],undefined,undefined);"`;
+exports[`Attributes class vs className selector class + attr, class value, className missing, string missing 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector class\\",attr:true},[],undefined,undefined);"`;
 
-exports[`Attributes class vs className selector class + attr, class value, className missing, string value 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector class\\",attribute:true},undefined,\\"inner\\",undefined);"`;
+exports[`Attributes class vs className selector class + attr, class value, className missing, string value 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector class\\",attr:true},undefined,\\"inner\\",undefined);"`;
 
-exports[`Attributes class vs className selector class + attr, class value, className tmpl, string missing 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector class \\"+\`className\`,attribute:true},[],undefined,undefined);"`;
+exports[`Attributes class vs className selector class + attr, class value, className tmpl, string missing 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector class \\"+\`className\`,attr:true},[],undefined,undefined);"`;
 
-exports[`Attributes class vs className selector class + attr, class value, className tmpl, string value 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector class \\"+\`className\`,attribute:true},undefined,\\"inner\\",undefined);"`;
+exports[`Attributes class vs className selector class + attr, class value, className tmpl, string value 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector class \\"+\`className\`,attr:true},undefined,\\"inner\\",undefined);"`;
 
-exports[`Attributes class vs className selector class + attr, class value, className value, string missing 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector class className\\",attribute:true},[],undefined,undefined);"`;
+exports[`Attributes class vs className selector class + attr, class value, className value, string missing 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector class className\\",attr:true},[],undefined,undefined);"`;
 
-exports[`Attributes class vs className selector class + attr, class value, className value, string value 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector class className\\",attribute:true},undefined,\\"inner\\",undefined);"`;
+exports[`Attributes class vs className selector class + attr, class value, className value, string value 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector class className\\",attr:true},undefined,\\"inner\\",undefined);"`;
 
 exports[`Attributes class vs className selector class, class empty, className empty, string missing 1`] = `"m.vnode(\\"div\\",undefined,{className:\\"selector\\"},[],undefined,undefined);"`;
 

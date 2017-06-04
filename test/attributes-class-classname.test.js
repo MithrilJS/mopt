@@ -7,7 +7,7 @@ var code = require("./lib/code"),
         class : `".selector"`,
         tmpl  : `\`template\``,
 
-        "class + attr" : `".selector[attribute]"`
+        "class + attr" : `".selector[attr]"`
     },
 
     classes = {

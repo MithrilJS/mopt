@@ -8,9 +8,8 @@ var partition = require("lodash.partition"),
     create = require("./create.js");
 
 // Combine any selector class/classNames with anything defined in code
-function processAttrs(types, buckets, loc) {
-    var merged = buckets.reduce((p, c) => p.concat(c), []),
-        props  = partition(merged, (prop) =>
+function processAttrs(types, attrs, loc) {
+    var props = partition(attrs, (prop) =>
             match(prop, {
                 key : { name : /^class$|^className$/ }
             })
@@ -19,9 +18,10 @@ function processAttrs(types, buckets, loc) {
         strings = props[0].filter((prop) =>
             valid.isStringish(prop.value)
         );
-
+    
     // All class/className props were strings, if they're all empty we can early-out
     if(
+        strings.length &&
         strings.length === props[0].length &&
         strings.every((node) => valid.isString(node.value) && !node.value.value.length)
     ) {
@@ -43,7 +43,7 @@ function processAttrs(types, buckets, loc) {
     }
 
     // Combine everything
-    return merged;
+    return attrs;
 }
 
 module.exports = function(babel) {
@@ -62,7 +62,7 @@ module.exports = function(babel) {
                 selector = parse.selector(t, path.node);
                 args = parse.args(t, path.node);
 
-                attrs = processAttrs(t, [ selector.attrs, args.attrs ], path.node.loc);
+                attrs = processAttrs(t, selector.attrs.concat(args.attrs), path.node.loc);
                 
                 // Find any `key` properties and extract them
                 parts = partition(attrs, (attr) => match(attr, {
