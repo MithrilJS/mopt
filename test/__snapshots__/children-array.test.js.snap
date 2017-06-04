@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Children Array Children should handle Array.prototype methods that return a string 1`] = `"m.vnode(\\"0\\",undefined,undefined,undefined,[1,2].join(\\"\\"),undefined);"`;
+
+exports[`Children Array Children should handle Array.prototype methods that return a string 2`] = `"m.vnode(\\"0\\",undefined,undefined,undefined,[1,2][\\"join\\"](\\"\\"),undefined);"`;
+
+exports[`Children Array Children should normalize non-text array children 1`] = `"m.vnode(\\"0\\",undefined,undefined,[m.vnode(\\"#\\",undefined,undefined,1,undefined,undefined),m.vnode.normalize(bar)],undefined,undefined);"`;
+
+exports[`Children Array Children should support array children w/ > 1 entry 1`] = `"m.vnode(\\"0\\",undefined,undefined,[m.vnode(\\"#\\",undefined,undefined,1,undefined,undefined),m.vnode(\\"#\\",undefined,undefined,2,undefined,undefined)],undefined,undefined);"`;
+
+exports[`Children Array Children should support array children w/ 1 entry 1`] = `"m.vnode(\\"0\\",undefined,undefined,undefined,1,undefined);"`;
+
+exports[`Children Array Children should support array children w/ 1 entry 2`] = `"m.vnode(\\"0\\",undefined,undefined,undefined,\\"1\\",undefined);"`;
+
+exports[`Children Array Children should support array children w/ 1 entry 3`] = `"m.vnode(\\"0\\",undefined,undefined,undefined,\`1\`,undefined);"`;
+
+exports[`Children Array Children should support attrs + array children w/ > 1 entry 1`] = `"m.vnode(\\"0\\",undefined,{title:\\"bar\\"},[m.vnode(\\"#\\",undefined,undefined,1,undefined,undefined),m.vnode(\\"#\\",undefined,undefined,2,undefined,undefined),m.vnode(\\"#\\",undefined,undefined,3,undefined,undefined)],undefined,undefined);"`;
+
+exports[`Children Array Children should support attrs + array children w/ 1 entry 1`] = `"m.vnode(\\"0\\",undefined,{title:\\"bar\\"},undefined,1,undefined);"`;
+
+exports[`Children Array Children should support wrapping Array.prototype children when there are multiple children 1`] = `"m.vnode(\\"0\\",undefined,undefined,[m.vnode(\\"[\\",undefined,undefined,[m.vnode(\\"#\\",undefined,undefined,1,undefined,undefined)],undefined,undefined),m.vnode.normalize([2].map(function(val){return val;}))],undefined,undefined);"`;
+
+exports[`Children Array Children should wrap Array.prototype children that return an array in m.vnode.normalizeChildren 1`] = `"m.vnode(\\"0\\",undefined,undefined,m.vnode.normalizeChildren([1,2].map(function(val){return val;})),undefined,undefined);"`;
+
+exports[`Children Array Children should wrap Array.prototype children that return an array in m.vnode.normalizeChildren 2`] = `"m.vnode(\\"0\\",undefined,undefined,m.vnode.normalizeChildren([1,2].filter(function(val){return val===1;})),undefined,undefined);"`;
+
+exports[`Children Array Children shouldn't convert when there are Array.prototype children that do not return an array 1`] = `"m(\\"0\\",[1,2].forEach(function(val){return val===1;}));"`;
+
+exports[`Children Array Children shouldn't convert when there are Array.prototype children that do not return an array 2`] = `"m(\\"0\\",[1,2].some(function(val){return val===1;}));"`;
+
+exports[`Children Array Children shouldn't convert when there are Array.prototype children with a non-array object 1`] = `"m(\\"0\\",a.map(function(val){return val;}));"`;

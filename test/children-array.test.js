@@ -1,105 +1,103 @@
 "use strict";
 
-var assert = require("assert"),
-    
-    code = require("./lib/code");
+var code = require("./lib/code");
 
-describe("Children", function() {
-    describe("Array Children", function() {
-        it("should support array children w/ 1 entry", function() {
-            assert.equal(
-                code(`m("0", [ 1 ])`),
-                `m.vnode("0",undefined,undefined,undefined,1,undefined);`
-            );
+describe("Children", () => {
+    describe("Array Children", () => {
+        it("should support array children w/ 1 entry", () => {
+            expect(
+                code(`m("0", [ 1 ])`)
+            )
+            .toMatchSnapshot();
 
-            assert.equal(
-                code(`m("0", [ "1" ])`),
-                `m.vnode("0",undefined,undefined,undefined,"1",undefined);`
-            );
+            expect(
+                code(`m("0", [ "1" ])`)
+            )
+            .toMatchSnapshot();
 
-            assert.equal(
-                code(`m("0", [ \`1\` ])`),
-                `m.vnode("0",undefined,undefined,undefined,\`1\`,undefined);`
-            );
+            expect(
+                code(`m("0", [ \`1\` ])`)
+            )
+            .toMatchSnapshot();
         });
 
-        it("should support attrs + array children w/ 1 entry", function() {
-            assert.equal(
-                code(`m("0", { title : "bar" }, [ 1 ])`),
-                `m.vnode("0",undefined,{title:"bar"},undefined,1,undefined);`
-            );
+        it("should support attrs + array children w/ 1 entry", () =>
+            expect(
+                code(`m("0", { title : "bar" }, [ 1 ])`)
+            )
+            .toMatchSnapshot()
+        );
+        
+        it("should support array children w/ > 1 entry", () =>
+            expect(
+                code(`m("0", [ 1, 2 ])`)
+            )
+            .toMatchSnapshot()
+        );
+
+        it("should support attrs + array children w/ > 1 entry", () =>
+            expect(
+                code(`m("0", { title : "bar" }, [ 1, 2, 3 ])`)
+            )
+            .toMatchSnapshot()
+        );
+
+        it("should normalize non-text array children", () =>
+            expect(
+                code(`m("0", [ 1, bar ])`)
+            )
+            .toMatchSnapshot()
+        );
+
+        it("should wrap Array.prototype children that return an array in m.vnode.normalizeChildren", () => {
+            expect(
+                code(`m("0", [ 1, 2 ].map(function(val) { return val; }))`)
+            )
+            .toMatchSnapshot();
+
+            expect(
+                code(`m("0", [ 1, 2 ].filter(function(val) { return val === 1; }))`)
+            )
+            .toMatchSnapshot();
         });
         
-        it("should support array children w/ > 1 entry", function() {
-            assert.equal(
-                code(`m("0", [ 1, 2 ])`),
-                `m.vnode("0",undefined,undefined,[m.vnode("#",undefined,undefined,1,undefined,undefined),m.vnode("#",undefined,undefined,2,undefined,undefined)],undefined,undefined);`
-            );
-        });
-
-        it("should support attrs + array children w/ > 1 entry", function() {
-            assert.equal(
-                code(`m("0", { title : "bar" }, [ 1, 2, 3 ])`),
-                `m.vnode("0",undefined,{title:"bar"},[m.vnode("#",undefined,undefined,1,undefined,undefined),m.vnode("#",undefined,undefined,2,undefined,undefined),m.vnode("#",undefined,undefined,3,undefined,undefined)],undefined,undefined);`
-            );
-        });
-
-        it("should normalize non-text array children", function() {
-            assert.equal(
-                code(`m("0", [ 1, bar ])`),
-                `m.vnode("0",undefined,undefined,[m.vnode("#",undefined,undefined,1,undefined,undefined),m.vnode.normalize(bar)],undefined,undefined);`
-            );
-        });
-
-        it("should wrap Array.prototype children that return an array in m.vnode.normalizeChildren", function() {
-            assert.equal(
-                code(`m("0", [ 1, 2 ].map(function(val) { return val; }))`),
-                `m.vnode("0",undefined,undefined,m.vnode.normalizeChildren([1,2].map(function(val){return val;})),undefined,undefined);`
-            );
-
-            assert.equal(
-                code(`m("0", [ 1, 2 ].filter(function(val) { return val === 1; }))`),
-                `m.vnode("0",undefined,undefined,m.vnode.normalizeChildren([1,2].filter(function(val){return val===1;})),undefined,undefined);`
-            );
-        });
-        
-        it("shouldn't convert when there are Array.prototype children that do not return an array", function() {
-            assert.equal(
-                code(`m("0", [ 1, 2 ].forEach(function(val) { return val === 1 }))`),
-                `m("0",[1,2].forEach(function(val){return val===1;}));`
-            );
+        it("shouldn't convert when there are Array.prototype children that do not return an array", () => {
+            expect(
+                code(`m("0", [ 1, 2 ].forEach(function(val) { return val === 1 }))`)
+            )
+            .toMatchSnapshot();
             
-            assert.equal(
-                code(`m("0", [ 1, 2 ].some(function(val) { return val === 1 }))`),
-                `m("0",[1,2].some(function(val){return val===1;}));`
-            );
+            expect(
+                code(`m("0", [ 1, 2 ].some(function(val) { return val === 1 }))`)
+            )
+            .toMatchSnapshot();
         });
 
-        it("shouldn't convert when there are Array.prototype children with a non-array object", function() {
-            assert.equal(
-                code(`m("0", a.map(function(val) { return val; }))`),
-                `m("0",a.map(function(val){return val;}));`
-            );
-        });
+        it("shouldn't convert when there are Array.prototype children with a non-array object", () =>
+            expect(
+                code(`m("0", a.map(function(val) { return val; }))`)
+            )
+            .toMatchSnapshot()
+        );
 
-        it("should support wrapping Array.prototype children when there are multiple children", function() {
-            assert.equal(
-                code(`m("0", [ 1 ], [ 2 ].map(function(val) { return val; }))`),
-                `m.vnode("0",undefined,undefined,[m.vnode("[",undefined,undefined,[m.vnode("#",undefined,undefined,1,undefined,undefined)],undefined,undefined),m.vnode.normalize([2].map(function(val){return val;}))],undefined,undefined);`
-            );
-        });
+        it("should support wrapping Array.prototype children when there are multiple children", () =>
+            expect(
+                code(`m("0", [ 1 ], [ 2 ].map(function(val) { return val; }))`)
+            )
+            .toMatchSnapshot()
+        );
         
-        it("should handle Array.prototype methods that return a string", function() {
-            assert.equal(
-                code(`m("0", [ 1, 2 ].join(""))`),
-                `m.vnode("0",undefined,undefined,undefined,[1,2].join(""),undefined);`
-            );
+        it("should handle Array.prototype methods that return a string", () => {
+            expect(
+                code(`m("0", [ 1, 2 ].join(""))`)
+            )
+            .toMatchSnapshot();
             
             // Yes this looks insane, but it's still valid
-            assert.equal(
-                code(`m("0", [ 1, 2 ]["join"](""))`),
-                `m.vnode("0",undefined,undefined,undefined,[1,2]["join"](""),undefined);`
-            );
+            expect(
+                code(`m("0", [ 1, 2 ]["join"](""))`)
+            )
+            .toMatchSnapshot();
         });
     });
 });
