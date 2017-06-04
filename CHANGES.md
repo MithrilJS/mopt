@@ -1,5 +1,9 @@
 # Changes
 
+## 5.1.0
+
+- refactor: template literal support cleaned up
+
 ## 5.0.2
 
 - fix: non-string class/className attributes (#58)
