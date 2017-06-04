@@ -1,5 +1,9 @@
 # Changes
 
+## 5.1.1
+
+- chore: fix deployment process
+
 ## 5.1.0
 
 - refactor: template literal support cleaned up
