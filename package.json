@@ -3,8 +3,8 @@
   "version": "5.1.1",
   "description": "Babel plugin to statically optimize Mithril m() calls",
   "main": "./src/index.js",
-  "author": "Pat Cavit <pcavit@arena.net>",
-  "repository": "tivac/mithril-objectify",
+  "author": "Pat Cavit <npm@patcavit.com>",
+  "repository": "mithriljs/mopt",
   "license": "MIT",
   "keywords": [
     "mithril",
