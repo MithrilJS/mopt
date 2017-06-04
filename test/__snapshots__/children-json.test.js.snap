@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Children JSON.prototype children should know that JSON.stringify is safe 1`] = `"m.vnode(\\"div\\",undefined,undefined,undefined,JSON.stringify({}),undefined);"`;
+
+exports[`Children JSON.prototype children shouldn't transform JSON.parse since it may not be safe 1`] = `"m(\\"div\\",JSON.parse({}));"`;
