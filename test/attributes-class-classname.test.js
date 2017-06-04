@@ -1,8 +1,6 @@
 "use strict";
 
-var dedent = require("dedent"),
-    
-    code = require("./lib/code"),
+var code = require("./lib/code"),
 
     selectors = {
         tag   : `"selector"`,
@@ -84,12 +82,6 @@ describe("Attributes", () => {
                 }
 
                 str += `);`;
-
-                // console.log(dedent(`
-                //     Test: ${test.name}
-                //     Source: ${str}
-                //     Output: ${code(str)}
-                // `));
 
                 expect(code(str)).toMatchSnapshot();
             });

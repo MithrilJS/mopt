@@ -19,11 +19,10 @@
   "devDependencies": {
     "@studio/changes": "^1.0.4",
     "babel-core": "^6.21.0",
-    "dedent": "^0.7.0",
     "eslint": "^3.12.2",
     "eslint-config-arenanet": "^3.1.0",
-    "jest": "^20.0.4",
     "husky": "^0.13.2",
+    "jest": "^20.0.4",
     "mithril": "^1.1.1",
     "validate-commit-msg": "^2.8.2"
   },

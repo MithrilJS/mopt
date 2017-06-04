@@ -18,7 +18,7 @@ function location(node, loc) {
 exports.stringify = (types, nodes, loc) =>
     nodes.reduce((prev, curr) => {
         // If prev is empty string it's ignored
-        if(valid.isString(prev) && !prev.value.length)  {
+        if(valid.isString(prev) && !prev.value.length) {
             return curr;
         }
         
