@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Children literal children should not transform invocations containing identifiers 1`] = `"m(\\".fooga\\",identifier);"`;
+
+exports[`Children literal children should support attrs + multiple children 1`] = `"m.vnode(\\"1\\",undefined,{title:\\"bar\\"},[m.vnode(\\"#\\",undefined,undefined,\\"2\\",undefined,undefined),m.vnode(\\"#\\",undefined,undefined,\\"3\\",undefined,undefined)],undefined,undefined);"`;
+
+exports[`Children literal children should support attrs + single literal children children 1`] = `"m.vnode(\\"1\\",undefined,{title:\\"bar\\"},undefined,\\"2\\",undefined);"`;
+
+exports[`Children literal children should support multiple literal children 1`] = `"m.vnode(\\"1\\",undefined,undefined,[m.vnode(\\"#\\",undefined,undefined,\\"2\\",undefined,undefined),m.vnode(\\"#\\",undefined,undefined,\\"3\\",undefined,undefined)],undefined,undefined);"`;
+
+exports[`Children literal children should support single literal children (boolean) 1`] = `"m.vnode(\\"1\\",undefined,undefined,undefined,true,undefined);"`;
+
+exports[`Children literal children should support single literal children (number) 1`] = `"m.vnode(\\"1\\",undefined,undefined,undefined,2,undefined);"`;
+
+exports[`Children literal children should support single literal children (string) 1`] = `"m.vnode(\\"1\\",undefined,undefined,undefined,\\"2\\",undefined);"`;
+
+exports[`Children literal children should support single literal children (template) 1`] = `"m.vnode(\\"1\\",undefined,undefined,undefined,\`2\`,undefined);"`;

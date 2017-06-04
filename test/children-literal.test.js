@@ -1,66 +1,64 @@
 "use strict";
 
-var assert = require("assert"),
-    
-    code = require("./lib/code");
+var code = require("./lib/code");
 
-describe("Children", function() {
-    describe("literal children", function() {
-        it("should support single literal children (string)", function() {
-            assert.equal(
-                code(`m("1", "2")`),
-                `m.vnode("1",undefined,undefined,undefined,"2",undefined);`
-            );
-        });
+describe("Children", () => {
+    describe("literal children", () => {
+        it("should support single literal children (string)", () =>
+            expect(
+                code(`m("1", "2")`)
+            )
+            .toMatchSnapshot()
+        );
 
-        it("should support single literal children (number)", function() {
-            assert.equal(
-                code(`m("1", 2)`),
-                `m.vnode("1",undefined,undefined,undefined,2,undefined);`
-            );
-        });
+        it("should support single literal children (number)", () =>
+            expect(
+                code(`m("1", 2)`)
+            )
+            .toMatchSnapshot()
+        );
 
-        it("should support single literal children (boolean)", function() {
-            assert.equal(
-                code(`m("1", true)`),
-                `m.vnode("1",undefined,undefined,undefined,true,undefined);`
-            );
-        });
+        it("should support single literal children (boolean)", () =>
+            expect(
+                code(`m("1", true)`)
+            )
+            .toMatchSnapshot()
+        );
 
-        it("should support single literal children (template)", function() {
-            assert.equal(
-                code(`m("1", \`2\`)`),
-                `m.vnode("1",undefined,undefined,undefined,\`2\`,undefined);`
-            );
-        });
+        it("should support single literal children (template)", () =>
+            expect(
+                code(`m("1", \`2\`)`)
+            )
+            .toMatchSnapshot()
+        );
         
-        it("should support attrs + single literal children children", function() {
-            assert.equal(
-                code(`m("1", { title : "bar" }, "2")`),
-                `m.vnode("1",undefined,{title:"bar"},undefined,"2",undefined);`
-            );
-        });
+        it("should support attrs + single literal children children", () =>
+            expect(
+                code(`m("1", { title : "bar" }, "2")`)
+            )
+            .toMatchSnapshot()
+        );
 
-        it("should support multiple literal children", function() {
-            assert.equal(
-                code(`m("1", "2", "3")`),
-                `m.vnode("1",undefined,undefined,[m.vnode("#",undefined,undefined,"2",undefined,undefined),m.vnode("#",undefined,undefined,"3",undefined,undefined)],undefined,undefined);`
-            );
-        });
+        it("should support multiple literal children", () =>
+            expect(
+                code(`m("1", "2", "3")`)
+            )
+            .toMatchSnapshot()
+        );
         
-        it("should support attrs + multiple children", function() {
-            assert.equal(
-                code(`m("1", { title : "bar" }, "2", "3")`),
-                `m.vnode("1",undefined,{title:"bar"},[m.vnode("#",undefined,undefined,"2",undefined,undefined),m.vnode("#",undefined,undefined,"3",undefined,undefined)],undefined,undefined);`
-            );
-        });
+        it("should support attrs + multiple children", () =>
+            expect(
+                code(`m("1", { title : "bar" }, "2", "3")`)
+            )
+            .toMatchSnapshot()
+        );
 
-        it("should not transform invocations containing identifiers", function() {
+        it("should not transform invocations containing identifiers", () =>
             // Identifiers can't be resolved at compile time, so ignore
-            assert.equal(
-                code(`m(".fooga", identifier)`),
-                `m(".fooga",identifier);`
-            );
-        });
+            expect(
+                code(`m(".fooga", identifier)`)
+            )
+            .toMatchSnapshot()
+        );
     });
 });
